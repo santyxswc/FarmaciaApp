@@ -1,0 +1,53 @@
+<UserControl x:Class="FarmaciaApp.UI.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<Grid Margin="20">
+		<StackPanel>
+
+			<TextBlock Text="Bienvenido a la farmacia"
+                       FontSize="28"
+                       Margin="0 0 0 10"
+                       FontWeight="Bold"/>
+
+			<TextBlock Text="Seleccione una opción del menú lateral"
+                       FontSize="16"
+                       Foreground="Gray"/>
+
+			<Separator Margin="0 20 0 20"/>
+
+			<WrapPanel ItemWidth="200" ItemHeight="130" Margin="0 10 0 0">
+
+				<Border Background="#0984e3" CornerRadius="10" Padding="15" Margin="10">
+					<StackPanel>
+						<TextBlock Text="Productos" FontSize="22" Foreground="White"/>
+						<TextBlock Text="Ver existentes" FontSize="14" Foreground="#e0e0e0"/>
+					</StackPanel>
+				</Border>
+
+				<Border Background="#6c5ce7" CornerRadius="10" Padding="15" Margin="10">
+					<StackPanel>
+						<TextBlock Text="Clientes" FontSize="22" Foreground="White"/>
+						<TextBlock Text="Administrar clientes" FontSize="14" Foreground="#e0e0e0"/>
+					</StackPanel>
+				</Border>
+
+				<Border Background="#00b894" CornerRadius="10" Padding="15" Margin="10">
+					<StackPanel>
+						<TextBlock Text="Facturas" FontSize="22" Foreground="White"/>
+						<TextBlock Text="Consultar ventas" FontSize="14" Foreground="#e0e0e0"/>
+					</StackPanel>
+				</Border>
+
+				<Border Background="#d63031" CornerRadius="10" Padding="15" Margin="10">
+					<StackPanel>
+						<TextBlock Text="Reclamos" FontSize="22" Foreground="White"/>
+						<TextBlock Text="Gestión de reclamos" FontSize="14" Foreground="#ffe0e0"/>
+					</StackPanel>
+				</Border>
+
+			</WrapPanel>
+
+		</StackPanel>
+	</Grid>
+</UserControl>

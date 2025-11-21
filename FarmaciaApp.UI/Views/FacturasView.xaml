@@ -1,0 +1,28 @@
+<UserControl x:Class="FarmaciaApp.UI.Views.FacturasView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Margin="20">
+
+        <StackPanel>
+            <TextBlock Text="Facturas"
+                       FontSize="26"
+                       FontWeight="Bold"
+                       Margin="0 0 0 15"/>
+
+            <DataGrid AutoGenerateColumns="False" IsReadOnly="True">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Factura" Binding="{Binding FacNumFactura}"/>
+                    <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNombre}"/>
+                    <DataGridTextColumn Header="Vendedor" Binding="{Binding VendedorNombre}"/>
+                    <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}"/>
+                    <DataGridTextColumn Header="Total" Binding="{Binding Total}"/>
+                </DataGrid.Columns>
+
+            </DataGrid>
+
+        </StackPanel>
+
+    </Grid>
+</UserControl>

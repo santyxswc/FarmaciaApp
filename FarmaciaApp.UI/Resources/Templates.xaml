@@ -1,0 +1,49 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Estilo global para botones -->
+    <Style TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Height" Value="35" />
+    </Style>
+
+    <!-- Estilo para botones de la barra lateral -->
+	<Style x:Key="SidebarButton" TargetType="Button">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Foreground" Value="White" />
+		<Setter Property="Padding" Value="10" />
+		<Setter Property="Margin" Value="5" />
+		<Setter Property="HorizontalContentAlignment" Value="Left" />
+		<Setter Property="FontSize" Value="16" />
+		<Setter Property="BorderThickness" Value="0" />
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border Background="{TemplateBinding Background}"
+							Padding="{TemplateBinding Padding}">
+						<ContentPresenter />
+					</Border>
+
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background" Value="{StaticResource LightGrayBrush}" />
+						</Trigger>
+						<Trigger Property="IsPressed" Value="True">
+							<Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+							<Setter Property="Foreground" Value="White" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+
+</ResourceDictionary>

@@ -1,0 +1,54 @@
+﻿<Window x:Class="FarmaciaApp.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:FarmaciaApp.UI"
+        Title="Farmacia"
+        Height="600"
+        Width="1000"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <!-- Sidebar -->
+            <ColumnDefinition Width="*"/>
+            <!-- Contenido -->
+        </Grid.ColumnDefinitions>
+
+        <!-- SIDEBAR -->
+        <StackPanel Background="#2d3436" Grid.Column="0">
+
+            <TextBlock Text="Farmacia"
+                       Foreground="White"
+                       FontSize="26"
+                       FontWeight="Bold"
+                       Margin="20"/>
+
+            <Button Content="Inicio"
+                    Style="{StaticResource SidebarButton}"
+                    Command="{Binding GoHomeCommand}"/>
+
+            <Button Content="Productos"
+                    Style="{StaticResource SidebarButton}"
+                    Command="{Binding GoProductosCommand}"/>
+
+            <Button Content="Clientes"
+                    Style="{StaticResource SidebarButton}"
+                    Command="{Binding GoClientesCommand}"/>
+
+            <Button Content="Facturas"
+                    Style="{StaticResource SidebarButton}"
+                    Command="{Binding GoFacturasCommand}"/>
+
+            <Button Content="Reclamos"
+                    Style="{StaticResource SidebarButton}"
+                    Command="{Binding GoReclamosCommand}"/>
+
+        </StackPanel>
+
+        <!-- ÁREA DE CONTENIDO -->
+        <ContentControl Grid.Column="1" 
+                        Content="{Binding Navigation.CurrentView}" />
+    </Grid>
+
+</Window>

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="FarmaciaApp.Core/requirements-nuget.txt" />
+    <File Path="restore-nuget.bat" />
+  </Folder>
+  <Project Path="FarmaciaApp.Core/FarmaciaApp.Core.csproj" />
+  <Project Path="FarmaciaApp.UI/FarmaciaApp.UI.csproj" />
+</Solution>

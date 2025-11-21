@@ -1,0 +1,37 @@
+<UserControl x:Class="FarmaciaApp.UI.Views.ClientesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Margin="20">
+
+        <StackPanel>
+            <TextBlock Text="Clientes"
+                       FontSize="26"
+                       FontWeight="Bold"
+                       Margin="0 0 0 15"/>
+
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                <Button Content="Agregar Cliente" Width="150" Margin="0 0 10 0"/>
+                <StackPanel>
+                    <TextBlock Text="Buscar" FontSize="12" Foreground="Gray"/>
+                    <TextBox Width="200"/>
+                </StackPanel>
+
+            </StackPanel>
+
+            <DataGrid AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      HeadersVisibility="Column">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding CliId}"/>
+                    <DataGridTextColumn Header="Nombre" Binding="{Binding NombreCompleto}"/>
+                    <DataGridTextColumn Header="Telefono" Binding="{Binding Telefono}"/>
+                    <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </StackPanel>
+
+    </Grid>
+</UserControl>
