@@ -1,6 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using FarmaciaApp.Core.Models;
+using FarmaciaApp.Core.Services;
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Input;
+using System.Windows;
+
+using FarmaciaApp.UI.ViewModels;
 using System.Windows.Controls;
 
 namespace FarmaciaApp.UI.Views
@@ -10,6 +15,8 @@ namespace FarmaciaApp.UI.Views
         public ReclamosView()
         {
             InitializeComponent();
+            // Asignación crucial del DataContext
+            DataContext = new ReclamosViewModel();
         }
     }
 }

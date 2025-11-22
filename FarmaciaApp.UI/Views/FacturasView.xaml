@@ -1,28 +1,53 @@
 <UserControl x:Class="FarmaciaApp.UI.Views.FacturasView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="White">
 
-    <Grid Margin="20">
-
-        <StackPanel>
-            <TextBlock Text="Facturas"
-                       FontSize="26"
+	<Grid Margin="20">
+		
+		<StackPanel>
+			
+			<TextBlock Text="Registro de Facturas"
+                       FontSize="28"
                        FontWeight="Bold"
-                       Margin="0 0 0 15"/>
+                       Margin="0 0 0 20"/>
 
-            <DataGrid AutoGenerateColumns="False" IsReadOnly="True">
+			<StackPanel Orientation="Horizontal" Margin="0 0 0 10">
 
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Factura" Binding="{Binding FacNumFactura}"/>
-                    <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNombre}"/>
-                    <DataGridTextColumn Header="Vendedor" Binding="{Binding VendedorNombre}"/>
-                    <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}"/>
-                    <DataGridTextColumn Header="Total" Binding="{Binding Total}"/>
-                </DataGrid.Columns>
+				<Button Content="Ver Detalle" Width="120" Height="35" Margin="0,0,10,0"
+                        Command="{Binding VerDetalleCommand}" />
+				<Button Content="Actualizar" Width="100" Height="35" Margin="0,0,10,0"
+                        Command="{Binding RefreshCommand}" />
 
-            </DataGrid>
+				<TextBox Width="240" Margin="10,0,0,0" VerticalAlignment="Center"
+                         Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" />
 
-        </StackPanel>
+				<Button Content="Buscar" Width="90" Margin="10,0,0,0"
+                        Command="{Binding BuscarCommand}" />
+			</StackPanel>
 
-    </Grid>
+			<DataGrid ItemsSource="{Binding Facturas}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      IsReadOnly="True"
+                      Margin="0 10 0 0"
+                      Height="400"
+                      SelectedItem="{Binding Seleccionado, Mode=TwoWay}">
+
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="N° Factura" Binding="{Binding FacNumFactura}" Width="100"/>
+					<DataGridTextColumn Header="Fecha" Binding="{Binding FacFecha, StringFormat='dd/MM/yyyy'}" Width="120"/>
+					<DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNombre}" Width="200"/>
+					<DataGridTextColumn Header="Vendedor" Binding="{Binding VendedorNombre}" Width="200"/>
+					<DataGridTextColumn Header="Total" Binding="{Binding FacTotal, StringFormat='C2'}" Width="100"/>
+					<DataGridTextColumn Header="IVA" Binding="{Binding FacIva, StringFormat='C2'}" Width="80"/>
+					<DataGridTextColumn Header="SubTotal" Binding="{Binding FacSubtotal, StringFormat='C2'}" Width="*"/>
+				</DataGrid.Columns>
+				
+			</DataGrid>
+			
+		</StackPanel>
+		
+	</Grid>
+	
 </UserControl>
