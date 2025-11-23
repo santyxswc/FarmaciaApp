@@ -5,16 +5,21 @@
 
     <Application.Resources>
 
-        <!-- Diccionarios globales -->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
 
+                <!-- Colores -->
                 <ResourceDictionary Source="Resources/Colors.xaml" />
+
+                <!-- Botones globales y Sidebar -->
                 <ResourceDictionary Source="Resources/Templates.xaml" />
+
+                <!-- ❗ ESTE ES EL QUE FALTABA -->
+                <ResourceDictionary Source="Resources/Styles.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- Estilo global de validación para TextBox -->
+            <!-- Estilo de validación -->
             <Style TargetType="TextBox">
                 <Setter Property="Validation.ErrorTemplate">
                     <Setter.Value>
@@ -31,7 +36,6 @@
                 </Setter>
 
                 <Style.Triggers>
-                    <!-- Tooltip cuando hay error -->
                     <Trigger Property="Validation.HasError" Value="true">
                         <Setter Property="ToolTip"
                                 Value="{Binding RelativeSource={RelativeSource Self},

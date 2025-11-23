@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Services;
 using System.Windows;
-
-using FarmaciaApp.UI.Models;
 using System;
+using System.ComponentModel; // <--- AGREGADO
 using System.Linq;
-
 
 namespace FarmaciaApp.UI.ViewModels
 {
@@ -19,11 +14,42 @@ namespace FarmaciaApp.UI.ViewModels
         private readonly ProductoService _service;
         private readonly Window _ownerWindow;
 
-        [ObservableProperty] private ProductoFormModel form;
-        [ObservableProperty] private string errorMessage;
-        [ObservableProperty] private bool canSave;
+        // Backing field y propiedad manual
+        private Producto _form;
+        public Producto Form
+        {
+            get => _form;
+            set
+            {
+                // 1. Desuscribirse del objeto anterior
+                if (_form != null)
+                {
+                    _form.PropertyChanged -= Form_PropertyChanged;
+                }
 
-        public IRelayCommand SaveCommand { get; }
+                // 2. Establecer la nueva propiedad y notificar cambio al ViewModel
+                if (SetProperty(ref _form, value))
+                {
+                    // 3. Suscribirse al nuevo objeto para monitorear cambios internos
+                    if (_form != null)
+                    {
+                        _form.PropertyChanged += Form_PropertyChanged;
+                    }
+                    // ESTA LÍNEA REQUERÍA QUE SaveCommand EXISTIERA
+                    // En el constructor, esto sucede solo DESPUÉS de inicializar SaveCommand
+                    if (SaveCommand != null)
+                    {
+                        SaveCommand.NotifyCanExecuteChanged();
+                    }
+                }
+            }
+        }
+
+        [ObservableProperty]
+        private string errorMessage;
+
+        // Comandos
+        public RelayCommand SaveCommand { get; }
         public IRelayCommand CancelCommand { get; }
 
         public bool IsEditMode => Form?.ProId > 0;
@@ -33,19 +59,29 @@ namespace FarmaciaApp.UI.ViewModels
             _service = new ProductoService();
             _ownerWindow = owner;
 
-            Form = new ProductoFormModel();
-            SaveCommand = new RelayCommand(Save);
+            // ----------------------------------------------------
+            // CORRECCIÓN CLAVE: Inicializar comandos PRIMERO
+            // ----------------------------------------------------
+            SaveCommand = new RelayCommand(Save, CanExecuteSave);
             CancelCommand = new RelayCommand(Close);
 
-            // Valida inicialmente
-            UpdateCanSave();
-            // Suscribir cambios simples: cada set de propiedad del Form invocará UpdateCanSave
+            // ----------------------------------------------------
+            // SEGUNDO: Inicializar Form. Ahora SaveCommand NO es null.
+            // ----------------------------------------------------
+            Form = new Producto();
+        }
+
+        private void Form_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            SaveCommand.NotifyCanExecuteChanged();
         }
 
         public void LoadFromModel(Producto p)
         {
             if (p == null) return;
-            Form = new ProductoFormModel
+
+            // Esto llama al setter de 'Form', que ya está corregido.
+            Form = new Producto
             {
                 ProId = p.ProId,
                 ProNombre = p.ProNombre,
@@ -53,45 +89,34 @@ namespace FarmaciaApp.UI.ViewModels
                 ProStock = p.ProStock,
                 ProDescripcion = p.ProDescripcion
             };
-
-            UpdateCanSave();
         }
 
-        private void UpdateCanSave()
+        private bool CanExecuteSave()
         {
-            CanSave = !string.IsNullOrWhiteSpace(Form.ProNombre) &&
-                      Form.ProPrecio > 0 &&
-                      Form.ProStock >= 0;
+            if (Form == null) return false;
+
+            return !string.IsNullOrWhiteSpace(Form.ProNombre) &&
+                   Form.ProPrecio > 0 &&
+                   Form.ProStock >= 0;
         }
 
         private void Save()
         {
+            if (!CanExecuteSave())
+            {
+                ErrorMessage = "Corrige los errores del formulario.";
+                return;
+            }
+
             try
             {
-                // Forzar validación antes de guardar
-                UpdateCanSave();
-                if (!CanSave)
-                {
-                    ErrorMessage = "Corrige los errores del formulario.";
-                    return;
-                }
-
-                var model = new Producto
-                {
-                    ProId = Form.ProId,
-                    ProNombre = Form.ProNombre,
-                    ProPrecio = Form.ProPrecio,
-                    ProStock = Form.ProStock,
-                    ProDescripcion = Form.ProDescripcion
-                };
-
                 if (IsEditMode)
                 {
-                    _service.ActualizarProducto(model);
+                    _service.ActualizarProducto(Form);
                 }
                 else
                 {
-                    int newId = _service.CrearProducto(model);
+                    int newId = _service.CrearProducto(Form);
                     Form.ProId = newId;
                 }
 

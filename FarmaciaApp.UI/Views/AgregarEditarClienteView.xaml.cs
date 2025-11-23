@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 using System.Windows;
-
 
 namespace FarmaciaApp.UI.Views
 {
-    public partial class AgregarEditarProductoView : Window
+    public partial class AgregarEditarClienteView : Window
     {
-        public AgregarEditarProductoView()
+        public AgregarEditarClienteView()
         {
             InitializeComponent();
         }
