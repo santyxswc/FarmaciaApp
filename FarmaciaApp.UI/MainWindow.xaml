@@ -6,8 +6,9 @@
         Height="600"
         Width="1000"
         WindowStartupLocation="CenterScreen">
-
+    
     <Grid>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220"/>
             <!-- Sidebar -->
@@ -17,7 +18,7 @@
 
         <!-- SIDEBAR -->
         <StackPanel Background="#2d3436" Grid.Column="0">
-
+            
             <TextBlock Text="Farmacia"
                        Foreground="White"
                        FontSize="26"
@@ -36,6 +37,18 @@
                     Style="{StaticResource SidebarButton}"
                     Command="{Binding GoClientesCommand}"/>
 
+            <Button Content="Personas"
+                    Style="{StaticResource SidebarButton}"
+                    Command="{Binding GoPersonasCommand}"/>
+
+            <Button Content="Proveedores"
+                    Style="{StaticResource SidebarButton}"
+                    Command="{Binding GoProveedoresCommand}"/>
+
+            <Button Content="Promociones"
+                    Style="{StaticResource SidebarButton}"
+                    Command="{Binding GoPromocionesCommand}"/>
+
             <Button Content="Facturas"
                     Style="{StaticResource SidebarButton}"
                     Command="{Binding GoFacturasCommand}"/>
@@ -50,5 +63,6 @@
         <ContentControl Grid.Column="1" 
                         Content="{Binding Navigation.CurrentView}" />
     </Grid>
-
+    
 </Window>
+    

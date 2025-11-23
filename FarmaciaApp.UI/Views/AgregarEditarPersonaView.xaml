@@ -1,0 +1,56 @@
+<Window x:Class="FarmaciaApp.UI.Views.AgregarEditarPersonaView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Titulo}"
+        Height="450"
+        Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Titulo -->
+        <TextBlock Text="{Binding Titulo}"
+                   FontSize="22"
+                   FontWeight="Bold"
+                   Margin="0 0 0 20"
+                   Grid.Row="0"/>
+
+        <!-- Formulario -->
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Nombre:" FontWeight="SemiBold" Margin="0 5"/>
+            <TextBox Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}"
+                     Height="30" FontSize="14"/>
+
+            <TextBlock Text="Apellido:" FontWeight="SemiBold" Margin="0 10 0 5"/>
+            <TextBox Text="{Binding Apellido, UpdateSourceTrigger=PropertyChanged}"
+                     Height="30" FontSize="14"/>
+
+            <TextBlock Text="Direccion:" FontWeight="SemiBold" Margin="0 10 0 5"/>
+            <TextBox Text="{Binding Direccion, UpdateSourceTrigger=PropertyChanged}"
+                     Height="30" FontSize="14"/>
+
+            <TextBlock Text="Telefono:" FontWeight="SemiBold" Margin="0 10 0 5"/>
+            <TextBox Text="{Binding Telefono, UpdateSourceTrigger=PropertyChanged}"
+                     Height="30" FontSize="14"/>
+
+            <TextBlock Text="Email:" FontWeight="SemiBold" Margin="0 10 0 5"/>
+            <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
+                     Height="30" FontSize="14"/>
+        </StackPanel>
+
+        <!-- Botones -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" 
+                    HorizontalAlignment="Right" Margin="0 20 0 0">
+            <Button Content="Guardar" Width="100" Height="35" Margin="0 0 10 0"
+                    Command="{Binding GuardarCommand}"/>
+            <Button Content="Cancelar" Width="100" Height="35"
+                    Command="{Binding CancelarCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>

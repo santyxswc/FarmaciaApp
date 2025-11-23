@@ -1,0 +1,48 @@
+<UserControl x:Class="FarmaciaApp.UI.Views.PromocionesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Background="White" Margin="20">
+
+        <StackPanel>
+            <TextBlock Text="Gestion de Promociones"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Margin="0 0 0 20"/>
+
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                <Button Content="Agregar Promocion" Width="160" Height="35" Margin="0,0,10,0"
+                        Command="{Binding AgregarCommand}" />
+                <Button Content="Editar" Width="100" Height="35" Margin="0,0,10,0"
+                        Command="{Binding EditarCommand}" />
+                <Button Content="Eliminar" Width="100" Height="35" Margin="0,0,10,0"
+                        Command="{Binding EliminarCommand}" />
+                <Button Content="Ver Activas" Width="100" Height="35" Margin="0,0,10,0"
+                        Command="{Binding VerActivasCommand}" />
+                <Button Content="Actualizar" Width="100" Height="35" Margin="0,0,10,0"
+                        Command="{Binding RefreshCommand}" />
+                <TextBox Width="200" Margin="10,0,0,0" VerticalAlignment="Center"
+                         Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" />
+                <Button Content="Buscar" Width="90" Margin="10,0,0,0" 
+                        Command="{Binding BuscarCommand}" />
+            </StackPanel>
+
+            <DataGrid ItemsSource="{Binding Promociones}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      Margin="0 10 0 0"
+                      Height="400"
+                      SelectedItem="{Binding Seleccionado, Mode=TwoWay}">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding PrmId}" Width="60"/>
+                    <DataGridTextColumn Header="Descripcion" Binding="{Binding PrmDescripcion}" Width="250"/>
+                    <DataGridTextColumn Header="Descuento %" Binding="{Binding PrmDescuento}" Width="100"/>
+                    <DataGridTextColumn Header="Fecha Inicio" Binding="{Binding PrmFechaIni, StringFormat='dd/MM/yyyy'}" Width="120"/>
+                    <DataGridTextColumn Header="Fecha Fin" Binding="{Binding PrmFechaFin, StringFormat='dd/MM/yyyy'}" Width="120"/>
+                    <DataGridCheckBoxColumn Header="Activa" Binding="{Binding EstaActiva, Mode=OneWay}" Width="80" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+
+    </Grid>
+</UserControl>
