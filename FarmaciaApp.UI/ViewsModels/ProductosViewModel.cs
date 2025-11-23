@@ -17,24 +17,36 @@ namespace FarmaciaApp.UI.ViewModels
         [ObservableProperty]
         private ObservableCollection<Producto> productos;
 
-        [ObservableProperty]
-        private Producto seleccionado;
+        // ✅ IMPORTANTE: NO usar [ObservableProperty] aquí
+        private Producto _seleccionado;
+        public Producto Seleccionado
+        {
+            get => _seleccionado;
+            set
+            {
+                if (SetProperty(ref _seleccionado, value))
+                {
+                    EliminarCommand.NotifyCanExecuteChanged();
+                    EditarCommand.NotifyCanExecuteChanged();
+                }
+            }
+        }
 
         [ObservableProperty]
         private string searchTerm;
 
-        public IRelayCommand AgregarCommand { get; }
-        public IRelayCommand EditarCommand { get; }
-        public IRelayCommand EliminarCommand { get; }
-        public IRelayCommand RefreshCommand { get; }
-        public IRelayCommand BuscarCommand { get; }
+        public RelayCommand AgregarCommand { get; }
+        public RelayCommand EditarCommand { get; }
+        public RelayCommand EliminarCommand { get; }
+        public RelayCommand RefreshCommand { get; }
+        public RelayCommand BuscarCommand { get; }
 
         public ProductosViewModel()
         {
             _service = new ProductoService();
 
             AgregarCommand = new RelayCommand(AbrirAgregar);
-            EditarCommand = new RelayCommand(AbrirEditar);
+            EditarCommand = new RelayCommand(AbrirEditar, () => Seleccionado != null);
             EliminarCommand = new RelayCommand(Eliminar, () => Seleccionado != null);
             RefreshCommand = new RelayCommand(CargarProductos);
             BuscarCommand = new RelayCommand(Buscar);
@@ -74,7 +86,12 @@ namespace FarmaciaApp.UI.ViewModels
         {
             if (Seleccionado == null) return;
 
-            var confirm = MessageBox.Show($"¿Eliminar {Seleccionado.ProNombre}?", "Confirmar", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            var confirm = MessageBox.Show(
+                $"¿Eliminar {Seleccionado.ProNombre}?",
+                "Confirmar",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
             if (confirm != MessageBoxResult.Yes) return;
 
             try
@@ -82,16 +99,20 @@ namespace FarmaciaApp.UI.ViewModels
                 bool ok = _service.EliminarProducto(Seleccionado.ProId);
                 if (!ok)
                 {
-                    MessageBox.Show("No se pudo eliminar el producto.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("No se pudo eliminar el producto.", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
+                    MessageBox.Show("Producto eliminado exitosamente.", "Éxito",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
                     CargarProductos();
                 }
             }
             catch (System.Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error: " + ex.Message, "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -107,4 +128,3 @@ namespace FarmaciaApp.UI.ViewModels
         }
     }
 }
-

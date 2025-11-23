@@ -59,9 +59,9 @@ namespace FarmaciaApp.UI.ViewModels
 
         private void UpdateCanSave()
         {
-            CanSave = string.IsNullOrEmpty(Form[nameof(Form.ProNombre)]) &&
-                      string.IsNullOrEmpty(Form[nameof(Form.ProPrecio)]) &&
-                      string.IsNullOrEmpty(Form[nameof(Form.ProStock)]);
+            CanSave = !string.IsNullOrWhiteSpace(Form.ProNombre) &&
+                      Form.ProPrecio > 0 &&
+                      Form.ProStock >= 0;
         }
 
         private void Save()
