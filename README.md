@@ -4,7 +4,7 @@ Sistema de escritorio para la gestión integral de operaciones de farmacia (inve
 
 ---
 
-## 🏗️ Arquitectura de la Solución
+## Arquitectura de la Solución
 
 ```
 FarmaciaApp/
@@ -24,7 +24,7 @@ FarmaciaApp/
 
 ---
 
-## 🗄️ Base de Datos (Oracle)
+## Base de Datos (Oracle)
 
 El esquema de la base de datos se encuentra completamente definido en [`database/schema.sql`](database/schema.sql). Incluye la definición de las **10 tablas principales**, **3 tablas intermedias/detalle** y las **3 secuencias** utilizadas por el sistema.
 
@@ -61,7 +61,7 @@ El esquema de la base de datos se encuentra completamente definido en [`database
 
 ---
 
-## 🚀 Configuración y Puesta en Marcha
+## Configuración y Puesta en Marcha
 
 ### 1. Requisitos Previos
 
