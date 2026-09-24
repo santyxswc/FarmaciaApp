@@ -24,8 +24,7 @@ namespace FarmaciaApp.Core.Services
 
         public int CrearPromocion(Promocion p)
         {
-            // Validaciones
-            if (string.IsNullOrWhiteSpace(p.PrmDescripcion))
+                        if (string.IsNullOrWhiteSpace(p.PrmDescripcion))
                 throw new ArgumentException("La descripción es obligatoria.");
             if (p.PrmDescuento <= 0 || p.PrmDescuento > 100)
                 throw new ArgumentException("El descuento debe estar entre 1 y 100%.");

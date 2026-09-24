@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using FarmaciaApp.Core.Database;
 using FarmaciaApp.Core.Models;
 using System;
@@ -9,8 +9,6 @@ namespace FarmaciaApp.Core.Repositories
 {
     public class ClienteRepository
     {
-        // Consulta base con JOIN de PERSONA y CLIENTE
-        // Usamos alias (ej. PER_ID AS PerId) para que Dapper mapee automáticamente a Cliente.cs
         private const string ClienteSelectSql = @"
             SELECT 
                 P.PER_ID AS PerId, 
@@ -19,8 +17,6 @@ namespace FarmaciaApp.Core.Repositories
                 P.PER_DIRECCION AS PerDireccion, 
                 P.PER_TELEFONO AS PerTelefono, 
                 P.PER_EMAIL AS PerEmail
-                -- Si TBL_CLIENTE tiene campos extra, únelos aquí:
-                -- , C.CLI_TIPO AS CliTipo 
             FROM 
                 TBL_PERSONA P
             INNER JOIN 
@@ -30,7 +26,6 @@ namespace FarmaciaApp.Core.Repositories
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
             {
-                // Consulta para obtener todos los clientes
                 string sql = ClienteSelectSql + " ORDER BY P.PER_APELLIDO, P.PER_NOMBRE";
                 return db.Query<Cliente>(sql);
             }
@@ -54,12 +49,9 @@ namespace FarmaciaApp.Core.Repositories
                 {
                     try
                     {
-                        // 1) Obtener el NEXTVAL de la secuencia para TBL_PERSONA
-                        // Asumo que tu secuencia se llama SEQ_PERSONA
                         decimal newId = db.ExecuteScalar<decimal>("SELECT SEQ_PERSONA.NEXTVAL FROM DUAL", null, tran);
 
-                        // 2) Insertar en TBL_PERSONA
-                        string personaSql = @"
+                                                string personaSql = @"
                             INSERT INTO TBL_PERSONA (PER_ID, PER_NOMBRE, PER_APELLIDO, PER_DIRECCION, PER_TELEFONO, PER_EMAIL)
                             VALUES (:Id, :PerNombre, :PerApellido, :PerDireccion, :PerTelefono, :PerEmail)";
 
@@ -73,12 +65,10 @@ namespace FarmaciaApp.Core.Repositories
                             c.PerEmail
                         }, tran);
 
-                        // 3) Insertar en TBL_CLIENTE (usando el mismo ID)
-                        string clienteSql = @"INSERT INTO TBL_CLIENTE (PER_ID) VALUES (:Id)";
+                                                string clienteSql = @"INSERT INTO TBL_CLIENTE (PER_ID) VALUES (:Id)";
                         db.Execute(clienteSql, new { Id = newId }, tran);
 
-                        // 4) Confirmar la transacción
-                        tran.Commit();
+                                                tran.Commit();
                         return newId;
                     }
                     catch
@@ -94,8 +84,7 @@ namespace FarmaciaApp.Core.Repositories
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
             {
-                // Solo se necesita actualizar TBL_PERSONA
-                string sql = @"
+                                string sql = @"
                     UPDATE TBL_PERSONA
                     SET PER_NOMBRE = :PerNombre,
                         PER_APELLIDO = :PerApellido,
@@ -119,11 +108,9 @@ namespace FarmaciaApp.Core.Repositories
                 {
                     try
                     {
-                        // 1) Borrar de TBL_CLIENTE (tabla dependiente)
-                        db.Execute("DELETE FROM TBL_CLIENTE WHERE PER_ID = :Id", new { Id = id }, tran);
+                                                db.Execute("DELETE FROM TBL_CLIENTE WHERE PER_ID = :Id", new { Id = id }, tran);
 
-                        // 2) Borrar de TBL_PERSONA (tabla principal)
-                        int rows = db.Execute("DELETE FROM TBL_PERSONA WHERE PER_ID = :Id", new { Id = id }, tran);
+                                                int rows = db.Execute("DELETE FROM TBL_PERSONA WHERE PER_ID = :Id", new { Id = id }, tran);
 
                         tran.Commit();
                         return rows > 0;
@@ -145,8 +132,6 @@ namespace FarmaciaApp.Core.Repositories
                                 WHERE LOWER(P.PER_NOMBRE) LIKE LOWER(:Term) 
                                 OR LOWER(P.PER_APELLIDO) LIKE LOWER(:Term)
                                 ORDER BY P.PER_APELLIDO, P.PER_NOMBRE";
-
-                // Dapper maneja los parámetros correctamente para Oracle usando :Term
                 return db.Query<Cliente>(sql, new { Term = $"%{term}%" });
             }
         }

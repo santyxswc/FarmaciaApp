@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FarmaciaApp.UI.Views;
 using System.Windows;
@@ -18,7 +18,6 @@ namespace FarmaciaApp.UI.ViewModels
 
         public LoginViewModel()
         {
-            // Command que recibe el PasswordBox como parámetro
             LoginCommand = new RelayCommand<PasswordBox>(ExecuteLogin);
         }
 
@@ -31,15 +30,11 @@ namespace FarmaciaApp.UI.ViewModels
             }
 
             string password = passwordBox.Password;
-
-            // ---- Validación simple ----
             if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(password))
             {
                 ErrorMessage = "Ingrese usuario y contraseña.";
                 return;
             }
-
-            // ---- Credenciales fijas ----
             const string USER = "admin";
             const string PASS = "prueba";
 
@@ -62,7 +57,6 @@ namespace FarmaciaApp.UI.ViewModels
 
         private void CloseLoginWindow()
         {
-            // Cerrar únicamente la ventana LoginView
             foreach (Window window in Application.Current.Windows)
             {
                 if (window is LoginView)

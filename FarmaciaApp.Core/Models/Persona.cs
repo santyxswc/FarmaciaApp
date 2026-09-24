@@ -13,7 +13,6 @@ namespace FarmaciaApp.Core.Models
         public string PerTelefono { get; set; }
         public string PerEmail { get; set; }
 
-        // Propiedad calculada para mostrar en UI
-        public string NombreCompleto => $"{PerNombre} {PerApellido}";
+                public string NombreCompleto => $"{PerNombre} {PerApellido}";
     }
 }

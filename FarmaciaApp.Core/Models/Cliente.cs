@@ -1,33 +1,29 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel; // <-- ¡Agregar este using!
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace FarmaciaApp.Core.Models
 {
-    // 1. La clase debe ser 'partial' y heredar de 'ObservableObject'
     public partial class Cliente : ObservableObject
     {
-        // 2. Reemplazar las propiedades públicas por campos privados con [ObservableProperty]
-
-        // Campos heredados de TBL_PERSONA
         [ObservableProperty]
-        private decimal perId;        // ID
+        private decimal perId;
 
         [ObservableProperty]
-        private string perNombre;     // Nombre
+        private string perNombre;
 
         [ObservableProperty]
-        private string perApellido;   // Apellido
+        private string perApellido;
 
         [ObservableProperty]
-        private string perDireccion;  // Dirección
+        private string perDireccion;
 
         [ObservableProperty]
-        private string perTelefono;   // Teléfono
+        private string perTelefono;
 
         [ObservableProperty]
-        private string perEmail;      // Email
+        private string perEmail;
 
 
     }

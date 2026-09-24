@@ -416,3 +416,9 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# App configuration with credentials
+appsettings.json
+FarmaciaApp.UI/appsettings.json
+**/appsettings.json
+!appsettings.example.json

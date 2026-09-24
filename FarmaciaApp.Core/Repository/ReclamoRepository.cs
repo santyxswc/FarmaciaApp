@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using FarmaciaApp.Core.Database;
 using FarmaciaApp.Core.Models;
 using System.Collections.Generic;
@@ -8,7 +8,6 @@ namespace FarmaciaApp.Core.Repositories
 {
     public class ReclamoRepository
     {
-        // ✅ Consulta base completa con REC_ESTADO
         private const string ReclamoSelectSql = @"
             SELECT 
                 R.REC_ID_RECLAMO AS RecId, 
@@ -55,10 +54,7 @@ namespace FarmaciaApp.Core.Repositories
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
             {
-                // 1) Obtener el siguiente valor de la secuencia
                 decimal newId = db.ExecuteScalar<decimal>("SELECT SEQ_RECLAMO.NEXTVAL FROM DUAL");
-
-                // 2) Insertar el reclamo con todos los campos
                 string sql = @"
                     INSERT INTO TBL_RECLAMO 
                         (REC_ID_RECLAMO, FAC_NUM_FACTURA, REC_FECHA, REC_DESCRIPCION, REC_ESTADO)
@@ -113,15 +109,13 @@ namespace FarmaciaApp.Core.Repositories
                 {
                     try
                     {
-                        // 1. Eliminar reintegros asociados primero (evita errores de FK)
-                        db.Execute(
+                                                db.Execute(
                             "DELETE FROM TBL_REINTEGRO WHERE REC_ID_RECLAMO = :Id",
                             new { Id = id },
                             tran
                         );
 
-                        // 2. Eliminar el reclamo
-                        int rows = db.Execute(
+                                                int rows = db.Execute(
                             "DELETE FROM TBL_RECLAMO WHERE REC_ID_RECLAMO = :Id",
                             new { Id = id },
                             tran

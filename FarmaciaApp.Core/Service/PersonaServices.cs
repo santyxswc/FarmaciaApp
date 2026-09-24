@@ -22,8 +22,7 @@ namespace FarmaciaApp.Core.Services
 
         public int CrearPersona(Persona p)
         {
-            // Validaciones
-            if (string.IsNullOrWhiteSpace(p.PerNombre))
+                        if (string.IsNullOrWhiteSpace(p.PerNombre))
                 throw new ArgumentException("El nombre es obligatorio.");
             if (string.IsNullOrWhiteSpace(p.PerApellido))
                 throw new ArgumentException("El apellido es obligatorio.");

@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using FarmaciaApp.Core.Database;
 using FarmaciaApp.Core.Models;
 using System;
@@ -41,10 +41,7 @@ namespace FarmaciaApp.Core.Repositories
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
             {
-                // 1) Obtener NEXTVAL
                 int newId = db.ExecuteScalar<int>("SELECT SEQ_PRODUCTO.NEXTVAL FROM DUAL");
-
-                // 2) Insert con el id obtenido
                 string sql = @"
                     INSERT INTO TBL_PRODUCTO (PRO_ID, PRO_NOMBRE, PRO_PRECIO, PRO_STOCK, PRO_DESCRIPCION)
                     VALUES (:Id, :ProNombre, :ProPrecio, :ProStock, :ProDescripcion)";
@@ -96,13 +93,11 @@ namespace FarmaciaApp.Core.Repositories
                 {
                     try
                     {
-                        // Borrar relaciones en tablas intermedias (orden seguro)
-                        db.Execute("DELETE FROM PROMO_PRODU WHERE PRO_ID = :Id", new { Id = id }, tran);
+                                                db.Execute("DELETE FROM PROMO_PRODU WHERE PRO_ID = :Id", new { Id = id }, tran);
                         db.Execute("DELETE FROM PROVEE_PRODUC WHERE PRO_ID = :Id", new { Id = id }, tran);
                         db.Execute("DELETE FROM FACTU_PRODUC WHERE PRO_ID = :Id", new { Id = id }, tran);
 
-                        // Finalmente borrar el producto
-                        int rows = db.Execute("DELETE FROM TBL_PRODUCTO WHERE PRO_ID = :Id", new { Id = id }, tran);
+                                                int rows = db.Execute("DELETE FROM TBL_PRODUCTO WHERE PRO_ID = :Id", new { Id = id }, tran);
 
                         tran.Commit();
                         return rows > 0;

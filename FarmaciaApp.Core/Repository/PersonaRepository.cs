@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using FarmaciaApp.Core.Database;
 using FarmaciaApp.Core.Models;
 using System.Collections.Generic;
@@ -42,7 +42,6 @@ namespace FarmaciaApp.Core.Repositories
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
             {
-                // Obtener el siguiente ID (asumiendo secuencia SEQ_PERSONA)
                 int newId = db.ExecuteScalar<int>("SELECT NVL(MAX(PER_ID), 0) + 1 FROM TBL_PERSONA");
 
                 string sql = @"

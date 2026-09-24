@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Services;
 using FarmaciaApp.UI.Views;
@@ -16,8 +16,6 @@ namespace FarmaciaApp.UI.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<Producto> productos;
-
-        // ✅ IMPORTANTE: NO usar [ObservableProperty] aquí
         private Producto _seleccionado;
         public Producto Seleccionado
         {

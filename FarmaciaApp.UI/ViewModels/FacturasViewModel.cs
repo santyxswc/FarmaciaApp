@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,7 +13,7 @@ namespace FarmaciaApp.UI.ViewModels
 {
     public partial class FacturasViewModel : ObservableObject
     {
-        private readonly FacturaService _service; // Asumimos que ya creaste FacturaService
+        private readonly FacturaService _service;
 
         [ObservableProperty]
         private ObservableCollection<Factura> facturas;
@@ -23,22 +23,16 @@ namespace FarmaciaApp.UI.ViewModels
 
         [ObservableProperty]
         private string searchTerm;
-
-        // Comandos de la UI
         public IRelayCommand RefreshCommand { get; }
         public IRelayCommand BuscarCommand { get; }
-        public IRelayCommand VerDetalleCommand { get; } // Añadimos un comando para ver los detalles
+        public IRelayCommand VerDetalleCommand { get; }
 
         public FacturasViewModel()
         {
             _service = new FacturaService();
-
-            // Inicialización de Comandos
             RefreshCommand = new RelayCommand(CargarFacturas);
             BuscarCommand = new RelayCommand(Buscar);
             VerDetalleCommand = new RelayCommand(AbrirDetalle, () => Seleccionado != null);
-
-            // Carga inicial
             CargarFacturas();
         }
 
@@ -46,7 +40,6 @@ namespace FarmaciaApp.UI.ViewModels
         {
             try
             {
-                // Llama al servicio del CORE para obtener la lista
                 Facturas = new ObservableCollection<Factura>(_service.ObtenerFacturas());
             }
             catch (Exception ex)
@@ -62,14 +55,12 @@ namespace FarmaciaApp.UI.ViewModels
                 CargarFacturas();
                 return;
             }
-            // Asumimos que FacturaService tiene un método Buscar
             Facturas = new ObservableCollection<Factura>(_service.Buscar(SearchTerm));
         }
 
         private void AbrirDetalle()
         {
             if (Seleccionado == null) return;
-            // Aquí se abriría una nueva ventana/modal para mostrar los ítems de la factura.
             MessageBox.Show($"Abriendo detalles de Factura N° {Seleccionado.FacNumFactura}. Vendedor: {Seleccionado.VendedorNombre}", "Detalle de Factura");
         }
     }

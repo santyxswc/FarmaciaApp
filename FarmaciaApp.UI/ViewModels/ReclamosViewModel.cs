@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Services;
 using System.Collections.ObjectModel;
@@ -9,7 +9,7 @@ namespace FarmaciaApp.UI.ViewModels
 {
     public partial class ReclamosViewModel : ObservableObject
     {
-        private readonly ReclamoService _service; // Asumimos que ya creaste ReclamoService
+        private readonly ReclamoService _service;
 
         [ObservableProperty]
         private ObservableCollection<Reclamo> reclamos;
@@ -20,7 +20,6 @@ namespace FarmaciaApp.UI.ViewModels
         [ObservableProperty]
         private string searchTerm;
 
-        // Comandos de la UI (Similar a Clientes, para CRUD)
         public IRelayCommand AgregarCommand { get; }
         public IRelayCommand EditarCommand { get; }
         public IRelayCommand EliminarCommand { get; }
@@ -31,14 +30,12 @@ namespace FarmaciaApp.UI.ViewModels
         {
             _service = new ReclamoService();
 
-            // Inicialización de Comandos
             AgregarCommand = new RelayCommand(AbrirAgregar);
             EditarCommand = new RelayCommand(AbrirEditar, () => Seleccionado != null);
             EliminarCommand = new RelayCommand(Eliminar, () => Seleccionado != null);
             RefreshCommand = new RelayCommand(CargarReclamos);
             BuscarCommand = new RelayCommand(Buscar);
 
-            // Carga inicial
             CargarReclamos();
         }
 
@@ -46,7 +43,6 @@ namespace FarmaciaApp.UI.ViewModels
         {
             try
             {
-                // Llama al servicio del CORE para obtener la lista
                 Reclamos = new ObservableCollection<Reclamo>(_service.ObtenerReclamos());
             }
             catch (Exception ex)
@@ -65,14 +61,26 @@ namespace FarmaciaApp.UI.ViewModels
             Reclamos = new ObservableCollection<Reclamo>(_service.Buscar(SearchTerm));
         }
 
-        // Simplemente un ejemplo de la lógica CRUD
-        private void AbrirAgregar() { /* Lógica para abrir la vista de agregar */ }
-        private void AbrirEditar() { /* Lógica para abrir la vista de editar */ }
+        private void AbrirAgregar() { }
+        private void AbrirEditar() { }
+
         private void Eliminar()
         {
             if (Seleccionado == null) return;
-            MessageBox.Show($"Eliminando Reclamo N° {Seleccionado.RecId}", "Confirmar");
-            // ... _service.EliminarReclamo(Seleccionado.RecId) ...
+            var confirm = MessageBox.Show($"¿Eliminar el reclamo N° {Seleccionado.RecId}?", "Confirmar eliminación", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (confirm != MessageBoxResult.Yes) return;
+
+            try
+            {
+                if (_service.EliminarReclamo(Seleccionado.RecId))
+                {
+                    CargarReclamos();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al eliminar: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

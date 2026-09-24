@@ -20,8 +20,7 @@ namespace FarmaciaApp.Core.Services
 
         public int CrearProducto(Producto p)
         {
-            // Validaciones
-            if (string.IsNullOrWhiteSpace(p.ProNombre))
+                        if (string.IsNullOrWhiteSpace(p.ProNombre))
                 throw new ArgumentException("El nombre es obligatorio.");
             if (p.ProPrecio <= 0)
                 throw new ArgumentException("El precio debe ser mayor que cero.");
@@ -50,8 +49,7 @@ namespace FarmaciaApp.Core.Services
             if (id <= 0)
                 throw new ArgumentException("Id inválido");
 
-            // Delete en cascada desde el repositorio
-            return _repo.DeleteCascade(id);
+                        return _repo.DeleteCascade(id);
         }
 
         public IEnumerable<Producto> Buscar(string termino)

@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using FarmaciaApp.Core.Database;
 using FarmaciaApp.Core.Models;
 using System.Collections.Generic;
@@ -9,7 +9,6 @@ namespace FarmaciaApp.Core.Repositories
 {
     public class FacturaRepository
     {
-        // ✅ Consulta CORREGIDA
         private const string FacturaSelectSql = @"
             SELECT 
                 F.FAC_NUM_FACTURA AS FacNumFactura,

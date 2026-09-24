@@ -24,8 +24,7 @@ namespace FarmaciaApp.Core.Services
 
         public int CrearProveedor(Proveedor p)
         {
-            // Validaciones
-            if (string.IsNullOrWhiteSpace(p.ProNombre))
+                        if (string.IsNullOrWhiteSpace(p.ProNombre))
                 throw new ArgumentException("El nombre es obligatorio.");
 
             return _repo.Insert(p);

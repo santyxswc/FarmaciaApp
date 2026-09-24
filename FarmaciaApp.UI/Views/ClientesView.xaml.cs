@@ -1,4 +1,4 @@
-﻿using FarmaciaApp.UI.ViewModels; // Necesitas este 'using' para acceder al ViewModel
+using FarmaciaApp.UI.ViewModels;
 using System.Windows.Controls;
 using System.Text;
 
@@ -9,8 +9,6 @@ namespace FarmaciaApp.UI.Views
         public ClientesView()
         {
             InitializeComponent();
-
-            // ¡Línea CRÍTICA! Asigna el ViewModel como contexto de datos.
             DataContext = new ClientesViewModel();
         }
     }

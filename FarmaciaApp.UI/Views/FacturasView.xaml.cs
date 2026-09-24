@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Controls;
@@ -13,7 +13,6 @@ namespace FarmaciaApp.UI.Views
         public FacturasView()
         {
             InitializeComponent();
-            // Asignación crucial del DataContext
             DataContext = new FacturasViewModel();
         }
     }
