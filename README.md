@@ -19,8 +19,7 @@ Funciona en **Windows y Linux** (y macOS). Está hecho en **.NET 10** con **Aval
 5. Instalación
 6. Ejecución y publicación
 7. Guía de uso
-8. Documentación del código (Doxygen)
-9. Solución de problemas
+8. Solución de problemas
 
 ---
 
@@ -51,7 +50,6 @@ Funciona en **Windows y Linux** (y macOS). Está hecho en **.NET 10** con **Aval
 | [Dapper](https://github.com/DapperLib/Dapper) | Consultas SQL a objetos |
 | [Oracle.ManagedDataAccess.Core](https://www.nuget.org/packages/Oracle.ManagedDataAccess.Core) | Conexión a Oracle |
 | Oracle Database 18c o superior | Base de datos (en desarrollo: Oracle Free en Docker) |
-| [Doxygen](https://www.doxygen.nl/) | Documentación del código |
 
 ---
 
@@ -347,20 +345,7 @@ productos muestran el valor anterior y el nuevo, por ejemplo `precio $ 14.200 �
 
 ---
 
-## 8. Documentación del código (Doxygen)
-
-El código está documentado con comentarios Doxygen (`@file`, `@brief`, `@param`, `@return`, `@exception`).
-Para generar la documentación HTML:
-
-```bash
-doxygen            # usa el Doxyfile de la raíz
-```
-
-El resultado queda en `docs/html/index.html` (esta carpeta no se sube al repositorio).
-
----
-
-## 9. Solución de problemas
+## 8. Solución de problemas
 
 | Síntoma | Causa y solución |
 |---|---|
