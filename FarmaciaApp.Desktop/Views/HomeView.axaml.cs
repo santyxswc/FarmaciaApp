@@ -37,11 +37,11 @@ namespace FarmaciaApp.Desktop.Views
          */
         private void AjustarTarjetas(double anchoTotal)
         {
-            double disponible = anchoTotal - 40; // margen de la vista
+            double disponible = anchoTotal - 40;
             int columnas = disponible >= 760 ? 4 : disponible >= 380 ? 2 : 1;
             rejilla.Columns = columnas;
 
-            double anchoTarjeta = disponible / columnas - 20; // margen de cada tarjeta
+            double anchoTarjeta = disponible / columnas - 20;
             double alto = Math.Clamp(anchoTarjeta * 0.55, 110, 170);
             foreach (var tarjeta in rejilla.Children)
                 tarjeta.Height = alto;
