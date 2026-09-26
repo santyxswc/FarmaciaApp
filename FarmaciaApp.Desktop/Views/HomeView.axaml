@@ -38,36 +38,57 @@
         </Style>
     </UserControl.Styles>
 
-    <StackPanel Margin="20">
-        <TextBlock Text="Bienvenido a la farmacia" FontSize="28" FontWeight="Bold" Margin="0 0 0 10"/>
-        <TextBlock Text="Seleccione una opción del menú lateral o una de las tarjetas" FontSize="16" Foreground="Gray"/>
-        <Separator Margin="0 20"/>
-        <!-- Las columnas y el alto se ajustan al ancho disponible (ver HomeView.axaml.cs) -->
-        <UniformGrid x:Name="rejilla" Columns="4">
-            <Button Classes="tarjeta" Background="#0984e3" Command="{Binding GoProductosCommand}">
-                <StackPanel>
-                    <TextBlock Text="Productos" FontSize="22" Foreground="White"/>
-                    <TextBlock Text="Ver existentes" FontSize="14" Foreground="#e0e0e0"/>
-                </StackPanel>
-            </Button>
-            <Button Classes="tarjeta" Background="#6c5ce7" Command="{Binding GoClientesCommand}">
-                <StackPanel>
-                    <TextBlock Text="Clientes" FontSize="22" Foreground="White"/>
-                    <TextBlock Text="Administrar clientes" FontSize="14" Foreground="#e0e0e0"/>
-                </StackPanel>
-            </Button>
-            <Button Classes="tarjeta" Background="#00b894" Command="{Binding GoFacturasCommand}">
-                <StackPanel>
-                    <TextBlock Text="Facturas" FontSize="22" Foreground="White"/>
-                    <TextBlock Text="Consultar ventas" FontSize="14" Foreground="#e0e0e0"/>
-                </StackPanel>
-            </Button>
-            <Button Classes="tarjeta" Background="#d63031" Command="{Binding GoReclamosCommand}">
-                <StackPanel>
-                    <TextBlock Text="Reclamos" FontSize="22" Foreground="White"/>
-                    <TextBlock Text="Gestión de reclamos" FontSize="14" Foreground="#ffe0e0"/>
-                </StackPanel>
-            </Button>
-        </UniformGrid>
-    </StackPanel>
+    <!-- ScrollViewer: con la ventana pequeña las tarjetas quedan en varias filas y pueden no caber -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <TextBlock Text="Bienvenido a la farmacia" FontSize="28" FontWeight="Bold" Margin="0 0 0 10"/>
+            <TextBlock Text="Seleccione una opción del menú lateral o una de las tarjetas" FontSize="16" Foreground="Gray"/>
+            <Separator Margin="0 20"/>
+            <!-- Las columnas y el alto se ajustan al ancho disponible (ver HomeView.axaml.cs) -->
+            <UniformGrid x:Name="rejilla" Columns="4">
+                <Button Classes="tarjeta" Background="#0984e3" Command="{Binding GoProductosCommand}">
+                    <StackPanel>
+                        <TextBlock Text="Productos" FontSize="22" Foreground="White"/>
+                        <TextBlock Text="Ver existentes" FontSize="14" Foreground="#e0e0e0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Button>
+                <Button Classes="tarjeta" Background="#6c5ce7" Command="{Binding GoClientesCommand}">
+                    <StackPanel>
+                        <TextBlock Text="Clientes" FontSize="22" Foreground="White"/>
+                        <TextBlock Text="Administrar clientes" FontSize="14" Foreground="#e0e0e0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Button>
+                <Button Classes="tarjeta" Background="#e17055" Command="{Binding GoPersonasCommand}">
+                    <StackPanel>
+                        <TextBlock Text="Personas" FontSize="22" Foreground="White"/>
+                        <TextBlock Text="Datos personales y roles" FontSize="14" Foreground="#ffe8e0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Button>
+                <Button Classes="tarjeta" Background="#0097a7" Command="{Binding GoProveedoresCommand}">
+                    <StackPanel>
+                        <TextBlock Text="Proveedores" FontSize="22" Foreground="White"/>
+                        <TextBlock Text="Laboratorios y distribuidores" FontSize="14" Foreground="#e0f4f5" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Button>
+                <Button Classes="tarjeta" Background="#e84393" Command="{Binding GoPromocionesCommand}">
+                    <StackPanel>
+                        <TextBlock Text="Promociones" FontSize="22" Foreground="White"/>
+                        <TextBlock Text="Descuentos vigentes" FontSize="14" Foreground="#ffe0f0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Button>
+                <Button Classes="tarjeta" Background="#00b894" Command="{Binding GoFacturasCommand}">
+                    <StackPanel>
+                        <TextBlock Text="Facturas" FontSize="22" Foreground="White"/>
+                        <TextBlock Text="Consultar ventas" FontSize="14" Foreground="#e0e0e0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Button>
+                <Button Classes="tarjeta" Background="#d63031" Command="{Binding GoReclamosCommand}">
+                    <StackPanel>
+                        <TextBlock Text="Reclamos" FontSize="22" Foreground="White"/>
+                        <TextBlock Text="Gestión de reclamos" FontSize="14" Foreground="#ffe0e0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Button>
+            </UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>
