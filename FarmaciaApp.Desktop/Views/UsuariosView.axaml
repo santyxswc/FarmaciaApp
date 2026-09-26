@@ -1,0 +1,51 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="FarmaciaApp.Desktop.Views.UsuariosView"
+             Background="#f5f6fa">
+    <DockPanel Margin="28,24">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+            <TextBlock Classes="titulo-pagina" Text="Usuarios"/>
+            <TextBlock Classes="subtitulo-pagina" Text="Cuentas del administrador y de los empleados que inician sesión"/>
+        </StackPanel>
+
+        <Border DockPanel.Dock="Top" Classes="panel" Padding="12,8" Margin="0,0,0,12">
+            <WrapPanel>
+                <WrapPanel.Styles>
+                    <Style Selector="WrapPanel > Button">
+                        <Setter Property="Margin" Value="0,4,8,4"/>
+                    </Style>
+                </WrapPanel.Styles>
+                <Button Content="Nuevo usuario" Command="{Binding NuevoCommand}"/>
+                <Button Classes="secundario" Content="{Binding TextoEstado}" Command="{Binding CambiarEstadoCommand}"/>
+                <Button Classes="secundario" Content="Restablecer contraseña" Command="{Binding RestablecerClaveCommand}"/>
+                <Button Classes="secundario" Content="Actualizar" Command="{Binding RefreshCommand}"/>
+            </WrapPanel>
+        </Border>
+
+        <Border Classes="panel" ClipToBounds="True">
+            <DataGrid ItemsSource="{Binding Usuarios}" AutoGenerateColumns="False" IsReadOnly="True"
+                      SelectedItem="{Binding Seleccionado, Mode=TwoWay}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Usuario" Binding="{Binding Login}" Width="150"/>
+                    <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*"/>
+                    <DataGridTextColumn Header="Rol" Binding="{Binding Rol}" Width="140"/>
+                    <DataGridTemplateColumn Header="Estado" Width="120">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Panel Margin="12,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <Border Background="#e3f9ef" CornerRadius="10" Padding="10,3" IsVisible="{Binding Activo}">
+                                        <TextBlock Text="Activo" Foreground="#0a7a4f" FontSize="12" FontWeight="SemiBold"/>
+                                    </Border>
+                                    <Border Background="#eceff1" CornerRadius="10" Padding="10,3" IsVisible="{Binding !Activo}">
+                                        <TextBlock Text="Inactivo" Foreground="#636e72" FontSize="12" FontWeight="SemiBold"/>
+                                    </Border>
+                                </Panel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Último ingreso" Binding="{Binding UltimoIngreso, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" Width="160"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </DockPanel>
+</UserControl>

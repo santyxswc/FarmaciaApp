@@ -1,27 +1,48 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="FarmaciaApp.Desktop.Views.AgregarEditarProductoView"
-        Title="Agregar/Editar Producto"
-        Width="460" Height="520"
+        Title="{Binding Titulo}"
+        Width="540" SizeToContent="Height" MaxHeight="760"
         WindowStartupLocation="CenterOwner"
-        CanResize="False">
-    <DockPanel Margin="20">
-        <TextBlock DockPanel.Dock="Top" Text="Producto" FontSize="22" FontWeight="Bold" Margin="0 0 0 10"/>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,15,0,0">
-            <Button Content="Guardar" Width="100" Command="{Binding SaveCommand}"/>
-            <Button Content="Cancelar" Width="100" Background="Gray" Command="{Binding CancelCommand}"/>
+        CanResize="False"
+        Background="White">
+    <DockPanel Margin="28,24">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,4">
+            <TextBlock Classes="titulo-pagina" FontSize="22" Text="{Binding Titulo}"/>
+            <TextBlock Classes="subtitulo-pagina" Text="Los campos marcados con * son obligatorios"/>
         </StackPanel>
-        <TextBlock DockPanel.Dock="Bottom" Text="{Binding ErrorMessage}" Foreground="Red" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,5"/>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,22,0,0">
+            <Button Classes="secundario" Content="Cancelar" Width="110" IsCancel="True" Command="{Binding CancelCommand}"/>
+            <Button Content="Guardar" Width="110" IsDefault="True" Command="{Binding SaveCommand}"/>
+        </StackPanel>
+
+        <Border DockPanel.Dock="Bottom" Classes="error" Margin="0,16,0,0"
+                IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+            <TextBlock Text="{Binding ErrorMessage}"/>
+        </Border>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel>
-            <TextBlock Classes="title" Text="Nombre"/>
-            <TextBox Text="{Binding Form.ProNombre}"/>
-            <TextBlock Classes="title" Text="Precio"/>
-            <TextBox Text="{Binding Form.ProPrecio}"/>
-            <TextBlock Classes="title" Text="Stock"/>
-            <TextBox Text="{Binding Form.ProStock}"/>
-            <TextBlock Classes="title" Text="Descripción"/>
-            <TextBox Text="{Binding Form.ProDescripcion}" AcceptsReturn="True" TextWrapping="Wrap" Height="80"/>
+                <StackPanel>
+                    <TextBlock Classes="etiqueta" Text="Nombre *"/>
+                    <TextBox Text="{Binding Form.ProNombre}"/>
+                </StackPanel>
+                <Grid ColumnDefinitions="*,16,*">
+                <StackPanel Grid.Column="0">
+                        <TextBlock Classes="etiqueta" Text="Precio *"/>
+                        <TextBox Text="{Binding Form.ProPrecio}"/>
+                        <TextBlock Classes="ayuda" Text="Con IVA incluido"/>
+                    </StackPanel>
+                <StackPanel Grid.Column="2">
+                        <TextBlock Classes="etiqueta" Text="Stock *"/>
+                        <TextBox Text="{Binding Form.ProStock}"/>
+                        <TextBlock Classes="ayuda" Text="Unidades disponibles"/>
+                    </StackPanel>
+                </Grid>
+                <StackPanel>
+                    <TextBlock Classes="etiqueta" Text="Descripción"/>
+                    <TextBox Text="{Binding Form.ProDescripcion}" AcceptsReturn="True" TextWrapping="Wrap" Height="90" VerticalContentAlignment="Top"/>
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </DockPanel>

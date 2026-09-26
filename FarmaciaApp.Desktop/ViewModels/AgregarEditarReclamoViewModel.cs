@@ -16,7 +16,7 @@ namespace FarmaciaApp.Desktop.ViewModels
         public string[] Estados => ReclamoService.Estados;
 
         [ObservableProperty]
-        private string titulo = "Nuevo Reclamo";
+        private string titulo = "Nuevo reclamo";
 
         [ObservableProperty]
         private bool esNuevo = true;
@@ -52,7 +52,7 @@ namespace FarmaciaApp.Desktop.ViewModels
         public void LoadFromModel(Reclamo r)
         {
             _reclamoId = r.RecId;
-            Titulo = $"Editar Reclamo N° {r.RecId}";
+            Titulo = $"Editar reclamo N° {r.RecId}";
             EsNuevo = false;
             FacturaSeleccionada = Facturas.FirstOrDefault(f => f.Id == r.FacNumFactura);
             Descripcion = r.RecDescripcion;

@@ -2,22 +2,77 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="FarmaciaApp.Desktop.Views.MainWindow"
         Title="Farmacia"
-        Width="1100" Height="650"
-        MinWidth="760" MinHeight="520"
-        WindowStartupLocation="CenterScreen">
-    <Grid ColumnDefinitions="220,*">
-        <StackPanel Grid.Column="0" Background="#2d3436">
-            <TextBlock Text="Farmacia" Foreground="White" FontSize="26" FontWeight="Bold" Margin="20"/>
-            <Button Classes="sidebar" Content="Inicio" Command="{Binding GoHomeCommand}"/>
-            <Button Classes="sidebar" Content="Productos" Command="{Binding GoProductosCommand}"/>
-            <Button Classes="sidebar" Content="Clientes" Command="{Binding GoClientesCommand}"/>
-            <Button Classes="sidebar" Content="Personas" Command="{Binding GoPersonasCommand}"/>
-            <Button Classes="sidebar" Content="Proveedores" Command="{Binding GoProveedoresCommand}"/>
-            <Button Classes="sidebar" Content="Promociones" Command="{Binding GoPromocionesCommand}"/>
-            <Button Classes="sidebar" Content="Facturas" Command="{Binding GoFacturasCommand}"/>
-            <Button Classes="sidebar" Content="Reclamos" Command="{Binding GoReclamosCommand}"/>
-        </StackPanel>
+        Width="1200" Height="740"
+        MinWidth="900" MinHeight="560"
+        WindowStartupLocation="CenterScreen"
+        Background="#f5f6fa">
 
-        <ContentControl Grid.Column="1" Background="White" Content="{Binding CurrentView}"/>
+    <Window.Styles>
+        <Style Selector="TextBlock.seccion-menu">
+            <Setter Property="Foreground" Value="#7f8c8d"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="LetterSpacing" Value="1"/>
+            <Setter Property="Margin" Value="26,14,0,4"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid ColumnDefinitions="230,*">
+        <!-- ================= Menu lateral ================= -->
+        <DockPanel Background="#2d3436">
+            <StackPanel DockPanel.Dock="Top" Margin="26,22,20,4">
+                <TextBlock Text="Farmacia" Foreground="White" FontSize="26" FontWeight="Bold"/>
+                <TextBlock Text="Sistema de gestión" Foreground="#95a5a6" FontSize="12"/>
+            </StackPanel>
+
+            <!-- Usuario del turno -->
+            <Border DockPanel.Dock="Bottom" Background="#262c2e" Padding="20,14">
+                <StackPanel Spacing="2">
+                    <TextBlock Text="{Binding NombreUsuario}" Foreground="White" FontWeight="SemiBold"
+                               FontSize="15" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding DescripcionTurno}" Foreground="#95a5a6" FontSize="12"/>
+                    <Button Classes="enlace" Content="Cambiar contraseña" Margin="0,6,0,0"
+                            Command="{Binding CambiarClaveCommand}"/>
+                    <Button Classes="peligro" Content="Cerrar sesión" HorizontalAlignment="Stretch" Margin="0,8,0,0"
+                            Command="{Binding CerrarSesionCommand}"/>
+                </StackPanel>
+            </Border>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0,4,0,12">
+                    <TextBlock Classes="seccion-menu" Text="GENERAL"/>
+                    <Button Classes="sidebar" Content="Inicio" Command="{Binding GoHomeCommand}"
+                            Classes.activo="{Binding SeccionActual, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Inicio}"/>
+                    <Button Classes="sidebar" Content="Productos" Command="{Binding GoProductosCommand}"
+                            Classes.activo="{Binding SeccionActual, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Productos}"/>
+                    <Button Classes="sidebar" Content="Clientes" Command="{Binding GoClientesCommand}"
+                            Classes.activo="{Binding SeccionActual, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Clientes}"/>
+                    <Button Classes="sidebar" Content="Personas" Command="{Binding GoPersonasCommand}"
+                            Classes.activo="{Binding SeccionActual, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Personas}"/>
+                    <Button Classes="sidebar" Content="Proveedores" Command="{Binding GoProveedoresCommand}"
+                            Classes.activo="{Binding SeccionActual, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Proveedores}"/>
+                    <Button Classes="sidebar" Content="Promociones" Command="{Binding GoPromocionesCommand}"
+                            Classes.activo="{Binding SeccionActual, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Promociones}"/>
+                    <Button Classes="sidebar" Content="Facturas" Command="{Binding GoFacturasCommand}"
+                            Classes.activo="{Binding SeccionActual, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Facturas}"/>
+                    <Button Classes="sidebar" Content="Reclamos" Command="{Binding GoReclamosCommand}"
+                            Classes.activo="{Binding SeccionActual, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Reclamos}"/>
+
+                    <!-- Solo para el administrador -->
+                    <StackPanel IsVisible="{Binding EsAdmin}">
+                        <TextBlock Classes="seccion-menu" Text="ADMINISTRACIÓN"/>
+                        <Button Classes="sidebar" Content="Reportes de ventas" Command="{Binding GoReportesCommand}"
+                                Classes.activo="{Binding SeccionActual, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Reportes}"/>
+                        <Button Classes="sidebar" Content="Movimientos" Command="{Binding GoMovimientosCommand}"
+                                Classes.activo="{Binding SeccionActual, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Movimientos}"/>
+                        <Button Classes="sidebar" Content="Usuarios" Command="{Binding GoUsuariosCommand}"
+                                Classes.activo="{Binding SeccionActual, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Usuarios}"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+
+        <!-- ================= Contenido ================= -->
+        <ContentControl Grid.Column="1" Content="{Binding CurrentView}"/>
     </Grid>
 </Window>

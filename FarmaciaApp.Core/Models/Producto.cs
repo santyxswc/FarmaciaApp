@@ -15,8 +15,13 @@ namespace FarmaciaApp.Core.Models
         [ObservableProperty]
         private decimal proPrecio;
 
+        public const int StockMinimo = 20;
+
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(StockBajo))]
         private int proStock;
+
+        public bool StockBajo => ProStock <= StockMinimo;
 
         [ObservableProperty]
         private string proDescripcion;

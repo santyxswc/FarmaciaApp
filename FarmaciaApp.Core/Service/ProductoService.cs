@@ -20,6 +20,7 @@ namespace FarmaciaApp.Core.Services
 
         public int CrearProducto(Producto p)
         {
+            Sesion.ExigirAdmin("crear productos");
                         if (string.IsNullOrWhiteSpace(p.ProNombre))
                 throw new ArgumentException("El nombre es obligatorio.");
             if (p.ProPrecio <= 0)
@@ -27,11 +28,14 @@ namespace FarmaciaApp.Core.Services
             if (p.ProStock < 0)
                 throw new ArgumentException("El stock no puede ser negativo.");
 
-            return _repo.Insert(p);
+            int id = _repo.Insert(p);
+            Auditoria.Registrar("Producto creado", $"{p.ProNombre} · precio {p.ProPrecio:C0} · stock {p.ProStock}");
+            return id;
         }
 
         public bool ActualizarProducto(Producto p)
         {
+            Sesion.ExigirAdmin("modificar productos");
             if (p.ProId <= 0)
                 throw new ArgumentException("Id de producto inválido.");
             if (string.IsNullOrWhiteSpace(p.ProNombre))
@@ -41,11 +45,16 @@ namespace FarmaciaApp.Core.Services
             if (p.ProStock < 0)
                 throw new ArgumentException("El stock no puede ser negativo.");
 
-            return _repo.Update(p);
+            var anterior = _repo.GetById(p.ProId);
+            bool ok = _repo.Update(p);
+            if (ok)
+                Auditoria.Registrar("Producto modificado", $"{p.ProNombre}{DescribirCambios(anterior, p)}");
+            return ok;
         }
 
         public bool EliminarProducto(int id)
         {
+            Sesion.ExigirAdmin("eliminar productos");
             if (id <= 0)
                 throw new ArgumentException("Id inválido");
 
@@ -54,7 +63,23 @@ namespace FarmaciaApp.Core.Services
             if (ventas > 0)
                 throw new InvalidOperationException($"No se puede eliminar el producto porque aparece en {ventas} factura(s).");
 
-            return _repo.DeleteCascade(id);
+            var producto = _repo.GetById(id);
+            bool ok = _repo.DeleteCascade(id);
+            if (ok)
+                Auditoria.Registrar("Producto eliminado", producto?.ProNombre);
+            return ok;
+        }
+
+        // Precio y stock son lo que mas interesa controlar: se registra el antes y el despues
+        private static string DescribirCambios(Producto antes, Producto despues)
+        {
+            if (antes == null) return "";
+            var cambios = new List<string>();
+            if (antes.ProNombre != despues.ProNombre) cambios.Add($"nombre '{antes.ProNombre}' → '{despues.ProNombre}'");
+            if (antes.ProPrecio != despues.ProPrecio) cambios.Add($"precio {antes.ProPrecio:C0} → {despues.ProPrecio:C0}");
+            if (antes.ProStock != despues.ProStock) cambios.Add($"stock {antes.ProStock} → {despues.ProStock}");
+            if (antes.ProDescripcion != despues.ProDescripcion) cambios.Add("descripción");
+            return cambios.Count == 0 ? " · sin cambios" : " · " + string.Join(", ", cambios);
         }
 
         public IEnumerable<Producto> Buscar(string termino)

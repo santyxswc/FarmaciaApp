@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="FarmaciaApp.Desktop.Views.ReportesView"
+             Background="#f5f6fa">
+
+    <UserControl.Styles>
+        <Style Selector="TextBlock.indicador-titulo">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#636e72"/>
+        </Style>
+        <Style Selector="TextBlock.indicador-valor">
+            <Setter Property="FontSize" Value="26"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#2d3436"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+        <Style Selector="TextBlock.panel-titulo">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#2d3436"/>
+            <Setter Property="Margin" Value="16,14,16,10"/>
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="28,24" Spacing="12">
+            <StackPanel Margin="0,0,0,4">
+                <TextBlock Classes="titulo-pagina" Text="Reportes de ventas"/>
+                <TextBlock Classes="subtitulo-pagina" Text="Lo que se vendió en el periodo y lo que vendió cada empleado"/>
+            </StackPanel>
+
+            <!-- Periodo -->
+            <Border Classes="panel" Padding="12,8">
+                <WrapPanel>
+                    <WrapPanel.Styles>
+                        <Style Selector="WrapPanel > :is(Control)">
+                            <Setter Property="Margin" Value="0,4,8,4"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </WrapPanel.Styles>
+                    <TextBlock Text="Desde" Foreground="#636e72"/>
+                    <CalendarDatePicker SelectedDate="{Binding Desde}" Width="150"/>
+                    <TextBlock Text="Hasta" Foreground="#636e72"/>
+                    <CalendarDatePicker SelectedDate="{Binding Hasta}" Width="150"/>
+                    <Button Content="Consultar" Command="{Binding ConsultarCommand}"/>
+                    <Button Classes="secundario" Content="Hoy" Command="{Binding HoyCommand}"/>
+                    <Button Classes="secundario" Content="Últimos 7 días" Command="{Binding SemanaCommand}"/>
+                    <Button Classes="secundario" Content="Este mes" Command="{Binding MesCommand}"/>
+                </WrapPanel>
+            </Border>
+
+            <Border Classes="error" IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding ErrorMessage}"/>
+            </Border>
+
+            <TextBlock Text="{Binding Periodo}" Foreground="#636e72" FontWeight="SemiBold" Margin="2,4,0,0"/>
+
+            <!-- Indicadores -->
+            <UniformGrid Columns="4">
+                <UniformGrid.Styles>
+                    <Style Selector="UniformGrid > Border">
+                        <Setter Property="Margin" Value="0,0,12,0"/>
+                    </Style>
+                </UniformGrid.Styles>
+                <Border Classes="panel" Padding="18,14" BorderThickness="4,1,1,1" BorderBrush="#0984e3">
+                    <StackPanel>
+                        <TextBlock Classes="indicador-titulo" Text="Total vendido"/>
+                        <TextBlock Classes="indicador-valor" Text="{Binding Resumen.Total, StringFormat='{}{0:C0}'}"/>
+                    </StackPanel>
+                </Border>
+                <Border Classes="panel" Padding="18,14" BorderThickness="4,1,1,1" BorderBrush="#00b894">
+                    <StackPanel>
+                        <TextBlock Classes="indicador-titulo" Text="Facturas"/>
+                        <TextBlock Classes="indicador-valor" Text="{Binding Resumen.Facturas}"/>
+                    </StackPanel>
+                </Border>
+                <Border Classes="panel" Padding="18,14" BorderThickness="4,1,1,1" BorderBrush="#6c5ce7">
+                    <StackPanel>
+                        <TextBlock Classes="indicador-titulo" Text="Ticket promedio"/>
+                        <TextBlock Classes="indicador-valor" Text="{Binding Resumen.TicketPromedio, StringFormat='{}{0:C0}'}"/>
+                    </StackPanel>
+                </Border>
+                <Border Classes="panel" Padding="18,14" BorderThickness="4,1,1,1" BorderBrush="#e17055" Margin="0">
+                    <StackPanel>
+                        <TextBlock Classes="indicador-titulo" Text="Unidades vendidas"/>
+                        <TextBlock Classes="indicador-valor" Text="{Binding Resumen.Unidades, StringFormat='{}{0:N0}'}"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- Detalle -->
+            <Grid ColumnDefinitions="*,12,*">
+                <Border Classes="panel" ClipToBounds="True">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Classes="panel-titulo" Text="Ventas por empleado"/>
+                        <DataGrid ItemsSource="{Binding VentasPorVendedor}" AutoGenerateColumns="False" IsReadOnly="True" Height="300">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Empleado" Binding="{Binding Vendedor}" Width="*"/>
+                                <DataGridTextColumn Header="Facturas" Binding="{Binding Facturas}" Width="110"/>
+                                <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat='{}{0:C0}'}" Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </Border>
+                <Border Grid.Column="2" Classes="panel" ClipToBounds="True">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Classes="panel-titulo" Text="Productos más vendidos"/>
+                        <DataGrid ItemsSource="{Binding ProductosMasVendidos}" AutoGenerateColumns="False" IsReadOnly="True" Height="300">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Producto" Binding="{Binding Producto}" Width="*"/>
+                                <DataGridTextColumn Header="Unidades" Binding="{Binding Unidades, StringFormat='{}{0:N0}'}" Width="115"/>
+                                <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat='{}{0:C0}'}" Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

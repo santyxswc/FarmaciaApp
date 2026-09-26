@@ -15,7 +15,7 @@ namespace FarmaciaApp.Desktop.ViewModels
         private bool _eraVendedor;
 
         [ObservableProperty]
-        private string titulo = "Agregar Persona";
+        private string titulo = "Nueva persona";
 
         [ObservableProperty]
         private string nombre;
@@ -50,7 +50,7 @@ namespace FarmaciaApp.Desktop.ViewModels
         public void LoadFromModel(Persona p)
         {
             _personaId = p.PerId;
-            Titulo = "Editar Persona";
+            Titulo = "Editar persona";
             Nombre = p.PerNombre;
             Apellido = p.PerApellido;
             Direccion = p.PerDireccion;

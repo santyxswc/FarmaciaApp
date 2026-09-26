@@ -14,7 +14,7 @@ namespace FarmaciaApp.Desktop.ViewModels
         private int _promocionId;
 
         [ObservableProperty]
-        private string titulo = "Agregar Promoción";
+        private string titulo = "Nueva promoción";
 
         [ObservableProperty]
         private string descripcion;
@@ -44,7 +44,7 @@ namespace FarmaciaApp.Desktop.ViewModels
         public void LoadFromModel(Promocion p)
         {
             _promocionId = p.PrmId;
-            Titulo = "Editar Promoción";
+            Titulo = "Editar promoción";
             Descripcion = p.PrmDescripcion;
             Descuento = p.PrmDescuento;
             FechaInicio = p.PrmFechaIni;

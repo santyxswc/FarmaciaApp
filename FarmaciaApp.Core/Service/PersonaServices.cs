@@ -29,7 +29,9 @@ namespace FarmaciaApp.Core.Services
             if (!string.IsNullOrWhiteSpace(p.PerEmail) && !p.PerEmail.Contains("@"))
                 throw new ArgumentException("El email no es válido.");
 
-            return _repo.Insert(p);
+            int id = _repo.Insert(p);
+            Auditoria.Registrar("Persona creada", p.NombreCompleto);
+            return id;
         }
 
         public bool ActualizarPersona(Persona p)
@@ -43,12 +45,16 @@ namespace FarmaciaApp.Core.Services
             if (!string.IsNullOrWhiteSpace(p.PerEmail) && !p.PerEmail.Contains("@"))
                 throw new ArgumentException("El email no es válido.");
 
-            return _repo.Update(p);
+            bool ok = _repo.Update(p);
+            if (ok)
+                Auditoria.Registrar("Persona modificada", p.NombreCompleto);
+            return ok;
         }
 
         // Marca o desmarca a la persona como vendedor (quien puede registrar ventas)
         public void AsignarVendedor(int id, bool esVendedor)
         {
+            Sesion.ExigirAdmin("cambiar el rol de vendedor");
             if (id <= 0)
                 throw new ArgumentException("Id de persona inválido.");
 
@@ -57,13 +63,18 @@ namespace FarmaciaApp.Core.Services
                 int facturas = _repo.CountFacturasComoVendedor(id);
                 if (facturas > 0)
                     throw new InvalidOperationException($"No se puede quitar el rol de vendedor: tiene {facturas} factura(s) registrada(s).");
+
+                if (new UsuarioRepository().CountEmpleadosActivosPorPersona(id) > 0)
+                    throw new InvalidOperationException("No se puede quitar el rol de vendedor: tiene una cuenta de empleado activa.");
             }
 
             _repo.SetVendedor(id, esVendedor);
+            Auditoria.Registrar(esVendedor ? "Vendedor asignado" : "Vendedor retirado", _repo.GetById(id)?.NombreCompleto);
         }
 
         public bool EliminarPersona(int id)
         {
+            Sesion.ExigirAdmin("eliminar personas");
             if (id <= 0)
                 throw new ArgumentException("Id inválido");
 
@@ -71,7 +82,14 @@ namespace FarmaciaApp.Core.Services
             if (facturas > 0)
                 throw new InvalidOperationException($"No se puede eliminar: la persona aparece en {facturas} factura(s) como cliente o vendedor.");
 
-            return _repo.DeleteCascade(id);
+            if (new UsuarioRepository().CountPorPersona(id) > 0)
+                throw new InvalidOperationException("No se puede eliminar: la persona tiene una cuenta de usuario. Desactiva la cuenta en su lugar.");
+
+            var persona = _repo.GetById(id);
+            bool ok = _repo.DeleteCascade(id);
+            if (ok)
+                Auditoria.Registrar("Persona eliminada", persona?.NombreCompleto);
+            return ok;
         }
 
         public IEnumerable<Persona> Buscar(string termino)

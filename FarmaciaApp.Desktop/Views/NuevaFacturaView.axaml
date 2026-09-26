@@ -4,9 +4,13 @@
         Title="Nueva Factura"
         Width="860" Height="680"
         MinWidth="760" MinHeight="600"
-        WindowStartupLocation="CenterOwner">
-    <DockPanel Margin="20">
-        <TextBlock DockPanel.Dock="Top" Text="Nueva Factura" FontSize="22" FontWeight="Bold" Margin="0 0 0 10"/>
+        WindowStartupLocation="CenterOwner"
+        Background="White">
+    <DockPanel Margin="28,24">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,4">
+            <TextBlock Classes="titulo-pagina" FontSize="22" Text="Nueva factura"/>
+            <TextBlock Classes="subtitulo-pagina" Text="Los precios incluyen IVA y la promoción vigente de cada producto"/>
+        </StackPanel>
 
         <!-- Cliente, vendedor y pago -->
         <Grid DockPanel.Dock="Top" ColumnDefinitions="*,16,*,16,200" RowDefinitions="Auto,Auto">
@@ -15,6 +19,7 @@
                       PlaceholderText="Selecciona un cliente" HorizontalAlignment="Stretch"/>
             <TextBlock Grid.Column="2" Classes="title" Text="Vendedor"/>
             <ComboBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Vendedores}" SelectedItem="{Binding VendedorSeleccionado}"
+                      IsEnabled="{Binding PuedeElegirVendedor}"
                       PlaceholderText="Selecciona un vendedor" HorizontalAlignment="Stretch"/>
             <TextBlock Grid.Column="4" Classes="title" Text="Método de pago"/>
             <ComboBox Grid.Row="1" Grid.Column="4" ItemsSource="{Binding MetodosPago}" SelectedItem="{Binding MetodoPago}"
@@ -27,7 +32,7 @@
             <ComboBox ItemsSource="{Binding Productos}" SelectedItem="{Binding ProductoSeleccionado}"
                       PlaceholderText="Selecciona un producto" HorizontalAlignment="Stretch"/>
             <NumericUpDown Grid.Column="2" Value="{Binding Cantidad}" Minimum="1" Increment="1" FormatString="0"/>
-            <Button Grid.Column="4" Content="Agregar" Width="110" Command="{Binding AgregarLineaCommand}"/>
+            <Button Grid.Column="4" Content="Agregar" Width="110" Classes="secundario" Command="{Binding AgregarLineaCommand}"/>
         </Grid>
 
         <!-- Botones y totales -->
@@ -35,14 +40,14 @@
             <TextBlock Text="{Binding ErrorMessage}" Foreground="#d63031" FontWeight="SemiBold"
                        TextWrapping="Wrap" VerticalAlignment="Center"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                <Button Classes="secundario" Content="Cancelar" Width="110" IsCancel="True" Command="{Binding CancelarCommand}"/>
                 <Button Content="Registrar venta" Width="150" Command="{Binding GuardarCommand}"/>
-                <Button Content="Cancelar" Width="100" Background="Gray" Command="{Binding CancelarCommand}"/>
             </StackPanel>
         </Grid>
 
         <Border DockPanel.Dock="Bottom" Background="#f5f6fa" CornerRadius="8" Padding="16,10" Margin="0,10,0,0">
             <Grid ColumnDefinitions="Auto,*,Auto,Auto" RowDefinitions="Auto,Auto,Auto">
-                <Button Grid.RowSpan="3" Content="Quitar línea" Width="120" Background="#d63031"
+                <Button Grid.RowSpan="3" Classes="peligro" Content="Quitar línea" Width="120"
                         VerticalAlignment="Center" Command="{Binding QuitarLineaCommand}"/>
                 <TextBlock Grid.Column="2" Text="Subtotal:" Margin="0,0,16,0" HorizontalAlignment="Right"/>
                 <TextBlock Grid.Column="3" Text="{Binding Subtotal, StringFormat='{}{0:C2}'}" HorizontalAlignment="Right"/>
@@ -56,12 +61,12 @@
 
         <!-- Lineas -->
         <DataGrid ItemsSource="{Binding Lineas}" SelectedItem="{Binding LineaSeleccionada}"
-                  AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="All"
-                  BorderThickness="1" BorderBrush="#dfe6e9" Margin="0,12,0,0">
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  BorderThickness="1" BorderBrush="#e3e6ea" Margin="0,12,0,0">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Producto" Binding="{Binding Nombre}" Width="*"/>
-                <DataGridTextColumn Header="Promo" Binding="{Binding Promocion}" Width="90"/>
-                <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="105"/>
+                <DataGridTextColumn Header="Promo" Binding="{Binding Promocion}" Width="100"/>
+                <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="115"/>
                 <DataGridTextColumn Header="Precio" Binding="{Binding PrecioUnitario, StringFormat='{}{0:C2}'}" Width="130"/>
                 <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, StringFormat='{}{0:C2}'}" Width="140"/>
             </DataGrid.Columns>

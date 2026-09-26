@@ -7,6 +7,14 @@ namespace FarmaciaApp.Desktop.Views
         public HomeView()
         {
             InitializeComponent();
+
+            if (!FarmaciaApp.Core.Sesion.EsAdmin)
+            {
+                rejilla.Children.Remove(tarjetaReportes);
+                rejilla.Children.Remove(tarjetaMovimientos);
+                rejilla.Children.Remove(tarjetaUsuarios);
+            }
+
             SizeChanged += (_, e) => AjustarTarjetas(e.NewSize.Width);
         }
 

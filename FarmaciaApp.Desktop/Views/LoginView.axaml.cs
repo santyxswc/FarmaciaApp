@@ -9,6 +9,7 @@ namespace FarmaciaApp.Desktop.Views
         {
             InitializeComponent();
             DataContext = new LoginViewModel(this);
+            Opened += (_, _) => txtUsuario.Focus();
         }
     }
 }

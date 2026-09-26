@@ -26,7 +26,7 @@ FarmaciaApp/
 
 ## Base de Datos (Oracle)
 
-El esquema de la base de datos se encuentra completamente definido en [`database/schema.sql`](database/schema.sql). Incluye la definición de las **10 tablas principales**, **3 tablas intermedias/detalle** y las **3 secuencias** utilizadas por el sistema.
+El esquema de la base de datos se encuentra completamente definido en [`database/schema.sql`](database/schema.sql). Incluye la definición de las **10 tablas principales**, **3 tablas intermedias/detalle**, **2 tablas de usuarios y movimientos** y las **3 secuencias** utilizadas por el sistema.
 
 ### Tablas Principales (10)
 
@@ -50,6 +50,13 @@ El esquema de la base de datos se encuentra completamente definido en [`database
 | `PROVEE_PRODUC` | Relación muchos a muchos entre Proveedores y Productos | `(PROV_ID, PRO_ID)` |
 | `PROMO_PRODU` | Relación de productos vinculados a promociones activas | `(PRM_ID, PRO_ID)` |
 | `FACTU_PRODUC` | Detalle de líneas de producto facturadas (cantidad, precio, subtotal) | `(FAC_NUM_FACTURA, PRO_ID)` |
+
+### Usuarios y Movimientos (2)
+
+| Tabla | Descripción | Llave Primaria |
+|---|---|---|
+| `TBL_USUARIO` | Cuentas que inician sesión (rol `Administrador` o `Empleado`); contraseña con hash PBKDF2-SHA256 y sal | `USU_ID` (Identity) |
+| `TBL_MOVIMIENTO` | Registro de lo que hace cada usuario: ventas, cambios, inicios y cierres de sesión | `MOV_ID` (Identity) |
 
 ### Secuencias (3)
 
@@ -79,10 +86,37 @@ Ejecute el script SQL en su base de datos Oracle (a través de SQL*Plus, SQL Dev
 
 El script crea automáticamente todas las secuencias, tablas, restricciones de integridad referencial y un conjunto de datos iniciales de prueba.
 
-> **¿Ya tenías la base creada con una versión anterior del script?** Ejecuta una vez
-> `@database/migracion_ids.sql` (Oracle 18c+). Sincroniza las secuencias y las identidades de
-> `TBL_CLIENTE` / `TBL_VENDEDOR` con los datos existentes; sin esto, crear clientes desde la app
-> falla con `ORA-00001`.
+> **¿Ya tenías la base creada con una versión anterior del script?** Ejecuta una vez, en este orden (Oracle 18c+):
+> 1. `@database/migracion_ids.sql`: sincroniza las secuencias y las identidades de `TBL_CLIENTE` / `TBL_VENDEDOR`
+>    con los datos existentes; sin esto, crear clientes desde la app falla con `ORA-00001`.
+> 2. `@database/migracion_usuarios.sql`: crea las tablas de usuarios y movimientos y el usuario `admin` / `prueba`.
+>
+> Ambos scripts se pueden ejecutar más de una vez sin problema.
+
+### Usuarios, turnos y permisos
+
+La aplicación Avalonia (`FarmaciaApp.Desktop`) pide iniciar sesión. Usuarios de prueba creados por `schema.sql`:
+
+| Usuario | Contraseña | Rol |
+|---|---|---|
+| `admin` | `prueba` | Administrador |
+| `andres` | `andres123` | Empleado (vendedor Andrés Pérez) |
+
+> Cambia estas contraseñas desde la app (menú lateral → "Cambiar contraseña") antes de usarla en serio.
+
+- **Cambio de turno:** "Cerrar sesión" en el menú lateral vuelve a la pantalla de inicio de sesión para el siguiente
+  empleado. Cerrar la ventana también cierra el turno. Cada inicio y cierre queda registrado con su duración.
+- **Empleado:** consulta productos, proveedores y promociones; registra ventas (siempre a su propio nombre);
+  crea y edita clientes, personas y reclamos.
+- **Administrador:** además, crea, edita y elimina productos, proveedores y promociones; elimina registros; decide
+  quién es vendedor, y tiene la sección **Administración**:
+  - **Reportes de ventas:** total vendido, facturas, ticket promedio y unidades por periodo, ventas por empleado
+    y los 10 productos más vendidos.
+  - **Movimientos:** quién hizo qué y cuándo (ventas, cambios de precio y stock con el valor anterior y el nuevo,
+    intentos fallidos de inicio de sesión...), con filtros por usuario, fechas y texto.
+  - **Usuarios:** crear cuentas de empleado o administrador, activar o desactivar cuentas y restablecer contraseñas.
+- Los permisos se validan en los servicios de `FarmaciaApp.Core`, no solo ocultando botones. La versión WPF no tiene
+  inicio de sesión con usuarios, así que para ella no se aplican restricciones.
 
 ### Funcionalidades
 
@@ -150,6 +184,5 @@ cp FarmaciaApp.Desktop/appsettings.example.json FarmaciaApp.Desktop/appsettings.
 dotnet run --project FarmaciaApp.Desktop
 ```
 
-**Credenciales por defecto en UI:**
-- Usuario: `admin`
-- Contraseña: `prueba`
+**Usuarios de prueba:** `admin` / `prueba` (administrador) y `andres` / `andres123` (empleado).
+Ver [Usuarios, turnos y permisos](#usuarios-turnos-y-permisos).

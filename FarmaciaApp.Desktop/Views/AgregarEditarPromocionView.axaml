@@ -2,25 +2,42 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="FarmaciaApp.Desktop.Views.AgregarEditarPromocionView"
         Title="{Binding Titulo}"
-        Width="460" Height="480"
+        Width="540" SizeToContent="Height" MaxHeight="760"
         WindowStartupLocation="CenterOwner"
-        CanResize="False">
-    <DockPanel Margin="20">
-        <TextBlock DockPanel.Dock="Top" Text="{Binding Titulo}" FontSize="22" FontWeight="Bold" Margin="0 0 0 10"/>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,15,0,0">
-            <Button Content="Guardar" Width="100" Command="{Binding GuardarCommand}"/>
-            <Button Content="Cancelar" Width="100" Background="Gray" Command="{Binding CancelarCommand}"/>
+        CanResize="False"
+        Background="White">
+    <DockPanel Margin="28,24">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,4">
+            <TextBlock Classes="titulo-pagina" FontSize="22" Text="{Binding Titulo}"/>
+            <TextBlock Classes="subtitulo-pagina" Text="Los campos marcados con * son obligatorios"/>
         </StackPanel>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,22,0,0">
+            <Button Classes="secundario" Content="Cancelar" Width="110" IsCancel="True" Command="{Binding CancelarCommand}"/>
+            <Button Content="Guardar" Width="110" IsDefault="True" Command="{Binding GuardarCommand}"/>
+        </StackPanel>
+
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel>
-            <TextBlock Classes="title" Text="Descripción:"/>
-            <TextBox Text="{Binding Descripcion}"/>
-            <TextBlock Classes="title" Text="Descuento (%):"/>
-            <TextBox Text="{Binding Descuento}"/>
-            <TextBlock Classes="title" Text="Fecha Inicio:"/>
-            <DatePicker SelectedDate="{Binding FechaInicio}" HorizontalAlignment="Stretch"/>
-            <TextBlock Classes="title" Text="Fecha Fin:"/>
-            <DatePicker SelectedDate="{Binding FechaFin}" HorizontalAlignment="Stretch"/>
+                <StackPanel>
+                    <TextBlock Classes="etiqueta" Text="Descripción *"/>
+                    <TextBox Text="{Binding Descripcion}"/>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Classes="etiqueta" Text="Descuento (%) *"/>
+                    <TextBox Text="{Binding Descuento}"/>
+                    <TextBlock Classes="ayuda" Text="Entre 1 y 100"/>
+                </StackPanel>
+                <Grid ColumnDefinitions="*,16,*">
+                <StackPanel Grid.Column="0">
+                        <TextBlock Classes="etiqueta" Text="Fecha de inicio *"/>
+                        <DatePicker SelectedDate="{Binding FechaInicio}" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+                <StackPanel Grid.Column="2">
+                        <TextBlock Classes="etiqueta" Text="Fecha de fin *"/>
+                        <DatePicker SelectedDate="{Binding FechaFin}" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+                </Grid>
             </StackPanel>
         </ScrollViewer>
     </DockPanel>

@@ -14,7 +14,7 @@ namespace FarmaciaApp.Desktop.ViewModels
         private int _proveedorId;
 
         [ObservableProperty]
-        private string titulo = "Agregar Proveedor";
+        private string titulo = "Nuevo proveedor";
 
         [ObservableProperty]
         private string nombre;
@@ -40,7 +40,7 @@ namespace FarmaciaApp.Desktop.ViewModels
         public void LoadFromModel(Proveedor p)
         {
             _proveedorId = p.ProId;
-            Titulo = "Editar Proveedor";
+            Titulo = "Editar proveedor";
             Nombre = p.ProNombre;
             Contacto = p.ProContacto;
             Telefono = p.ProTelefono;

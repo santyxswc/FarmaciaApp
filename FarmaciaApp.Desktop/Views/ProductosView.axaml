@@ -1,38 +1,58 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:core="using:FarmaciaApp.Core"
              x:Class="FarmaciaApp.Desktop.Views.ProductosView"
-             Background="White">
-    <DockPanel Margin="20">
-        <TextBlock DockPanel.Dock="Top" Classes="header" Text="Gestión de Productos"/>
+             Background="#f5f6fa">
+    <DockPanel Margin="28,24">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+            <TextBlock Classes="titulo-pagina" Text="Productos"/>
+            <TextBlock Classes="subtitulo-pagina" Text="Catálogo de medicamentos, precios y existencias"/>
+        </StackPanel>
 
-        <WrapPanel DockPanel.Dock="Top" Margin="0 0 0 10">
-            <WrapPanel.Styles>
-                <Style Selector="WrapPanel > Button">
-                    <Setter Property="Margin" Value="0,0,10,5"/>
-                </Style>
-            </WrapPanel.Styles>
-            <Button Content="Agregar Producto" Width="160" Command="{Binding AgregarCommand}"/>
-            <Button Content="Editar" Width="100" Command="{Binding EditarCommand}"/>
-            <Button Content="Eliminar" Width="100" Command="{Binding EliminarCommand}"/>
-            <Button Content="Actualizar" Width="100" Command="{Binding RefreshCommand}"/>
-            <TextBox Width="200" Margin="10,0,10,5" VerticalAlignment="Center" Watermark="Buscar..."
-                     Text="{Binding SearchTerm}"/>
-            <Button Content="Buscar" Width="90" Command="{Binding BuscarCommand}"/>
-        </WrapPanel>
+        <!-- Acciones y busqueda -->
+        <Border DockPanel.Dock="Top" Classes="panel" Padding="12,8" Margin="0,0,0,12">
+            <WrapPanel>
+                <WrapPanel.Styles>
+                    <Style Selector="WrapPanel > Button, WrapPanel > TextBox">
+                        <Setter Property="Margin" Value="0,4,8,4"/>
+                    </Style>
+                </WrapPanel.Styles>
+                <Button Content="Agregar producto" Command="{Binding AgregarCommand}" IsVisible="{x:Static core:Sesion.EsAdmin}"/>
+                <Button Classes="secundario" Content="Editar" Command="{Binding EditarCommand}" IsVisible="{x:Static core:Sesion.EsAdmin}"/>
+                <Button Classes="peligro" Content="Eliminar" Command="{Binding EliminarCommand}" IsVisible="{x:Static core:Sesion.EsAdmin}"/>
+                <Button Classes="secundario" Content="Actualizar" Command="{Binding RefreshCommand}"/>
+                <TextBox Width="230" Watermark="Buscar... (Enter)" Text="{Binding SearchTerm}">
+                    <TextBox.KeyBindings>
+                        <KeyBinding Gesture="Enter" Command="{Binding BuscarCommand}"/>
+                    </TextBox.KeyBindings>
+                </TextBox>
+                <Button Classes="secundario" Content="Buscar" Command="{Binding BuscarCommand}"/>
+            </WrapPanel>
+        </Border>
 
-        <DataGrid ItemsSource="{Binding Productos}"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  GridLinesVisibility="All"
-                  BorderThickness="1" BorderBrush="#dfe6e9"
-                  SelectedItem="{Binding Seleccionado, Mode=TwoWay}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding ProId}" Width="80"/>
-                <DataGridTextColumn Header="Nombre" Binding="{Binding ProNombre}" Width="2*"/>
-                <DataGridTextColumn Header="Precio" Binding="{Binding ProPrecio, StringFormat='{}{0:C0}'}" Width="110"/>
-                <DataGridTextColumn Header="Stock" Binding="{Binding ProStock}" Width="80"/>
-                <DataGridTextColumn Header="Descripción" Binding="{Binding ProDescripcion}" Width="3*"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Border Classes="panel" ClipToBounds="True">
+            <DataGrid ItemsSource="{Binding Productos}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      SelectedItem="{Binding Seleccionado, Mode=TwoWay}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding ProId}" Width="70"/>
+                    <DataGridTextColumn Header="Nombre" Binding="{Binding ProNombre}" Width="2*"/>
+                    <DataGridTextColumn Header="Precio" Binding="{Binding ProPrecio, StringFormat='{}{0:C0}'}" Width="110"/>
+                    <DataGridTextColumn Header="Stock" Binding="{Binding ProStock}" Width="90"/>
+                    <DataGridTemplateColumn Header="Estado" Width="120">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Background="#fdecea" CornerRadius="10" Padding="10,3" Margin="12,0"
+                                        HorizontalAlignment="Left" VerticalAlignment="Center" IsVisible="{Binding StockBajo}">
+                                    <TextBlock Text="Stock bajo" Foreground="#b71c1c" FontSize="12" FontWeight="SemiBold"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Descripción" Binding="{Binding ProDescripcion}" Width="3*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
     </DockPanel>
 </UserControl>

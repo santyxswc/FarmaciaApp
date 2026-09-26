@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FarmaciaApp.Core;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Services;
 using FarmaciaApp.Desktop.Services;
@@ -29,6 +30,9 @@ namespace FarmaciaApp.Desktop.ViewModels
         public string[] MetodosPago => FacturaService.MetodosPago;
 
         public ObservableCollection<LineaFactura> Lineas { get; } = new();
+
+        // Un empleado solo vende a su nombre; el administrador puede elegir el vendedor
+        public bool PuedeElegirVendedor => Sesion.EsAdmin || !Sesion.Activa;
 
         [ObservableProperty]
         private Seleccion clienteSeleccionado;
@@ -73,7 +77,16 @@ namespace FarmaciaApp.Desktop.ViewModels
             Clientes = _service.ObtenerClientes().ToList();
             Vendedores = _service.ObtenerVendedores().ToList();
             Productos = _service.ObtenerProductosParaVenta().ToList();
-            VendedorSeleccionado = Vendedores.Count == 1 ? Vendedores[0] : null;
+            if (PuedeElegirVendedor)
+            {
+                VendedorSeleccionado = Vendedores.Count == 1 ? Vendedores[0] : null;
+            }
+            else
+            {
+                VendedorSeleccionado = Vendedores.FirstOrDefault(v => v.Id == Sesion.VenId);
+                if (VendedorSeleccionado == null)
+                    ErrorMessage = "Tu usuario no está asociado a un vendedor. Pide al administrador que lo configure.";
+            }
 
             AgregarLineaCommand = new RelayCommand(AgregarLinea);
             QuitarLineaCommand = new RelayCommand(QuitarLinea, () => LineaSeleccionada != null);

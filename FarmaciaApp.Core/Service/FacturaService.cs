@@ -53,6 +53,11 @@ namespace FarmaciaApp.Core.Services
 
         public decimal CrearFactura(decimal cliId, decimal venId, string metodoPago, IEnumerable<FacturaProductoDetalle> items)
         {
+            // Un empleado solo puede registrar ventas a su propio nombre
+            if (Sesion.Activa && !Sesion.EsAdmin)
+                venId = Sesion.VenId ?? throw new InvalidOperationException(
+                    "Tu usuario no está asociado a un vendedor. Pide al administrador que lo configure.");
+
             if (cliId <= 0)
                 throw new ArgumentException("Selecciona un cliente.");
             if (venId <= 0)
@@ -71,7 +76,11 @@ namespace FarmaciaApp.Core.Services
             if (lineas.Any(l => l.Cantidad <= 0 || l.Cantidad != Math.Floor(l.Cantidad)))
                 throw new ArgumentException("Las cantidades deben ser números enteros mayores a cero.");
 
-            return _repo.Insert(cliId, venId, metodoPago, lineas);
+            decimal numero = _repo.Insert(cliId, venId, metodoPago, lineas);
+            var factura = _repo.GetById(numero);
+            Auditoria.Registrar("Venta registrada",
+                $"Factura N° {numero} · {factura?.ClienteNombre} · {factura?.FacTotal:C0} · {metodoPago} · vendedor {factura?.VendedorNombre}");
+            return numero;
         }
     }
 }

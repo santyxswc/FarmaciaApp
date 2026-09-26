@@ -24,6 +24,7 @@ namespace FarmaciaApp.Core.Services
 
         public int CrearPromocion(Promocion p)
         {
+            Sesion.ExigirAdmin("crear promociones");
                         if (string.IsNullOrWhiteSpace(p.PrmDescripcion))
                 throw new ArgumentException("La descripción es obligatoria.");
             if (p.PrmDescuento <= 0 || p.PrmDescuento > 100)
@@ -31,11 +32,14 @@ namespace FarmaciaApp.Core.Services
             if (p.PrmFechaIni >= p.PrmFechaFin)
                 throw new ArgumentException("La fecha de inicio debe ser anterior a la fecha fin.");
 
-            return _repo.Insert(p);
+            int id = _repo.Insert(p);
+            Auditoria.Registrar("Promoción creada", p.PrmDescripcion);
+            return id;
         }
 
         public bool ActualizarPromocion(Promocion p)
         {
+            Sesion.ExigirAdmin("modificar promociones");
             if (p.PrmId <= 0)
                 throw new ArgumentException("Id de promoción inválido.");
             if (string.IsNullOrWhiteSpace(p.PrmDescripcion))
@@ -45,15 +49,23 @@ namespace FarmaciaApp.Core.Services
             if (p.PrmFechaIni >= p.PrmFechaFin)
                 throw new ArgumentException("La fecha de inicio debe ser anterior a la fecha fin.");
 
-            return _repo.Update(p);
+            bool ok = _repo.Update(p);
+            if (ok)
+                Auditoria.Registrar("Promoción modificada", p.PrmDescripcion);
+            return ok;
         }
 
         public bool EliminarPromocion(int id)
         {
+            Sesion.ExigirAdmin("eliminar promociones");
             if (id <= 0)
                 throw new ArgumentException("Id inválido");
 
-            return _repo.DeleteCascade(id);
+            var registro = _repo.GetById(id);
+            bool ok = _repo.DeleteCascade(id);
+            if (ok)
+                Auditoria.Registrar("Promoción eliminada", registro?.PrmDescripcion);
+            return ok;
         }
 
         public IEnumerable<Promocion> Buscar(string termino)

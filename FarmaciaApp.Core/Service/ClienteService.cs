@@ -29,7 +29,9 @@ namespace FarmaciaApp.Core.Services
                 throw new ArgumentException("El apellido del cliente es obligatorio.");
             if (!string.IsNullOrWhiteSpace(c.PerEmail) && !c.PerEmail.Contains("@"))
                 throw new ArgumentException("El email no es válido.");
-            return _repo.Insert(c);
+            decimal id = _repo.Insert(c);
+            Auditoria.Registrar("Cliente creado", $"{c.PerNombre} {c.PerApellido}");
+            return id;
         }
         public bool ActualizarCliente(Cliente c)
         {
@@ -42,10 +44,14 @@ namespace FarmaciaApp.Core.Services
             if (!string.IsNullOrWhiteSpace(c.PerEmail) && !c.PerEmail.Contains("@"))
                 throw new ArgumentException("El email no es válido.");
 
-            return _repo.Update(c);
+            bool ok = _repo.Update(c);
+            if (ok)
+                Auditoria.Registrar("Cliente modificado", $"{c.PerNombre} {c.PerApellido}");
+            return ok;
         }
         public bool EliminarCliente(decimal id)
         {
+            Sesion.ExigirAdmin("eliminar clientes");
             if (id <= 0)
                 throw new ArgumentException("Id de cliente inválido");
 
@@ -53,7 +59,11 @@ namespace FarmaciaApp.Core.Services
             if (facturas > 0)
                 throw new InvalidOperationException($"No se puede eliminar el cliente porque tiene {facturas} factura(s) registrada(s).");
 
-            return _repo.DeleteCascade(id);
+            var cliente = _repo.GetById(id);
+            bool ok = _repo.DeleteCascade(id);
+            if (ok)
+                Auditoria.Registrar("Cliente eliminado", $"{cliente?.PerNombre} {cliente?.PerApellido}");
+            return ok;
         }
         public IEnumerable<Cliente> Buscar(string termino)
         {

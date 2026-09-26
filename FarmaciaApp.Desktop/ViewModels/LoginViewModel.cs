@@ -1,6 +1,8 @@
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FarmaciaApp.Core.Services;
 using FarmaciaApp.Desktop.Views;
 
 namespace FarmaciaApp.Desktop.ViewModels
@@ -18,35 +20,54 @@ namespace FarmaciaApp.Desktop.ViewModels
         [ObservableProperty]
         private string errorMessage;
 
+        [ObservableProperty]
+        private bool ocupado;
+
         public IRelayCommand LoginCommand { get; }
 
         public LoginViewModel(Window window)
         {
             _window = window;
-            LoginCommand = new RelayCommand(ExecuteLogin);
+            LoginCommand = new RelayCommand(ExecuteLogin, () => !Ocupado);
         }
+
+        partial void OnOcupadoChanged(bool value) => LoginCommand.NotifyCanExecuteChanged();
 
         private void ExecuteLogin()
         {
-            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+            ErrorMessage = null;
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrEmpty(Password))
             {
-                ErrorMessage = "Ingrese usuario y contraseña.";
+                ErrorMessage = "Ingresa usuario y contraseña.";
                 return;
             }
-            const string USER = "admin";
-            const string PASS = "prueba";
 
-            if (Username == USER && Password == PASS)
+            Ocupado = true;
+            try
             {
+                var usuario = new UsuarioService().IniciarSesion(Username, Password);
+                if (usuario == null)
+                {
+                    ErrorMessage = "Usuario o contraseña incorrectos.";
+                    Password = "";
+                    return;
+                }
+
                 var main = new MainWindow();
-                if (Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+                if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                     desktop.MainWindow = main;
                 main.Show();
                 _window.Close();
             }
-            else
+            catch (Exception ex)
             {
-                ErrorMessage = "Usuario o contraseña incorrectos.";
+                ErrorMessage = ex is InvalidOperationException
+                    ? ex.Message
+                    : $"No se pudo conectar con la base de datos: {ex.Message}";
+            }
+            finally
+            {
+                Ocupado = false;
             }
         }
     }

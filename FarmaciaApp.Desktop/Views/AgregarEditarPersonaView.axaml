@@ -1,34 +1,59 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:core="using:FarmaciaApp.Core"
         x:Class="FarmaciaApp.Desktop.Views.AgregarEditarPersonaView"
         Title="{Binding Titulo}"
-        Width="460" Height="620"
+        Width="540" SizeToContent="Height" MaxHeight="760"
         WindowStartupLocation="CenterOwner"
-        CanResize="False">
-    <DockPanel Margin="20">
-        <TextBlock DockPanel.Dock="Top" Text="{Binding Titulo}" FontSize="22" FontWeight="Bold" Margin="0 0 0 10"/>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,15,0,0">
-            <Button Content="Guardar" Width="100" Command="{Binding GuardarCommand}"/>
-            <Button Content="Cancelar" Width="100" Background="Gray" Command="{Binding CancelarCommand}"/>
+        CanResize="False"
+        Background="White">
+    <DockPanel Margin="28,24">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,4">
+            <TextBlock Classes="titulo-pagina" FontSize="22" Text="{Binding Titulo}"/>
+            <TextBlock Classes="subtitulo-pagina" Text="Los campos marcados con * son obligatorios"/>
         </StackPanel>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,22,0,0">
+            <Button Classes="secundario" Content="Cancelar" Width="110" IsCancel="True" Command="{Binding CancelarCommand}"/>
+            <Button Content="Guardar" Width="110" IsDefault="True" Command="{Binding GuardarCommand}"/>
+        </StackPanel>
+
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel>
-            <TextBlock Classes="title" Text="Nombre:"/>
-            <TextBox Text="{Binding Nombre}"/>
-            <TextBlock Classes="title" Text="Apellido:"/>
-            <TextBox Text="{Binding Apellido}"/>
-            <TextBlock Classes="title" Text="Dirección:"/>
-            <TextBox Text="{Binding Direccion}"/>
-            <TextBlock Classes="title" Text="Teléfono:"/>
-            <TextBox Text="{Binding Telefono}"/>
-            <TextBlock Classes="title" Text="Email:"/>
-            <TextBox Text="{Binding Email}"/>
-            <CheckBox IsChecked="{Binding EsVendedor}" Margin="0,16,0,0">
+                <Grid ColumnDefinitions="*,16,*">
+                <StackPanel Grid.Column="0">
+                        <TextBlock Classes="etiqueta" Text="Nombre *"/>
+                        <TextBox Text="{Binding Nombre}"/>
+                    </StackPanel>
+                <StackPanel Grid.Column="2">
+                        <TextBlock Classes="etiqueta" Text="Apellido *"/>
+                        <TextBox Text="{Binding Apellido}"/>
+                    </StackPanel>
+                </Grid>
+                <Grid ColumnDefinitions="*,16,*">
+                <StackPanel Grid.Column="0">
+                        <TextBlock Classes="etiqueta" Text="Teléfono"/>
+                        <TextBox Text="{Binding Telefono}"/>
+                    </StackPanel>
+                <StackPanel Grid.Column="2">
+                        <TextBlock Classes="etiqueta" Text="Email"/>
+                        <TextBox Text="{Binding Email}"/>
+                    </StackPanel>
+                </Grid>
                 <StackPanel>
-                    <TextBlock Text="Es vendedor" FontWeight="SemiBold"/>
-                    <TextBlock Text="Puede registrar ventas en la farmacia" Foreground="Gray" FontSize="12"/>
+                    <TextBlock Classes="etiqueta" Text="Dirección"/>
+                    <TextBox Text="{Binding Direccion}"/>
                 </StackPanel>
-            </CheckBox>
+                <!-- Solo el administrador decide quien vende -->
+                <Border Background="#f5f6fa" CornerRadius="8" Padding="14,10" Margin="0,18,0,0"
+                        IsVisible="{x:Static core:Sesion.EsAdmin}">
+                    <CheckBox IsChecked="{Binding EsVendedor}">
+                        <StackPanel>
+                            <TextBlock Text="Es vendedor" FontWeight="SemiBold"/>
+                            <TextBlock Classes="ayuda" Text="Puede registrar ventas en la farmacia" Margin="0"/>
+                        </StackPanel>
+                    </CheckBox>
+                </Border>
             </StackPanel>
         </ScrollViewer>
     </DockPanel>

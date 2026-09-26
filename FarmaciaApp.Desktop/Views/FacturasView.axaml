@@ -1,40 +1,51 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:core="using:FarmaciaApp.Core"
              x:Class="FarmaciaApp.Desktop.Views.FacturasView"
-             Background="White">
-    <DockPanel Margin="20">
-        <TextBlock DockPanel.Dock="Top" Classes="header" Text="Registro de Facturas"/>
+             Background="#f5f6fa">
+    <DockPanel Margin="28,24">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+            <TextBlock Classes="titulo-pagina" Text="Facturas"/>
+            <TextBlock Classes="subtitulo-pagina" Text="Historial de ventas · doble clic para ver el detalle"/>
+        </StackPanel>
 
-        <WrapPanel DockPanel.Dock="Top" Margin="0 0 0 10">
-            <WrapPanel.Styles>
-                <Style Selector="WrapPanel > Button">
-                    <Setter Property="Margin" Value="0,0,10,5"/>
-                </Style>
-            </WrapPanel.Styles>
-            <Button Content="Nueva Factura" Width="140" Command="{Binding NuevaFacturaCommand}"/>
-            <Button Content="Ver Detalle" Width="120" Command="{Binding VerDetalleCommand}"/>
-            <Button Content="Actualizar" Width="100" Command="{Binding RefreshCommand}"/>
-            <TextBox Width="200" Margin="10,0,10,5" VerticalAlignment="Center" Watermark="Buscar..."
-                     Text="{Binding SearchTerm}"/>
-            <Button Content="Buscar" Width="90" Command="{Binding BuscarCommand}"/>
-        </WrapPanel>
+        <!-- Acciones y busqueda -->
+        <Border DockPanel.Dock="Top" Classes="panel" Padding="12,8" Margin="0,0,0,12">
+            <WrapPanel>
+                <WrapPanel.Styles>
+                    <Style Selector="WrapPanel > Button, WrapPanel > TextBox">
+                        <Setter Property="Margin" Value="0,4,8,4"/>
+                    </Style>
+                </WrapPanel.Styles>
+                <Button Content="Nueva factura" Command="{Binding NuevaFacturaCommand}"/>
+                <Button Classes="secundario" Content="Ver detalle" Command="{Binding VerDetalleCommand}"/>
+                <Button Classes="secundario" Content="Actualizar" Command="{Binding RefreshCommand}"/>
+                <TextBox Width="230" Watermark="Buscar... (Enter)" Text="{Binding SearchTerm}">
+                    <TextBox.KeyBindings>
+                        <KeyBinding Gesture="Enter" Command="{Binding BuscarCommand}"/>
+                    </TextBox.KeyBindings>
+                </TextBox>
+                <Button Classes="secundario" Content="Buscar" Command="{Binding BuscarCommand}"/>
+            </WrapPanel>
+        </Border>
 
-        <DataGrid ItemsSource="{Binding Facturas}"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  GridLinesVisibility="All"
-                  BorderThickness="1" BorderBrush="#dfe6e9"
-                  SelectedItem="{Binding Seleccionado, Mode=TwoWay}"
-                  DoubleTapped="Grid_DoubleTapped">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="N° Factura" Binding="{Binding FacNumFactura}" Width="110"/>
-                <DataGridTextColumn Header="Fecha" Binding="{Binding FacFecha, StringFormat='{}{0:dd/MM/yyyy}'}" Width="120"/>
-                <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNombre}" Width="*"/>
-                <DataGridTextColumn Header="Vendedor" Binding="{Binding VendedorNombre}" Width="*"/>
-                <DataGridTextColumn Header="Total" Binding="{Binding FacTotal, StringFormat='{}{0:C2}'}" Width="130"/>
-                <DataGridTextColumn Header="IVA" Binding="{Binding FacIva, StringFormat='{}{0:C2}'}" Width="120"/>
-                <DataGridTextColumn Header="SubTotal" Binding="{Binding FacSubtotal, StringFormat='{}{0:C2}'}" Width="130"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Border Classes="panel" ClipToBounds="True">
+            <DataGrid ItemsSource="{Binding Facturas}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      SelectedItem="{Binding Seleccionado, Mode=TwoWay}"
+                      DoubleTapped="Grid_DoubleTapped">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="N° Factura" Binding="{Binding FacNumFactura}" Width="105"/>
+                    <DataGridTextColumn Header="Fecha" Binding="{Binding FacFecha, StringFormat='{}{0:dd/MM/yyyy}'}" Width="105"/>
+                    <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNombre}" Width="*"/>
+                    <DataGridTextColumn Header="Vendedor" Binding="{Binding VendedorNombre}" Width="*"/>
+                    <DataGridTextColumn Header="Pago" Binding="{Binding MetodoPago}" Width="125"/>
+                    <DataGridTextColumn Header="Subtotal" Binding="{Binding FacSubtotal, StringFormat='{}{0:C0}'}" Width="125"/>
+                    <DataGridTextColumn Header="IVA" Binding="{Binding FacIva, StringFormat='{}{0:C0}'}" Width="110"/>
+                    <DataGridTextColumn Header="Total" Binding="{Binding FacTotal, StringFormat='{}{0:C0}'}" Width="125"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
     </DockPanel>
 </UserControl>

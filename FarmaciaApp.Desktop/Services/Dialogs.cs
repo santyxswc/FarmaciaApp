@@ -44,7 +44,8 @@ namespace FarmaciaApp.Desktop.Services
             var window = new Window
             {
                 Title = title,
-                Width = 420,
+                Width = 440,
+                Background = Brushes.White,
                 SizeToContent = SizeToContent.Height,
                 CanResize = false,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -60,8 +61,9 @@ namespace FarmaciaApp.Desktop.Services
 
             if (yesNo)
             {
-                var yes = new Button { Content = "Sí", Width = 90 };
-                var no = new Button { Content = "No", Width = 90, Background = Brushes.Gray };
+                var yes = new Button { Content = "Sí", Width = 90, IsDefault = true };
+                var no = new Button { Content = "No", Width = 90, IsCancel = true };
+                no.Classes.Add("secundario");
                 yes.Click += (_, _) => window.Close(true);
                 no.Click += (_, _) => window.Close(false);
                 buttons.Children.Add(yes);
@@ -69,14 +71,14 @@ namespace FarmaciaApp.Desktop.Services
             }
             else
             {
-                var ok = new Button { Content = "Aceptar", Width = 90 };
+                var ok = new Button { Content = "Aceptar", Width = 100, IsDefault = true, IsCancel = true };
                 ok.Click += (_, _) => window.Close(true);
                 buttons.Children.Add(ok);
             }
 
             window.Content = new StackPanel
             {
-                Margin = new Thickness(20),
+                Margin = new Thickness(28, 24),
                 Children =
                 {
                     new TextBlock
@@ -87,7 +89,7 @@ namespace FarmaciaApp.Desktop.Services
                         Foreground = Brush.Parse(color),
                         Margin = new Thickness(0, 0, 0, 10)
                     },
-                    new TextBlock { Text = message, TextWrapping = TextWrapping.Wrap, FontSize = 14 },
+                    new TextBlock { Text = message, TextWrapping = TextWrapping.Wrap, FontSize = 14, Foreground = Brush.Parse("#2d3436"), LineHeight = 21 },
                     buttons
                 }
             };

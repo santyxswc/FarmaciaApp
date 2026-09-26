@@ -33,7 +33,9 @@ namespace FarmaciaApp.Core.Services
             if (string.IsNullOrWhiteSpace(r.RecDescripcion))
                 throw new ArgumentException("La descripción del reclamo es obligatoria.");
 
-            return _repo.Insert(r);
+            decimal id = _repo.Insert(r);
+            Auditoria.Registrar("Reclamo creado", $"N° {id} · factura {r.FacNumFactura}");
+            return id;
         }
 
         public bool ActualizarReclamo(Reclamo r)
@@ -43,15 +45,22 @@ namespace FarmaciaApp.Core.Services
             if (string.IsNullOrWhiteSpace(r.RecDescripcion))
                 throw new ArgumentException("La descripción del reclamo es obligatoria.");
 
-            return _repo.Update(r);
+            bool ok = _repo.Update(r);
+            if (ok)
+                Auditoria.Registrar("Reclamo modificado", $"N° {r.RecId} · estado {r.RecEstado}");
+            return ok;
         }
 
         public bool EliminarReclamo(decimal id)
         {
+            Sesion.ExigirAdmin("eliminar reclamos");
             if (id <= 0)
                 throw new ArgumentException("Id inválido");
 
-            return _repo.Delete(id);
+            bool ok = _repo.Delete(id);
+            if (ok)
+                Auditoria.Registrar("Reclamo eliminado", $"N° {id}");
+            return ok;
         }
 
         public IEnumerable<Reclamo> Buscar(string termino)

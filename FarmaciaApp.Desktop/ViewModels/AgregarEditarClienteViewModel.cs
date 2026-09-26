@@ -23,9 +23,12 @@ namespace FarmaciaApp.Desktop.ViewModels
                 {
                     if (_form != null) _form.PropertyChanged += Form_PropertyChanged;
                     SaveCommand?.NotifyCanExecuteChanged();
+                    OnPropertyChanged(nameof(Titulo));
                 }
             }
         }
+
+        public string Titulo => Form?.PerId > 0 ? "Editar cliente" : "Nuevo cliente";
 
         [ObservableProperty]
         private string errorMessage;

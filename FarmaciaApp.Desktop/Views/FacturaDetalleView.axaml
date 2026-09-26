@@ -3,8 +3,9 @@
         x:Class="FarmaciaApp.Desktop.Views.FacturaDetalleView"
         Title="{Binding FacNumFactura, StringFormat='Factura N° {0}'}"
         Width="720" Height="560"
-        WindowStartupLocation="CenterOwner">
-    <DockPanel Margin="20">
+        WindowStartupLocation="CenterOwner"
+        Background="White">
+    <DockPanel Margin="28,24">
         <TextBlock DockPanel.Dock="Top" Text="{Binding FacNumFactura, StringFormat='Factura N° {0}'}"
                    FontSize="22" FontWeight="Bold" Margin="0 0 0 12"/>
 
@@ -25,7 +26,7 @@
             <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding VendedorNombre}"/>
         </Grid>
 
-        <Button DockPanel.Dock="Bottom" Content="Cerrar" Width="100" HorizontalAlignment="Right"
+        <Button DockPanel.Dock="Bottom" Content="Cerrar" Width="110" IsCancel="True" IsDefault="True" HorizontalAlignment="Right"
                 Margin="0,12,0,0" Click="Cerrar_Click"/>
 
         <Border DockPanel.Dock="Bottom" Background="#f5f6fa" CornerRadius="8" Padding="16,10" Margin="0,10,0,0">
@@ -41,10 +42,10 @@
         </Border>
 
         <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" IsReadOnly="True"
-                  GridLinesVisibility="All" BorderThickness="1" BorderBrush="#dfe6e9">
+                  BorderThickness="1" BorderBrush="#e3e6ea">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Producto" Binding="{Binding ProNombre}" Width="*"/>
-                <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="105"/>
+                <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="115"/>
                 <DataGridTextColumn Header="Precio" Binding="{Binding PrecioUnitario, StringFormat='{}{0:C2}'}" Width="130"/>
                 <DataGridTextColumn Header="Subtotal" Binding="{Binding SubtotalLinea, StringFormat='{}{0:C2}'}" Width="140"/>
             </DataGrid.Columns>

@@ -1,0 +1,50 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="FarmaciaApp.Desktop.Views.NuevoUsuarioView"
+        Title="Nuevo usuario"
+        Width="540" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Background="White">
+    <DockPanel Margin="28,24">
+        <StackPanel DockPanel.Dock="Top">
+            <TextBlock Classes="titulo-pagina" FontSize="22" Text="Nuevo usuario"/>
+            <TextBlock Classes="subtitulo-pagina" Text="Cuenta para que un empleado o administrador inicie sesión"/>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,22,0,0">
+            <Button Classes="secundario" Content="Cancelar" Width="110" IsCancel="True" Command="{Binding CancelarCommand}"/>
+            <Button Content="Crear usuario" Width="130" IsDefault="True" Command="{Binding GuardarCommand}"/>
+        </StackPanel>
+        <Border DockPanel.Dock="Bottom" Classes="error" Margin="0,16,0,0"
+                IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+            <TextBlock Text="{Binding ErrorMessage}"/>
+        </Border>
+        <StackPanel>
+            <Grid ColumnDefinitions="*,16,*">
+                <StackPanel>
+                    <TextBlock Classes="etiqueta" Text="Usuario *"/>
+                    <TextBox Text="{Binding Login}" Watermark="ej. maria.lopez"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Classes="etiqueta" Text="Rol *"/>
+                    <ComboBox ItemsSource="{Binding Roles}" SelectedItem="{Binding Rol}" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </Grid>
+            <TextBlock Classes="etiqueta" Text="Persona"/>
+            <ComboBox ItemsSource="{Binding Personas}" SelectedItem="{Binding PersonaSeleccionada}"
+                      PlaceholderText="Selecciona la persona (se registra en Personas)" HorizontalAlignment="Stretch"/>
+            <TextBlock Classes="ayuda" Text="{Binding AyudaPersona}"/>
+            <Grid ColumnDefinitions="*,16,*">
+                <StackPanel>
+                    <TextBlock Classes="etiqueta" Text="Contraseña *"/>
+                    <TextBox Text="{Binding Clave}" PasswordChar="●"/>
+                    <TextBlock Classes="ayuda" Text="Mínimo 6 caracteres"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Classes="etiqueta" Text="Confirmar contraseña *"/>
+                    <TextBox Text="{Binding Confirmacion}" PasswordChar="●"/>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </DockPanel>
+</Window>

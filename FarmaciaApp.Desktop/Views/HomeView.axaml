@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="FarmaciaApp.Desktop.Views.HomeView"
-             Background="White">
+             Background="#f5f6fa">
 
     <UserControl.Styles>
         <!-- Tarjetas de acceso rapido: al hacer clic abren su seccion -->
@@ -41,8 +41,9 @@
     <!-- ScrollViewer: con la ventana pequeña las tarjetas quedan en varias filas y pueden no caber -->
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="20">
-            <TextBlock Text="Bienvenido a la farmacia" FontSize="28" FontWeight="Bold" Margin="0 0 0 10"/>
-            <TextBlock Text="Seleccione una opción del menú lateral o una de las tarjetas" FontSize="16" Foreground="Gray"/>
+            <TextBlock Text="{Binding NombreUsuario, StringFormat='Hola, {0}'}" FontSize="28" FontWeight="Bold" Margin="0 0 0 10"/>
+            <TextBlock Text="{Binding DescripcionTurno}" FontSize="16" Foreground="Gray"/>
+            <TextBlock Text="Seleccione una opción del menú lateral o una de las tarjetas" FontSize="14" Foreground="Gray" Margin="0,4,0,0"/>
             <Separator Margin="0 20"/>
             <!-- Las columnas y el alto se ajustan al ancho disponible (ver HomeView.axaml.cs) -->
             <UniformGrid x:Name="rejilla" Columns="4">
@@ -86,6 +87,25 @@
                     <StackPanel>
                         <TextBlock Text="Reclamos" FontSize="22" Foreground="White"/>
                         <TextBlock Text="Gestión de reclamos" FontSize="14" Foreground="#ffe0e0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Button>
+                <!-- Solo administrador (se quitan en HomeView.axaml.cs para empleados) -->
+                <Button x:Name="tarjetaReportes" Classes="tarjeta" Background="#8854d0" Command="{Binding GoReportesCommand}">
+                    <StackPanel>
+                        <TextBlock Text="Reportes" FontSize="22" Foreground="White"/>
+                        <TextBlock Text="Ventas por periodo y empleado" FontSize="14" Foreground="#efe6fb" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="tarjetaMovimientos" Classes="tarjeta" Background="#4b6584" Command="{Binding GoMovimientosCommand}">
+                    <StackPanel>
+                        <TextBlock Text="Movimientos" FontSize="22" Foreground="White"/>
+                        <TextBlock Text="Actividad de los empleados" FontSize="14" Foreground="#e3e9f0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="tarjetaUsuarios" Classes="tarjeta" Background="#3867d6" Command="{Binding GoUsuariosCommand}">
+                    <StackPanel>
+                        <TextBlock Text="Usuarios" FontSize="22" Foreground="White"/>
+                        <TextBlock Text="Empleados y accesos" FontSize="14" Foreground="#e3ebfb" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Button>
             </UniformGrid>

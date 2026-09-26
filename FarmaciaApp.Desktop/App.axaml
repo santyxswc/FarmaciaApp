@@ -9,57 +9,224 @@
         <SolidColorBrush x:Key="AccentBrush" Color="#6c5ce7"/>
         <SolidColorBrush x:Key="LightGrayBrush" Color="#f5f6fa"/>
         <SolidColorBrush x:Key="DarkGrayBrush" Color="#2d3436"/>
+        <SolidColorBrush x:Key="BordeBrush" Color="#e3e6ea"/>
+        <SolidColorBrush x:Key="TextoSuaveBrush" Color="#636e72"/>
+        <SolidColorBrush x:Key="PeligroBrush" Color="#d63031"/>
     </Application.Resources>
 
     <Application.Styles>
         <FluentTheme/>
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
 
-        <!-- Botones globales -->
+        <!-- ================= Botones ================= -->
+
+        <!-- Principal (azul) -->
         <Style Selector="Button">
             <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Padding" Value="8"/>
+            <Setter Property="Padding" Value="16,0"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Height" Value="35"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
         <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="#0770c2"/>
+            <Setter Property="Background" Value="#0773c5"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#0662a8"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
         <Style Selector="Button:disabled /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="#b2bec3"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#dfe6e9"/>
+            <Setter Property="Foreground" Value="#95a5a6"/>
         </Style>
 
-        <!-- Botones del sidebar -->
+        <!-- Secundario (blanco con borde) -->
+        <Style Selector="Button.secundario">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkGrayBrush}"/>
+            <Setter Property="BorderBrush" Value="#d5dadf"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="Button.secundario:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#f1f3f6"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkGrayBrush}"/>
+            <Setter Property="BorderBrush" Value="#b2bec3"/>
+        </Style>
+        <Style Selector="Button.secundario:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#e4e8ec"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkGrayBrush}"/>
+        </Style>
+        <Style Selector="Button.secundario:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#f5f6fa"/>
+            <Setter Property="Foreground" Value="#b2bec3"/>
+            <Setter Property="BorderBrush" Value="#e3e6ea"/>
+        </Style>
+
+        <!-- Peligro (rojo) -->
+        <Style Selector="Button.peligro">
+            <Setter Property="Background" Value="{StaticResource PeligroBrush}"/>
+        </Style>
+        <Style Selector="Button.peligro:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#b71c1c"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.peligro:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#9a1616"/>
+        </Style>
+
+        <!-- Menu lateral -->
         <Style Selector="Button.sidebar">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Height" Value="42"/>
-            <Setter Property="Margin" Value="10 3"/>
+            <Setter Property="Foreground" Value="#dfe6e9"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Margin" Value="12,1"/>
+            <Setter Property="Padding" Value="14,0"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
         </Style>
         <Style Selector="Button.sidebar:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="#636e72"/>
+            <Setter Property="Background" Value="#3d4649"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="Button.sidebar:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#465155"/>
+        </Style>
+        <Style Selector="Button.sidebar.activo">
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style Selector="Button.sidebar.activo:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#0773c5"/>
         </Style>
 
-        <!-- Titulos de formularios -->
-        <Style Selector="TextBlock.title">
-            <Setter Property="FontSize" Value="16"/>
+        <!-- Enlace (texto sin fondo) -->
+        <Style Selector="Button.enlace">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#74b9ff"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Height" Value="22"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style Selector="Button.enlace:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!-- ================= Textos ================= -->
+
+        <Style Selector="TextBlock.titulo-pagina">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkGrayBrush}"/>
+        </Style>
+        <Style Selector="TextBlock.subtitulo-pagina">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuaveBrush}"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+        <!-- Etiqueta de un campo de formulario -->
+        <Style Selector="TextBlock.etiqueta">
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Margin" Value="0,10,0,5"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkGrayBrush}"/>
+            <Setter Property="Margin" Value="0,14,0,6"/>
+        </Style>
+        <Style Selector="TextBlock.ayuda">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuaveBrush}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+        <!-- Compatibilidad con vistas antiguas -->
+        <Style Selector="TextBlock.title">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,14,0,6"/>
             <Setter Property="Foreground" Value="{StaticResource DarkGrayBrush}"/>
         </Style>
 
-        <Style Selector="TextBlock.header">
-            <Setter Property="FontSize" Value="28"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Margin" Value="0 0 0 20"/>
+        <!-- ================= Paneles ================= -->
+
+        <Style Selector="Border.panel">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BordeBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BoxShadow" Value="0 1 3 0 #12000000"/>
+        </Style>
+        <Style Selector="Border.error">
+            <Setter Property="Background" Value="#fdecea"/>
+            <Setter Property="BorderBrush" Value="#f5c2c0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="12,8"/>
+        </Style>
+        <Style Selector="Border.error > TextBlock">
+            <Setter Property="Foreground" Value="#b71c1c"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <!-- ================= Campos ================= -->
+
+        <Style Selector="TextBox">
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="MinHeight" Value="36"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="MinHeight" Value="36"/>
+        </Style>
+        <Style Selector="CalendarDatePicker">
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="MinHeight" Value="36"/>
+        </Style>
+        <Style Selector="NumericUpDown">
+            <Setter Property="CornerRadius" Value="6"/>
+        </Style>
+
+        <!-- ================= Tablas ================= -->
+
+        <Style Selector="DataGrid">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#eef0f3"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="RowHeight" Value="40"/>
+            <Setter Property="CanUserReorderColumns" Value="False"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        <Style Selector="DataGridColumnHeader">
+            <Setter Property="Background" Value="#f8f9fb"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSuaveBrush}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="MinHeight" Value="40"/>
+            <Setter Property="Padding" Value="12,0"/>
+        </Style>
+        <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="#f1f6fd"/>
+            <Setter Property="Opacity" Value="1"/>
+        </Style>
+        <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="#dbeafe"/>
+            <Setter Property="Opacity" Value="1"/>
+        </Style>
+        <Style Selector="DataGridRow:selected:pointerover /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="#cfe3fc"/>
+        </Style>
+        <Style Selector="DataGridCell">
+            <Setter Property="Foreground" Value="{StaticResource DarkGrayBrush}"/>
         </Style>
     </Application.Styles>
 </Application>

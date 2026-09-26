@@ -1,29 +1,46 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="FarmaciaApp.Desktop.Views.LoginView"
-        Title="Iniciar Sesión"
-        Width="450" Height="380"
+        Title="Farmacia - Iniciar sesión"
+        Width="860" Height="520"
+        MinWidth="640" MinHeight="460"
         WindowStartupLocation="CenterScreen"
-        CanResize="False"
-        Background="#f5f6fa">
-    <Border Background="White" CornerRadius="10" Padding="20" Width="300"
-            VerticalAlignment="Center" HorizontalAlignment="Center"
-            BoxShadow="0 2 10 0 #22000000">
-        <StackPanel>
-            <TextBlock Text="Farmacia - Login" FontSize="22" FontWeight="Bold"
-                       HorizontalAlignment="Center" Margin="0 0 0 20"/>
+        Background="White">
+    <Grid ColumnDefinitions="*,*">
+        <!-- Marca -->
+        <Border>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#0984e3" Offset="0"/>
+                    <GradientStop Color="#6c5ce7" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <StackPanel VerticalAlignment="Center" Margin="48,0">
+                <TextBlock Text="Farmacia" FontSize="40" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Sistema de gestión" FontSize="18" Foreground="#e8f1fb" Margin="0,4,0,24"/>
+                <TextBlock Text="Ventas, inventario, clientes y control de turnos en un solo lugar."
+                           FontSize="14" Foreground="#dfe6f7" TextWrapping="Wrap" LineHeight="22"/>
+            </StackPanel>
+        </Border>
 
-            <TextBlock Text="Usuario" Margin="0 0 0 5"/>
-            <TextBox Text="{Binding Username}"/>
+        <!-- Formulario -->
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="52,0">
+            <TextBlock Classes="titulo-pagina" Text="Iniciar sesión"/>
+            <TextBlock Classes="subtitulo-pagina" Text="Ingresa con tu usuario para comenzar tu turno" Margin="0,4,0,12"/>
 
-            <TextBlock Text="Contraseña" Margin="0 10 0 5"/>
-            <TextBox Text="{Binding Password}" PasswordChar="●"/>
+            <TextBlock Classes="etiqueta" Text="Usuario"/>
+            <TextBox x:Name="txtUsuario" Text="{Binding Username}" Watermark="tu usuario"/>
 
-            <Button Content="Iniciar Sesión" Margin="0 20 0 0" HorizontalAlignment="Stretch"
+            <TextBlock Classes="etiqueta" Text="Contraseña"/>
+            <TextBox Text="{Binding Password}" PasswordChar="●" Watermark="••••••"/>
+
+            <Border Classes="error" Margin="0,16,0,0"
+                    IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding ErrorMessage}"/>
+            </Border>
+
+            <Button Content="Entrar" Margin="0,22,0,0" Height="40" FontSize="15" HorizontalAlignment="Stretch"
                     IsDefault="True" Command="{Binding LoginCommand}"/>
-
-            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red"
-                       Margin="0 10 0 0" TextWrapping="Wrap"/>
         </StackPanel>
-    </Border>
+    </Grid>
 </Window>

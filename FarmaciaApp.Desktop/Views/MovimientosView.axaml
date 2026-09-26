@@ -1,0 +1,52 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="FarmaciaApp.Desktop.Views.MovimientosView"
+             Background="#f5f6fa">
+    <DockPanel Margin="28,24">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+            <TextBlock Classes="titulo-pagina" Text="Movimientos"/>
+            <TextBlock Classes="subtitulo-pagina" Text="Quién hizo qué y cuándo: ventas, cambios, inicios y cierres de turno"/>
+        </StackPanel>
+
+        <Border DockPanel.Dock="Top" Classes="panel" Padding="12,8" Margin="0,0,0,12">
+            <WrapPanel>
+                <WrapPanel.Styles>
+                    <Style Selector="WrapPanel > :is(Control)">
+                        <Setter Property="Margin" Value="0,4,8,4"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                </WrapPanel.Styles>
+                <ComboBox ItemsSource="{Binding Usuarios}" SelectedItem="{Binding UsuarioSeleccionado}" Width="220"/>
+                <TextBlock Text="Desde" Foreground="#636e72"/>
+                <CalendarDatePicker SelectedDate="{Binding Desde}" Width="145"/>
+                <TextBlock Text="Hasta" Foreground="#636e72"/>
+                <CalendarDatePicker SelectedDate="{Binding Hasta}" Width="145"/>
+                <TextBox Width="200" Watermark="Buscar acción o detalle" Text="{Binding Texto}">
+                    <TextBox.KeyBindings>
+                        <KeyBinding Gesture="Enter" Command="{Binding FiltrarCommand}"/>
+                    </TextBox.KeyBindings>
+                </TextBox>
+                <Button Content="Filtrar" Command="{Binding FiltrarCommand}"/>
+                <Button Classes="secundario" Content="Limpiar" Command="{Binding LimpiarCommand}"/>
+            </WrapPanel>
+        </Border>
+
+        <TextBlock DockPanel.Dock="Top" Text="{Binding Resumen}" Foreground="#636e72" Margin="2,0,0,8"/>
+        <Border DockPanel.Dock="Top" Classes="error" Margin="0,0,0,8"
+                IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+            <TextBlock Text="{Binding ErrorMessage}"/>
+        </Border>
+
+        <Border Classes="panel" ClipToBounds="True">
+            <DataGrid ItemsSource="{Binding Movimientos}" AutoGenerateColumns="False" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Fecha y hora" Binding="{Binding Fecha, StringFormat='{}{0:dd/MM/yyyy HH:mm:ss}'}" Width="185"/>
+                    <DataGridTextColumn Header="Usuario" Binding="{Binding Usuario}" Width="120"/>
+                    <DataGridTextColumn Header="Rol" Binding="{Binding Rol}" Width="140"/>
+                    <DataGridTextColumn Header="Acción" Binding="{Binding Accion}" Width="180"/>
+                    <DataGridTextColumn Header="Detalle" Binding="{Binding Detalle}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </DockPanel>
+</UserControl>
