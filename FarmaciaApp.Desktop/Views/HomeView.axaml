@@ -2,35 +2,72 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="FarmaciaApp.Desktop.Views.HomeView"
              Background="White">
+
+    <UserControl.Styles>
+        <!-- Tarjetas de acceso rapido: al hacer clic abren su seccion -->
+        <Style Selector="Button.tarjeta">
+            <Setter Property="Height" Value="110"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="RenderTransform" Value="translateY(0px)"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.12"/>
+                </Transitions>
+            </Setter>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border x:Name="fondo" Background="{TemplateBinding Background}" CornerRadius="10"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter Content="{TemplateBinding Content}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Button.tarjeta:pointerover">
+            <Setter Property="RenderTransform" Value="translateY(-4px)"/>
+        </Style>
+        <Style Selector="Button.tarjeta:pointerover /template/ Border#fondo">
+            <Setter Property="BoxShadow" Value="0 6 14 0 #40000000"/>
+        </Style>
+        <Style Selector="Button.tarjeta:pressed">
+            <Setter Property="RenderTransform" Value="translateY(0px)"/>
+        </Style>
+    </UserControl.Styles>
+
     <StackPanel Margin="20">
         <TextBlock Text="Bienvenido a la farmacia" FontSize="28" FontWeight="Bold" Margin="0 0 0 10"/>
-        <TextBlock Text="Seleccione una opción del menú lateral" FontSize="16" Foreground="Gray"/>
+        <TextBlock Text="Seleccione una opción del menú lateral o una de las tarjetas" FontSize="16" Foreground="Gray"/>
         <Separator Margin="0 20"/>
-        <WrapPanel>
-            <Border Background="#0984e3" CornerRadius="10" Padding="15" Margin="10" Width="200" Height="110">
+        <!-- Las columnas y el alto se ajustan al ancho disponible (ver HomeView.axaml.cs) -->
+        <UniformGrid x:Name="rejilla" Columns="4">
+            <Button Classes="tarjeta" Background="#0984e3" Command="{Binding GoProductosCommand}">
                 <StackPanel>
                     <TextBlock Text="Productos" FontSize="22" Foreground="White"/>
                     <TextBlock Text="Ver existentes" FontSize="14" Foreground="#e0e0e0"/>
                 </StackPanel>
-            </Border>
-            <Border Background="#6c5ce7" CornerRadius="10" Padding="15" Margin="10" Width="200" Height="110">
+            </Button>
+            <Button Classes="tarjeta" Background="#6c5ce7" Command="{Binding GoClientesCommand}">
                 <StackPanel>
                     <TextBlock Text="Clientes" FontSize="22" Foreground="White"/>
                     <TextBlock Text="Administrar clientes" FontSize="14" Foreground="#e0e0e0"/>
                 </StackPanel>
-            </Border>
-            <Border Background="#00b894" CornerRadius="10" Padding="15" Margin="10" Width="200" Height="110">
+            </Button>
+            <Button Classes="tarjeta" Background="#00b894" Command="{Binding GoFacturasCommand}">
                 <StackPanel>
                     <TextBlock Text="Facturas" FontSize="22" Foreground="White"/>
                     <TextBlock Text="Consultar ventas" FontSize="14" Foreground="#e0e0e0"/>
                 </StackPanel>
-            </Border>
-            <Border Background="#d63031" CornerRadius="10" Padding="15" Margin="10" Width="200" Height="110">
+            </Button>
+            <Button Classes="tarjeta" Background="#d63031" Command="{Binding GoReclamosCommand}">
                 <StackPanel>
                     <TextBlock Text="Reclamos" FontSize="22" Foreground="White"/>
                     <TextBlock Text="Gestión de reclamos" FontSize="14" Foreground="#ffe0e0"/>
                 </StackPanel>
-            </Border>
-        </WrapPanel>
+            </Button>
+        </UniformGrid>
     </StackPanel>
 </UserControl>

@@ -3,6 +3,7 @@
         x:Class="FarmaciaApp.Desktop.Views.MainWindow"
         Title="Farmacia"
         Width="1100" Height="650"
+        MinWidth="760" MinHeight="520"
         WindowStartupLocation="CenterScreen">
     <Grid ColumnDefinitions="220,*">
         <StackPanel Grid.Column="0" Background="#2d3436">

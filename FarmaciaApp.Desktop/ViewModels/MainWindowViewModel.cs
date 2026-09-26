@@ -21,7 +21,7 @@ namespace FarmaciaApp.Desktop.ViewModels
 
         public MainWindowViewModel()
         {
-            GoHomeCommand = new RelayCommand(() => CurrentView = new HomeView());
+            GoHomeCommand = new RelayCommand(() => CurrentView = new HomeView { DataContext = this });
             GoProductosCommand = new RelayCommand(() => CurrentView = new ProductosView());
             GoClientesCommand = new RelayCommand(() => CurrentView = new ClientesView());
             GoFacturasCommand = new RelayCommand(() => CurrentView = new FacturasView());
@@ -29,7 +29,7 @@ namespace FarmaciaApp.Desktop.ViewModels
             GoPersonasCommand = new RelayCommand(() => CurrentView = new PersonasView());
             GoProveedoresCommand = new RelayCommand(() => CurrentView = new ProveedoresView());
             GoPromocionesCommand = new RelayCommand(() => CurrentView = new PromocionesView());
-            CurrentView = new HomeView();
+            CurrentView = new HomeView { DataContext = this };
         }
     }
 }
