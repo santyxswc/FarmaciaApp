@@ -91,6 +91,8 @@ El script crea automáticamente todas las secuencias, tablas, restricciones de i
   - Los precios incluyen IVA (19 %): subtotal = total / 1.19.
   - Se aplica automáticamente el mayor descuento de las promociones vigentes del producto (`PROMO_PRODU`).
 - **Detalle de factura:** botón "Ver Detalle" o doble clic en la factura.
+- **Vendedores:** en Personas, la casilla "Es vendedor" habilita a la persona para registrar ventas;
+  la lista muestra el rol de cada una (Cliente, Vendedor o ambos). No se puede quitar el rol a quien ya tiene facturas.
 - **Reclamos:** crear (asociado a una factura) y editar descripción y estado (Pendiente, En proceso, Resuelto, Rechazado).
 - **Integridad de datos:** no se pueden eliminar clientes, vendedores ni productos que aparecen en facturas;
   la app muestra el motivo en lugar del error de Oracle.

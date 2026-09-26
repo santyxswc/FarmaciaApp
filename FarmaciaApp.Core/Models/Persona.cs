@@ -13,6 +13,16 @@ namespace FarmaciaApp.Core.Models
         public string PerTelefono { get; set; }
         public string PerEmail { get; set; }
 
-                public string NombreCompleto => $"{PerNombre} {PerApellido}";
+        // Roles: la persona puede ser cliente, vendedor, ambos o ninguno
+        public bool EsCliente { get; set; }
+        public bool EsVendedor { get; set; }
+
+        public string NombreCompleto => $"{PerNombre} {PerApellido}";
+
+        public string Roles =>
+            EsCliente && EsVendedor ? "Cliente, Vendedor"
+            : EsCliente ? "Cliente"
+            : EsVendedor ? "Vendedor"
+            : "—";
     }
 }

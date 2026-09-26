@@ -12,6 +12,7 @@ namespace FarmaciaApp.Desktop.ViewModels
         private readonly PersonaService _service;
         private readonly Window _window;
         private int _personaId;
+        private bool _eraVendedor;
 
         [ObservableProperty]
         private string titulo = "Agregar Persona";
@@ -30,6 +31,9 @@ namespace FarmaciaApp.Desktop.ViewModels
 
         [ObservableProperty]
         private string email;
+
+        [ObservableProperty]
+        private bool esVendedor;
 
         public IAsyncRelayCommand GuardarCommand { get; }
         public IRelayCommand CancelarCommand { get; }
@@ -52,6 +56,7 @@ namespace FarmaciaApp.Desktop.ViewModels
             Direccion = p.PerDireccion;
             Telefono = p.PerTelefono;
             Email = p.PerEmail;
+            EsVendedor = _eraVendedor = p.EsVendedor;
         }
 
         private async Task Guardar()
@@ -70,12 +75,19 @@ namespace FarmaciaApp.Desktop.ViewModels
 
                 if (_personaId == 0)
                 {
-                    _service.CrearPersona(persona);
+                    _personaId = _service.CrearPersona(persona);
+                    if (EsVendedor)
+                        _service.AsignarVendedor(_personaId, true);
                     await Dialogs.Info("Persona creada exitosamente", "Éxito");
                 }
                 else
                 {
                     _service.ActualizarPersona(persona);
+                    if (EsVendedor != _eraVendedor)
+                    {
+                        _service.AsignarVendedor(_personaId, EsVendedor);
+                        _eraVendedor = EsVendedor;
+                    }
                     await Dialogs.Info("Persona actualizada exitosamente", "Éxito");
                 }
 

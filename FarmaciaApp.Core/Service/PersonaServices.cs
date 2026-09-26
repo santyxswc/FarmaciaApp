@@ -46,6 +46,22 @@ namespace FarmaciaApp.Core.Services
             return _repo.Update(p);
         }
 
+        // Marca o desmarca a la persona como vendedor (quien puede registrar ventas)
+        public void AsignarVendedor(int id, bool esVendedor)
+        {
+            if (id <= 0)
+                throw new ArgumentException("Id de persona inválido.");
+
+            if (!esVendedor)
+            {
+                int facturas = _repo.CountFacturasComoVendedor(id);
+                if (facturas > 0)
+                    throw new InvalidOperationException($"No se puede quitar el rol de vendedor: tiene {facturas} factura(s) registrada(s).");
+            }
+
+            _repo.SetVendedor(id, esVendedor);
+        }
+
         public bool EliminarPersona(int id)
         {
             if (id <= 0)
