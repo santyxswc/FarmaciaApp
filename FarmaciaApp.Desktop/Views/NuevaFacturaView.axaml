@@ -1,0 +1,70 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="FarmaciaApp.Desktop.Views.NuevaFacturaView"
+        Title="Nueva Factura"
+        Width="860" Height="680"
+        MinWidth="760" MinHeight="600"
+        WindowStartupLocation="CenterOwner">
+    <DockPanel Margin="20">
+        <TextBlock DockPanel.Dock="Top" Text="Nueva Factura" FontSize="22" FontWeight="Bold" Margin="0 0 0 10"/>
+
+        <!-- Cliente, vendedor y pago -->
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,16,*,16,200" RowDefinitions="Auto,Auto">
+            <TextBlock Classes="title" Text="Cliente"/>
+            <ComboBox Grid.Row="1" ItemsSource="{Binding Clientes}" SelectedItem="{Binding ClienteSeleccionado}"
+                      PlaceholderText="Selecciona un cliente" HorizontalAlignment="Stretch"/>
+            <TextBlock Grid.Column="2" Classes="title" Text="Vendedor"/>
+            <ComboBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Vendedores}" SelectedItem="{Binding VendedorSeleccionado}"
+                      PlaceholderText="Selecciona un vendedor" HorizontalAlignment="Stretch"/>
+            <TextBlock Grid.Column="4" Classes="title" Text="Método de pago"/>
+            <ComboBox Grid.Row="1" Grid.Column="4" ItemsSource="{Binding MetodosPago}" SelectedItem="{Binding MetodoPago}"
+                      HorizontalAlignment="Stretch"/>
+        </Grid>
+
+        <!-- Agregar producto -->
+        <TextBlock DockPanel.Dock="Top" Classes="title" Text="Producto" Margin="0,16,0,5"/>
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,10,130,10,Auto">
+            <ComboBox ItemsSource="{Binding Productos}" SelectedItem="{Binding ProductoSeleccionado}"
+                      PlaceholderText="Selecciona un producto" HorizontalAlignment="Stretch"/>
+            <NumericUpDown Grid.Column="2" Value="{Binding Cantidad}" Minimum="1" Increment="1" FormatString="0"/>
+            <Button Grid.Column="4" Content="Agregar" Width="110" Command="{Binding AgregarLineaCommand}"/>
+        </Grid>
+
+        <!-- Botones y totales -->
+        <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto" Margin="0,12,0,0">
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="#d63031" FontWeight="SemiBold"
+                       TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                <Button Content="Registrar venta" Width="150" Command="{Binding GuardarCommand}"/>
+                <Button Content="Cancelar" Width="100" Background="Gray" Command="{Binding CancelarCommand}"/>
+            </StackPanel>
+        </Grid>
+
+        <Border DockPanel.Dock="Bottom" Background="#f5f6fa" CornerRadius="8" Padding="16,10" Margin="0,10,0,0">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" RowDefinitions="Auto,Auto,Auto">
+                <Button Grid.RowSpan="3" Content="Quitar línea" Width="120" Background="#d63031"
+                        VerticalAlignment="Center" Command="{Binding QuitarLineaCommand}"/>
+                <TextBlock Grid.Column="2" Text="Subtotal:" Margin="0,0,16,0" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="3" Text="{Binding Subtotal, StringFormat='{}{0:C2}'}" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Row="1" Grid.Column="2" Text="IVA (19%):" Margin="0,0,16,0" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding Iva, StringFormat='{}{0:C2}'}" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Row="2" Grid.Column="2" Text="Total:" FontSize="18" FontWeight="Bold" Margin="0,4,16,0" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding Total, StringFormat='{}{0:C2}'}" FontSize="18" FontWeight="Bold"
+                           Foreground="{StaticResource PrimaryBrush}" Margin="0,4,0,0" HorizontalAlignment="Right"/>
+            </Grid>
+        </Border>
+
+        <!-- Lineas -->
+        <DataGrid ItemsSource="{Binding Lineas}" SelectedItem="{Binding LineaSeleccionada}"
+                  AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="All"
+                  BorderThickness="1" BorderBrush="#dfe6e9" Margin="0,12,0,0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Producto" Binding="{Binding Nombre}" Width="*"/>
+                <DataGridTextColumn Header="Promo" Binding="{Binding Promocion}" Width="90"/>
+                <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="105"/>
+                <DataGridTextColumn Header="Precio" Binding="{Binding PrecioUnitario, StringFormat='{}{0:C2}'}" Width="130"/>
+                <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, StringFormat='{}{0:C2}'}" Width="140"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>

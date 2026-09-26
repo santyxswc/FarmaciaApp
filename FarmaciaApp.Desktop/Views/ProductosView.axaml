@@ -15,7 +15,7 @@
             <Button Content="Editar" Width="100" Command="{Binding EditarCommand}"/>
             <Button Content="Eliminar" Width="100" Command="{Binding EliminarCommand}"/>
             <Button Content="Actualizar" Width="100" Command="{Binding RefreshCommand}"/>
-            <TextBox Width="240" Margin="10,0,10,5" VerticalAlignment="Center" Watermark="Buscar..."
+            <TextBox Width="200" Margin="10,0,10,5" VerticalAlignment="Center" Watermark="Buscar..."
                      Text="{Binding SearchTerm}"/>
             <Button Content="Buscar" Width="90" Command="{Binding BuscarCommand}"/>
         </WrapPanel>
@@ -28,10 +28,10 @@
                   SelectedItem="{Binding Seleccionado, Mode=TwoWay}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ProId}" Width="80"/>
-                <DataGridTextColumn Header="Nombre" Binding="{Binding ProNombre}" Width="200"/>
-                <DataGridTextColumn Header="Precio" Binding="{Binding ProPrecio}" Width="100"/>
+                <DataGridTextColumn Header="Nombre" Binding="{Binding ProNombre}" Width="2*"/>
+                <DataGridTextColumn Header="Precio" Binding="{Binding ProPrecio, StringFormat='{}{0:C0}'}" Width="110"/>
                 <DataGridTextColumn Header="Stock" Binding="{Binding ProStock}" Width="80"/>
-                <DataGridTextColumn Header="Descripción" Binding="{Binding ProDescripcion}" Width="*"/>
+                <DataGridTextColumn Header="Descripción" Binding="{Binding ProDescripcion}" Width="3*"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

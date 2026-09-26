@@ -10,6 +10,7 @@ services:
       ORACLE_PASSWORD: admin123
       APP_USER: farmacia
       APP_USER_PASSWORD: farmacia123
+      TZ: America/Bogota   # SYSDATE (fecha de las facturas) en hora de Colombia
     volumes:
       - ./database:/database:ro
       - oracle-data:/opt/oracle/oradata

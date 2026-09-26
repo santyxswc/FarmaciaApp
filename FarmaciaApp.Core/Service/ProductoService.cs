@@ -49,7 +49,12 @@ namespace FarmaciaApp.Core.Services
             if (id <= 0)
                 throw new ArgumentException("Id inválido");
 
-                        return _repo.DeleteCascade(id);
+            // Las facturas son registros historicos: un producto vendido no se puede borrar
+            int ventas = _repo.CountVentas(id);
+            if (ventas > 0)
+                throw new InvalidOperationException($"No se puede eliminar el producto porque aparece en {ventas} factura(s).");
+
+            return _repo.DeleteCascade(id);
         }
 
         public IEnumerable<Producto> Buscar(string termino)

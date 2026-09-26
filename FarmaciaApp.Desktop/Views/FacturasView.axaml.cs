@@ -10,5 +10,9 @@ namespace FarmaciaApp.Desktop.Views
             InitializeComponent();
             DataContext = new FacturasViewModel();
         }
+
+        // Doble clic en una factura abre su detalle
+        private void Grid_DoubleTapped(object sender, Avalonia.Input.TappedEventArgs e) =>
+            ((FacturasViewModel)DataContext).VerDetalleCommand.Execute(null);
     }
 }

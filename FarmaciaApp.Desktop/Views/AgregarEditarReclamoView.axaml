@@ -1,0 +1,28 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="FarmaciaApp.Desktop.Views.AgregarEditarReclamoView"
+        Title="{Binding Titulo}"
+        Width="520" Height="520"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+    <DockPanel Margin="20">
+        <TextBlock DockPanel.Dock="Top" Text="{Binding Titulo}" FontSize="22" FontWeight="Bold" Margin="0 0 0 10"/>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,15,0,0">
+            <Button Content="Guardar" Width="100" Command="{Binding GuardarCommand}"/>
+            <Button Content="Cancelar" Width="100" Background="Gray" Command="{Binding CancelarCommand}"/>
+        </StackPanel>
+        <TextBlock DockPanel.Dock="Bottom" Text="{Binding ErrorMessage}" Foreground="Red" FontWeight="SemiBold"
+                   TextWrapping="Wrap" Margin="0,5"/>
+        <StackPanel>
+            <TextBlock Classes="title" Text="Factura"/>
+            <ComboBox ItemsSource="{Binding Facturas}" SelectedItem="{Binding FacturaSeleccionada}"
+                      IsEnabled="{Binding EsNuevo}" PlaceholderText="Selecciona la factura"
+                      HorizontalAlignment="Stretch"/>
+            <TextBlock Classes="title" Text="Estado"/>
+            <ComboBox ItemsSource="{Binding Estados}" SelectedItem="{Binding Estado}" HorizontalAlignment="Stretch"/>
+            <TextBlock Classes="title" Text="Descripción"/>
+            <TextBox Text="{Binding Descripcion}" AcceptsReturn="True" TextWrapping="Wrap" Height="120"
+                     Watermark="¿Qué pasó con la compra?"/>
+        </StackPanel>
+    </DockPanel>
+</Window>

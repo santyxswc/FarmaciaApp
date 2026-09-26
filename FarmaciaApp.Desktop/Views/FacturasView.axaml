@@ -11,9 +11,10 @@
                     <Setter Property="Margin" Value="0,0,10,5"/>
                 </Style>
             </WrapPanel.Styles>
+            <Button Content="Nueva Factura" Width="140" Command="{Binding NuevaFacturaCommand}"/>
             <Button Content="Ver Detalle" Width="120" Command="{Binding VerDetalleCommand}"/>
             <Button Content="Actualizar" Width="100" Command="{Binding RefreshCommand}"/>
-            <TextBox Width="240" Margin="10,0,10,5" VerticalAlignment="Center" Watermark="Buscar..."
+            <TextBox Width="200" Margin="10,0,10,5" VerticalAlignment="Center" Watermark="Buscar..."
                      Text="{Binding SearchTerm}"/>
             <Button Content="Buscar" Width="90" Command="{Binding BuscarCommand}"/>
         </WrapPanel>
@@ -23,15 +24,16 @@
                   IsReadOnly="True"
                   GridLinesVisibility="All"
                   BorderThickness="1" BorderBrush="#dfe6e9"
-                  SelectedItem="{Binding Seleccionado, Mode=TwoWay}">
+                  SelectedItem="{Binding Seleccionado, Mode=TwoWay}"
+                  DoubleTapped="Grid_DoubleTapped">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="N° Factura" Binding="{Binding FacNumFactura}" Width="100"/>
+                <DataGridTextColumn Header="N° Factura" Binding="{Binding FacNumFactura}" Width="110"/>
                 <DataGridTextColumn Header="Fecha" Binding="{Binding FacFecha, StringFormat='{}{0:dd/MM/yyyy}'}" Width="120"/>
-                <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNombre}" Width="200"/>
-                <DataGridTextColumn Header="Vendedor" Binding="{Binding VendedorNombre}" Width="200"/>
-                <DataGridTextColumn Header="Total" Binding="{Binding FacTotal, StringFormat='{}{0:C2}'}" Width="110"/>
-                <DataGridTextColumn Header="IVA" Binding="{Binding FacIva, StringFormat='{}{0:C2}'}" Width="100"/>
-                <DataGridTextColumn Header="SubTotal" Binding="{Binding FacSubtotal, StringFormat='{}{0:C2}'}" Width="*"/>
+                <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNombre}" Width="*"/>
+                <DataGridTextColumn Header="Vendedor" Binding="{Binding VendedorNombre}" Width="*"/>
+                <DataGridTextColumn Header="Total" Binding="{Binding FacTotal, StringFormat='{}{0:C2}'}" Width="130"/>
+                <DataGridTextColumn Header="IVA" Binding="{Binding FacIva, StringFormat='{}{0:C2}'}" Width="120"/>
+                <DataGridTextColumn Header="SubTotal" Binding="{Binding FacSubtotal, StringFormat='{}{0:C2}'}" Width="130"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

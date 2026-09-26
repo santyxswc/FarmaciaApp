@@ -256,12 +256,13 @@ VALUES (SEQ_PERSONA.NEXTVAL, 'Laura', 'Martínez', 'Calle 15 # 8-34', '312987654
 INSERT INTO TBL_PERSONA (PER_ID, PER_NOMBRE, PER_APELLIDO, PER_DIRECCION, PER_TELEFONO, PER_EMAIL)
 VALUES (SEQ_PERSONA.NEXTVAL, 'Andrés', 'Pérez', 'Av. Panamericana # 22-10', '3155551234', 'andres.perez@farmacia.com');
 
--- Clientes (Carlos y Laura)
-INSERT INTO TBL_CLIENTE (CLI_ID, PER_ID) VALUES (1, 1);
-INSERT INTO TBL_CLIENTE (CLI_ID, PER_ID) VALUES (2, 2);
+-- Clientes (Carlos y Laura). CLI_ID y VEN_ID los genera la identidad (1, 2 y 1);
+-- si se insertan a mano, la identidad no avanza y el primer cliente creado desde la app falla
+INSERT INTO TBL_CLIENTE (PER_ID) VALUES (1);
+INSERT INTO TBL_CLIENTE (PER_ID) VALUES (2);
 
 -- Vendedor (Andrés)
-INSERT INTO TBL_VENDEDOR (VEN_ID, PER_ID) VALUES (1, 3);
+INSERT INTO TBL_VENDEDOR (PER_ID) VALUES (3);
 
 -- Proveedores
 INSERT INTO TBL_PROVEEDOR (PRO_ID, PRO_NOMBRE, PRO_CONTACTO, PRO_TELEFONO)

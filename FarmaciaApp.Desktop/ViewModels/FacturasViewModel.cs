@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Services;
 using FarmaciaApp.Desktop.Services;
+using FarmaciaApp.Desktop.Views;
 using System.Collections.ObjectModel;
 
 namespace FarmaciaApp.Desktop.ViewModels
@@ -23,6 +24,7 @@ namespace FarmaciaApp.Desktop.ViewModels
         public IRelayCommand RefreshCommand { get; }
         public IRelayCommand BuscarCommand { get; }
         public IAsyncRelayCommand VerDetalleCommand { get; }
+        public IAsyncRelayCommand NuevaFacturaCommand { get; }
 
         public FacturasViewModel()
         {
@@ -30,6 +32,7 @@ namespace FarmaciaApp.Desktop.ViewModels
             RefreshCommand = new RelayCommand(CargarFacturas);
             BuscarCommand = new RelayCommand(Buscar);
             VerDetalleCommand = new AsyncRelayCommand(AbrirDetalle, () => Seleccionado != null);
+            NuevaFacturaCommand = new AsyncRelayCommand(AbrirNuevaFactura);
             CargarFacturas();
         }
 
@@ -68,7 +71,33 @@ namespace FarmaciaApp.Desktop.ViewModels
         private async Task AbrirDetalle()
         {
             if (Seleccionado == null) return;
-            await Dialogs.Info($"Abriendo detalles de Factura N° {Seleccionado.FacNumFactura}. Vendedor: {Seleccionado.VendedorNombre}", "Detalle de Factura");
+
+            try
+            {
+                var factura = _service.ObtenerDetalle(Seleccionado.FacNumFactura);
+                await Dialogs.ShowForm(new FacturaDetalleView { DataContext = factura });
+            }
+            catch (Exception ex)
+            {
+                await Dialogs.Error("Error al cargar la factura: " + ex.Message);
+            }
+        }
+
+        private async Task AbrirNuevaFactura()
+        {
+            NuevaFacturaView window;
+            try
+            {
+                window = new NuevaFacturaView();
+                window.DataContext = new NuevaFacturaViewModel(window);
+            }
+            catch (Exception ex)
+            {
+                await Dialogs.Error("Error al preparar la factura: " + ex.Message);
+                return;
+            }
+
+            if (await Dialogs.ShowForm(window)) CargarFacturas();
         }
     }
 }

@@ -15,7 +15,7 @@
             <Button Content="Editar" Width="100" Command="{Binding EditarCommand}"/>
             <Button Content="Eliminar" Width="100" Command="{Binding EliminarCommand}"/>
             <Button Content="Actualizar" Width="100" Command="{Binding RefreshCommand}"/>
-            <TextBox Width="240" Margin="10,0,10,5" VerticalAlignment="Center" Watermark="Buscar..."
+            <TextBox Width="200" Margin="10,0,10,5" VerticalAlignment="Center" Watermark="Buscar..."
                      Text="{Binding SearchTerm}"/>
             <Button Content="Buscar" Width="90" Command="{Binding BuscarCommand}"/>
         </WrapPanel>
@@ -27,7 +27,7 @@
                   BorderThickness="1" BorderBrush="#dfe6e9"
                   SelectedItem="{Binding Seleccionado, Mode=TwoWay}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID Reclamo" Binding="{Binding RecId}" Width="100"/>
+                <DataGridTextColumn Header="ID Reclamo" Binding="{Binding RecId}" Width="115"/>
                 <DataGridTextColumn Header="Fecha" Binding="{Binding RecFecha, StringFormat='{}{0:dd/MM/yyyy}'}" Width="120"/>
                 <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNombre}" Width="200"/>
                 <DataGridTextColumn Header="Factura N°" Binding="{Binding FacNumFactura}" Width="110"/>

@@ -99,6 +99,17 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        public int CountFacturas(decimal perId)
+        {
+            using (IDbConnection db = OracleDbConnection.GetConnection())
+            {
+                string sql = @"SELECT COUNT(*) FROM TBL_FACTURA F
+                               INNER JOIN TBL_CLIENTE C ON F.CLI_ID = C.CLI_ID
+                               WHERE C.PER_ID = :Id";
+                return db.ExecuteScalar<int>(sql, new { Id = perId });
+            }
+        }
+
         public bool DeleteCascade(decimal id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())

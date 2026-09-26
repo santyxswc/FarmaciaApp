@@ -51,6 +51,10 @@ namespace FarmaciaApp.Core.Services
             if (id <= 0)
                 throw new ArgumentException("Id inválido");
 
+            int facturas = _repo.CountFacturas(id);
+            if (facturas > 0)
+                throw new InvalidOperationException($"No se puede eliminar: la persona aparece en {facturas} factura(s) como cliente o vendedor.");
+
             return _repo.DeleteCascade(id);
         }
 

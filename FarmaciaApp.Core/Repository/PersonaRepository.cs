@@ -42,7 +42,8 @@ namespace FarmaciaApp.Core.Repositories
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
             {
-                int newId = db.ExecuteScalar<int>("SELECT NVL(MAX(PER_ID), 0) + 1 FROM TBL_PERSONA");
+                // Misma secuencia que usa ClienteRepository, para que los IDs no choquen
+                int newId = db.ExecuteScalar<int>("SELECT SEQ_PERSONA.NEXTVAL FROM DUAL");
 
                 string sql = @"
                     INSERT INTO TBL_PERSONA 
@@ -88,6 +89,18 @@ namespace FarmaciaApp.Core.Repositories
                 });
 
                 return rows > 0;
+            }
+        }
+
+        // Facturas donde la persona aparece como cliente o como vendedor
+        public int CountFacturas(int id)
+        {
+            using (IDbConnection db = OracleDbConnection.GetConnection())
+            {
+                string sql = @"SELECT COUNT(*) FROM TBL_FACTURA F
+                               WHERE F.CLI_ID IN (SELECT CLI_ID FROM TBL_CLIENTE WHERE PER_ID = :Id)
+                                  OR F.VEN_ID IN (SELECT VEN_ID FROM TBL_VENDEDOR WHERE PER_ID = :Id)";
+                return db.ExecuteScalar<int>(sql, new { Id = id });
             }
         }
 

@@ -7,6 +7,8 @@ namespace FarmaciaApp.Core.Services
 {
     public class ReclamoService
     {
+        public static readonly string[] Estados = { "Pendiente", "En proceso", "Resuelto", "Rechazado" };
+
         private readonly ReclamoRepository _repo;
 
         public ReclamoService()
@@ -32,6 +34,16 @@ namespace FarmaciaApp.Core.Services
                 throw new ArgumentException("La descripción del reclamo es obligatoria.");
 
             return _repo.Insert(r);
+        }
+
+        public bool ActualizarReclamo(Reclamo r)
+        {
+            if (r.RecId <= 0)
+                throw new ArgumentException("Id de reclamo inválido.");
+            if (string.IsNullOrWhiteSpace(r.RecDescripcion))
+                throw new ArgumentException("La descripción del reclamo es obligatoria.");
+
+            return _repo.Update(r);
         }
 
         public bool EliminarReclamo(decimal id)

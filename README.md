@@ -79,6 +79,22 @@ Ejecute el script SQL en su base de datos Oracle (a través de SQL*Plus, SQL Dev
 
 El script crea automáticamente todas las secuencias, tablas, restricciones de integridad referencial y un conjunto de datos iniciales de prueba.
 
+> **¿Ya tenías la base creada con una versión anterior del script?** Ejecuta una vez
+> `@database/migracion_ids.sql` (Oracle 18c+). Sincroniza las secuencias y las identidades de
+> `TBL_CLIENTE` / `TBL_VENDEDOR` con los datos existentes; sin esto, crear clientes desde la app
+> falla con `ORA-00001`.
+
+### Funcionalidades
+
+- **Ventas (Facturas → Nueva Factura):** cliente, vendedor, método de pago y productos. En una sola transacción
+  registra el pago, la factura y sus líneas y descuenta el stock; si algún producto no alcanza, no se guarda nada.
+  - Los precios incluyen IVA (19 %): subtotal = total / 1.19.
+  - Se aplica automáticamente el mayor descuento de las promociones vigentes del producto (`PROMO_PRODU`).
+- **Detalle de factura:** botón "Ver Detalle" o doble clic en la factura.
+- **Reclamos:** crear (asociado a una factura) y editar descripción y estado (Pendiente, En proceso, Resuelto, Rechazado).
+- **Integridad de datos:** no se pueden eliminar clientes, vendedores ni productos que aparecen en facturas;
+  la app muestra el motivo en lugar del error de Oracle.
+
 ### 3. Configurar Cadena de Conexión
 
 Copie la plantilla de configuración:
@@ -117,7 +133,7 @@ docker compose up -d
 docker compose ps        # esperar a que el estado sea "healthy"
 # Sin el plugin compose, el equivalente es:
 #   docker run -d --name farmacia-oracle -p 1521:1521 \
-#     -e ORACLE_PASSWORD=admin123 -e APP_USER=farmacia -e APP_USER_PASSWORD=farmacia123 \
+#     -e ORACLE_PASSWORD=admin123 -e APP_USER=farmacia -e APP_USER_PASSWORD=farmacia123 -e TZ=America/Bogota \
 #     -v "$PWD/database:/database:ro" -v farmacia-oracle-data:/opt/oracle/oradata \
 #     gvenzl/oracle-free:23-slim
 

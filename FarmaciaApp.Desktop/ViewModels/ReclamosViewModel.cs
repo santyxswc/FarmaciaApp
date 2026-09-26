@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Services;
 using FarmaciaApp.Desktop.Services;
+using FarmaciaApp.Desktop.Views;
 using System.Collections.ObjectModel;
 
 namespace FarmaciaApp.Desktop.ViewModels
@@ -20,8 +21,8 @@ namespace FarmaciaApp.Desktop.ViewModels
         [ObservableProperty]
         private string searchTerm;
 
-        public IRelayCommand AgregarCommand { get; }
-        public IRelayCommand EditarCommand { get; }
+        public IAsyncRelayCommand AgregarCommand { get; }
+        public IAsyncRelayCommand EditarCommand { get; }
         public IAsyncRelayCommand EliminarCommand { get; }
         public IRelayCommand RefreshCommand { get; }
         public IRelayCommand BuscarCommand { get; }
@@ -30,8 +31,8 @@ namespace FarmaciaApp.Desktop.ViewModels
         {
             _service = new ReclamoService();
 
-            AgregarCommand = new RelayCommand(() => { });
-            EditarCommand = new RelayCommand(() => { }, () => Seleccionado != null);
+            AgregarCommand = new AsyncRelayCommand(AbrirAgregar);
+            EditarCommand = new AsyncRelayCommand(AbrirEditar, () => Seleccionado != null);
             EliminarCommand = new AsyncRelayCommand(Eliminar, () => Seleccionado != null);
             RefreshCommand = new RelayCommand(CargarReclamos);
             BuscarCommand = new RelayCommand(Buscar);
@@ -73,6 +74,24 @@ namespace FarmaciaApp.Desktop.ViewModels
             {
                 _ = Dialogs.Error("Error: " + ex.Message);
             }
+        }
+
+        private async Task AbrirAgregar()
+        {
+            var window = new AgregarEditarReclamoView();
+            window.DataContext = new AgregarEditarReclamoViewModel(window);
+            if (await Dialogs.ShowForm(window)) CargarReclamos();
+        }
+
+        private async Task AbrirEditar()
+        {
+            if (Seleccionado == null) return;
+
+            var window = new AgregarEditarReclamoView();
+            var vm = new AgregarEditarReclamoViewModel(window);
+            vm.LoadFromModel(Seleccionado);
+            window.DataContext = vm;
+            if (await Dialogs.ShowForm(window)) CargarReclamos();
         }
 
         private async Task Eliminar()

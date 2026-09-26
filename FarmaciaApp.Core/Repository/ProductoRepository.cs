@@ -84,6 +84,15 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        // Lineas de factura en las que aparece el producto
+        public int CountVentas(int id)
+        {
+            using (IDbConnection db = OracleDbConnection.GetConnection())
+            {
+                return db.ExecuteScalar<int>("SELECT COUNT(*) FROM FACTU_PRODUC WHERE PRO_ID = :Id", new { Id = id });
+            }
+        }
+
         public bool DeleteCascade(int id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -95,7 +104,6 @@ namespace FarmaciaApp.Core.Repositories
                     {
                                                 db.Execute("DELETE FROM PROMO_PRODU WHERE PRO_ID = :Id", new { Id = id }, tran);
                         db.Execute("DELETE FROM PROVEE_PRODUC WHERE PRO_ID = :Id", new { Id = id }, tran);
-                        db.Execute("DELETE FROM FACTU_PRODUC WHERE PRO_ID = :Id", new { Id = id }, tran);
 
                                                 int rows = db.Execute("DELETE FROM TBL_PRODUCTO WHERE PRO_ID = :Id", new { Id = id }, tran);
 
