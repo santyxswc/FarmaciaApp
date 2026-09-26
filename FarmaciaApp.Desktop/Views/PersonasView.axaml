@@ -9,7 +9,6 @@
             <TextBlock Classes="subtitulo-pagina" Text="Datos personales de clientes, vendedores y empleados"/>
         </StackPanel>
 
-        <!-- Acciones y busqueda -->
         <Border DockPanel.Dock="Top" Classes="panel" Padding="12,8" Margin="0,0,0,12">
             <WrapPanel>
                 <WrapPanel.Styles>

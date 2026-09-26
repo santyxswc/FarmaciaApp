@@ -1,3 +1,8 @@
+/**
+ * @file ReporteRepository.cs
+ * @brief Consultas de los reportes de ventas.
+ * @author Santiago Caicedo
+ */
 using Dapper;
 using FarmaciaApp.Core.Database;
 using FarmaciaApp.Core.Models;
@@ -7,9 +12,17 @@ using System.Data;
 
 namespace FarmaciaApp.Core.Repositories
 {
-    // Consultas de ventas entre dos fechas (hasta exclusivo)
+    /**
+     * @brief Totales de ventas entre dos fechas (la fecha final no se incluye).
+     */
     public class ReporteRepository
     {
+        /**
+         * @brief Calcula facturas, total y unidades vendidas.
+         * @param desde Fecha inicial
+         * @param hasta Fecha final (no incluida)
+         * @return Resumen del periodo
+         */
         public ResumenVentas GetResumen(DateTime desde, DateTime hasta)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -29,6 +42,12 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Agrupa las ventas por vendedor.
+         * @param desde Fecha inicial
+         * @param hasta Fecha final (no incluida)
+         * @return Vendedores ordenados por total vendido
+         */
         public IEnumerable<VentaPorVendedor> GetVentasPorVendedor(DateTime desde, DateTime hasta)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -46,6 +65,12 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Obtiene los 10 productos con más unidades vendidas.
+         * @param desde Fecha inicial
+         * @param hasta Fecha final (no incluida)
+         * @return Productos ordenados por unidades
+         */
         public IEnumerable<ProductoVendido> GetProductosMasVendidos(DateTime desde, DateTime hasta)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())

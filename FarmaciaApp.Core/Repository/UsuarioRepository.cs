@@ -1,3 +1,8 @@
+/**
+ * @file UsuarioRepository.cs
+ * @brief Acceso a datos de usuarios.
+ * @author Santiago Caicedo
+ */
 using Dapper;
 using FarmaciaApp.Core.Database;
 using FarmaciaApp.Core.Models;
@@ -6,8 +11,12 @@ using System.Data;
 
 namespace FarmaciaApp.Core.Repositories
 {
+    /**
+     * @brief Consultas y cambios de TBL_USUARIO.
+     */
     public class UsuarioRepository
     {
+        /** Consulta base de usuarios con el nombre de su persona. */
         private const string UsuarioSelectSql = @"
             SELECT U.USU_ID AS UsuId,
                    U.USU_LOGIN AS Login,
@@ -21,6 +30,10 @@ namespace FarmaciaApp.Core.Repositories
             FROM TBL_USUARIO U
             LEFT JOIN TBL_PERSONA P ON P.PER_ID = U.PER_ID";
 
+        /**
+         * @brief Obtiene todos los usuarios ordenados por rol y login.
+         * @return Usuarios
+         */
         public IEnumerable<Usuario> GetAll()
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -29,6 +42,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Busca un usuario.
+         * @param id USU_ID
+         * @return Usuario, o null si no existe
+         */
         public Usuario GetById(decimal id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -37,6 +55,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Busca un usuario por su login.
+         * @param login Login en minúsculas
+         * @return Usuario, o null si no existe
+         */
         public Usuario GetByLogin(string login)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -45,6 +68,15 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Registra un usuario.
+         * @param login Login en minúsculas
+         * @param hash Hash de la contraseña
+         * @param sal Sal del hash
+         * @param rol Administrador o Empleado
+         * @param perId Persona asociada, o null
+         * @return USU_ID asignado
+         */
         public decimal Insert(string login, string hash, string sal, string rol, decimal? perId)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -56,6 +88,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Activa o desactiva un usuario.
+         * @param id USU_ID
+         * @param activo Nuevo estado
+         */
         public void SetActivo(decimal id, bool activo)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -64,6 +101,12 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Reemplaza la contraseña de un usuario.
+         * @param id USU_ID
+         * @param hash Hash nuevo
+         * @param sal Sal nueva
+         */
         public void SetClave(decimal id, string hash, string sal)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -72,6 +115,10 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Guarda la fecha actual como último ingreso.
+         * @param id USU_ID
+         */
         public void RegistrarIngreso(decimal id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -80,6 +127,10 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Cuenta los administradores activos.
+         * @return Número de administradores activos
+         */
         public int CountAdminsActivos()
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -88,7 +139,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
-        // Cuentas de empleado activas asociadas a una persona
+        /**
+         * @brief Cuenta las cuentas de empleado activas de una persona.
+         * @param perId PER_ID
+         * @return Número de cuentas
+         */
         public int CountEmpleadosActivosPorPersona(int perId)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -98,6 +153,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Cuenta las cuentas de usuario de una persona.
+         * @param perId PER_ID
+         * @return Número de cuentas
+         */
         public int CountPorPersona(int perId)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -106,6 +166,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Obtiene el VEN_ID de una persona.
+         * @param perId PER_ID
+         * @return VEN_ID, o null si la persona no es vendedor
+         */
         public decimal? GetVenIdPorPersona(decimal perId)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())

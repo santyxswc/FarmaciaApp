@@ -18,9 +18,6 @@
         <FluentTheme/>
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
 
-        <!-- ================= Botones ================= -->
-
-        <!-- Principal (azul) -->
         <Style Selector="Button">
             <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -46,7 +43,6 @@
             <Setter Property="Foreground" Value="#95a5a6"/>
         </Style>
 
-        <!-- Secundario (blanco con borde) -->
         <Style Selector="Button.secundario">
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="{StaticResource DarkGrayBrush}"/>
@@ -68,7 +64,6 @@
             <Setter Property="BorderBrush" Value="#e3e6ea"/>
         </Style>
 
-        <!-- Peligro (rojo) -->
         <Style Selector="Button.peligro">
             <Setter Property="Background" Value="{StaticResource PeligroBrush}"/>
         </Style>
@@ -80,7 +75,6 @@
             <Setter Property="Background" Value="#9a1616"/>
         </Style>
 
-        <!-- Menu lateral -->
         <Style Selector="Button.sidebar">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="#dfe6e9"/>
@@ -107,7 +101,6 @@
             <Setter Property="Background" Value="#0773c5"/>
         </Style>
 
-        <!-- Enlace (texto sin fondo) -->
         <Style Selector="Button.enlace">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="#74b9ff"/>
@@ -121,8 +114,6 @@
             <Setter Property="Foreground" Value="White"/>
         </Style>
 
-        <!-- ================= Textos ================= -->
-
         <Style Selector="TextBlock.titulo-pagina">
             <Setter Property="FontSize" Value="24"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -133,7 +124,6 @@
             <Setter Property="Foreground" Value="{StaticResource TextoSuaveBrush}"/>
             <Setter Property="Margin" Value="0,4,0,0"/>
         </Style>
-        <!-- Etiqueta de un campo de formulario -->
         <Style Selector="TextBlock.etiqueta">
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -146,15 +136,12 @@
             <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="Margin" Value="0,4,0,0"/>
         </Style>
-        <!-- Compatibilidad con vistas antiguas -->
         <Style Selector="TextBlock.title">
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Margin" Value="0,14,0,6"/>
             <Setter Property="Foreground" Value="{StaticResource DarkGrayBrush}"/>
         </Style>
-
-        <!-- ================= Paneles ================= -->
 
         <Style Selector="Border.panel">
             <Setter Property="Background" Value="White"/>
@@ -175,8 +162,6 @@
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
 
-        <!-- ================= Campos ================= -->
-
         <Style Selector="TextBox">
             <Setter Property="CornerRadius" Value="6"/>
             <Setter Property="MinHeight" Value="36"/>
@@ -193,8 +178,6 @@
         <Style Selector="NumericUpDown">
             <Setter Property="CornerRadius" Value="6"/>
         </Style>
-
-        <!-- ================= Tablas ================= -->
 
         <Style Selector="DataGrid">
             <Setter Property="Background" Value="White"/>

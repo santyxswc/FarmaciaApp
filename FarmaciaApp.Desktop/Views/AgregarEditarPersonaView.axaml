@@ -44,7 +44,6 @@
                     <TextBlock Classes="etiqueta" Text="Dirección"/>
                     <TextBox Text="{Binding Direccion}"/>
                 </StackPanel>
-                <!-- Solo el administrador decide quien vende -->
                 <Border Background="#f5f6fa" CornerRadius="8" Padding="14,10" Margin="0,18,0,0"
                         IsVisible="{x:Static core:Sesion.EsAdmin}">
                     <CheckBox IsChecked="{Binding EsVendedor}">

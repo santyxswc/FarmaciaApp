@@ -1,4 +1,9 @@
-﻿using System;
+﻿/**
+ * @file ProveedorService.cs
+ * @brief Reglas de negocio de los proveedores.
+ * @author Santiago Caicedo
+ */
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,23 +14,44 @@ using System.Collections.Generic;
 
 namespace FarmaciaApp.Core.Services
 {
+    /**
+     * @brief Validaciones, permisos y registro de movimientos de los proveedores.
+     */
     public class ProveedorService
     {
         private readonly ProveedorRepository _repo;
 
+        /**
+         * @brief Crea el servicio con su repositorio.
+         */
         public ProveedorService()
         {
             _repo = new ProveedorRepository();
         }
 
+        /**
+         * @brief Obtiene todos los registros.
+         * @return Proveedores
+         */
         public IEnumerable<Proveedor> ObtenerProveedores() => _repo.GetAll();
 
+        /**
+         * @brief Busca un registro.
+         * @param id Identificador
+         * @return Registro, o null
+         */
         public Proveedor ObtenerPorId(int id) => _repo.GetById(id);
 
+        /**
+         * @brief Valida y registra. Solo administrador.
+         * @param p Datos a registrar
+         * @return Identificador asignado
+         * @exception ArgumentException Si faltan datos o no son válidos
+         */
         public int CrearProveedor(Proveedor p)
         {
             Sesion.ExigirAdmin("crear proveedores");
-                        if (string.IsNullOrWhiteSpace(p.ProNombre))
+            if (string.IsNullOrWhiteSpace(p.ProNombre))
                 throw new ArgumentException("El nombre es obligatorio.");
 
             int id = _repo.Insert(p);
@@ -33,6 +59,12 @@ namespace FarmaciaApp.Core.Services
             return id;
         }
 
+        /**
+         * @brief Valida y actualiza. Solo administrador.
+         * @param p Registro con los datos nuevos
+         * @return true si se actualizo
+         * @exception ArgumentException Si faltan datos o no son válidos
+         */
         public bool ActualizarProveedor(Proveedor p)
         {
             Sesion.ExigirAdmin("modificar proveedores");
@@ -47,6 +79,11 @@ namespace FarmaciaApp.Core.Services
             return ok;
         }
 
+        /**
+         * @brief Elimina el registro y sus relaciones con productos. Solo administrador.
+         * @param id Identificador
+         * @return true si se elimino
+         */
         public bool EliminarProveedor(int id)
         {
             Sesion.ExigirAdmin("eliminar proveedores");
@@ -60,6 +97,11 @@ namespace FarmaciaApp.Core.Services
             return ok;
         }
 
+        /**
+         * @brief Busca proveedores por nombre o contacto.
+         * @param termino Texto a buscar
+         * @return Proveedores que coinciden
+         */
         public IEnumerable<Proveedor> Buscar(string termino)
         {
             return _repo.SearchByName(termino);

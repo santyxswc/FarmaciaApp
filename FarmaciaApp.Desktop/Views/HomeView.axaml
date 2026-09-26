@@ -4,7 +4,6 @@
              Background="#f5f6fa">
 
     <UserControl.Styles>
-        <!-- Tarjetas de acceso rapido: al hacer clic abren su seccion -->
         <Style Selector="Button.tarjeta">
             <Setter Property="Height" Value="110"/>
             <Setter Property="Margin" Value="10"/>
@@ -38,14 +37,12 @@
         </Style>
     </UserControl.Styles>
 
-    <!-- ScrollViewer: con la ventana pequeña las tarjetas quedan en varias filas y pueden no caber -->
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="20">
             <TextBlock Text="{Binding NombreUsuario, StringFormat='Hola, {0}'}" FontSize="28" FontWeight="Bold" Margin="0 0 0 10"/>
             <TextBlock Text="{Binding DescripcionTurno}" FontSize="16" Foreground="Gray"/>
             <TextBlock Text="Seleccione una opción del menú lateral o una de las tarjetas" FontSize="14" Foreground="Gray" Margin="0,4,0,0"/>
             <Separator Margin="0 20"/>
-            <!-- Las columnas y el alto se ajustan al ancho disponible (ver HomeView.axaml.cs) -->
             <UniformGrid x:Name="rejilla" Columns="4">
                 <Button Classes="tarjeta" Background="#0984e3" Command="{Binding GoProductosCommand}">
                     <StackPanel>
@@ -89,7 +86,6 @@
                         <TextBlock Text="Gestión de reclamos" FontSize="14" Foreground="#ffe0e0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Button>
-                <!-- Solo administrador (se quitan en HomeView.axaml.cs para empleados) -->
                 <Button x:Name="tarjetaReportes" Classes="tarjeta" Background="#8854d0" Command="{Binding GoReportesCommand}">
                     <StackPanel>
                         <TextBlock Text="Reportes" FontSize="22" Foreground="White"/>

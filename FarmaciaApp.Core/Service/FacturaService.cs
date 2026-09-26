@@ -1,3 +1,8 @@
+/**
+ * @file FacturaService.cs
+ * @brief Reglas de negocio de las ventas y facturas.
+ * @author Santiago Caicedo
+ */
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Repositories;
 using System;
@@ -6,19 +11,35 @@ using System.Linq;
 
 namespace FarmaciaApp.Core.Services
 {
+    /**
+     * @brief Consulta de facturas y registro de ventas.
+     */
     public class FacturaService
     {
+        /** Metodos de pago aceptados. */
         public static readonly string[] MetodosPago = { "Efectivo", "Tarjeta débito", "Tarjeta crédito", "Transferencia" };
 
         private readonly FacturaRepository _repo;
 
+        /**
+         * @brief Crea el servicio con su repositorio.
+         */
         public FacturaService()
         {
             _repo = new FacturaRepository();
         }
 
+        /**
+         * @brief Obtiene todas las facturas.
+         * @return Facturas
+         */
         public IEnumerable<Factura> ObtenerFacturas() => _repo.GetAll();
 
+        /**
+         * @brief Busca una factura sin sus líneas.
+         * @param numero Número de factura
+         * @return Factura, o null
+         */
         public Factura ObtenerPorNumero(decimal numero)
         {
             if (numero <= 0)
@@ -27,7 +48,11 @@ namespace FarmaciaApp.Core.Services
             return _repo.GetById(numero);
         }
 
-        // Factura con sus lineas de productos
+        /**
+         * @brief Busca una factura con sus líneas de productos.
+         * @param numero Número de factura
+         * @return Factura con Items cargado, o null
+         */
         public Factura ObtenerDetalle(decimal numero)
         {
             var factura = ObtenerPorNumero(numero);
@@ -36,6 +61,11 @@ namespace FarmaciaApp.Core.Services
             return factura;
         }
 
+        /**
+         * @brief Busca facturas por cliente, vendedor o número.
+         * @param termino Texto a buscar; vacío devuelve todas
+         * @return Facturas que coinciden
+         */
         public IEnumerable<Factura> Buscar(string termino)
         {
             if (string.IsNullOrWhiteSpace(termino))
@@ -45,16 +75,38 @@ namespace FarmaciaApp.Core.Services
             return _repo.Search(termino);
         }
 
+        /**
+         * @brief Clientes que se pueden facturar.
+         * @return CLI_ID y nombre
+         */
         public IEnumerable<Seleccion> ObtenerClientes() => _repo.GetClientes();
 
+        /**
+         * @brief Vendedores registrados.
+         * @return VEN_ID y nombre
+         */
         public IEnumerable<Seleccion> ObtenerVendedores() => _repo.GetVendedores();
 
+        /**
+         * @brief Productos con el precio del día.
+         * @return Productos con descuento y stock
+         */
         public IEnumerable<ProductoVenta> ObtenerProductosParaVenta() => _repo.GetProductosParaVenta();
 
+        /**
+         * @brief Valida y registra una venta.
+         * @param cliId CLI_ID del cliente
+         * @param venId VEN_ID del vendedor; para un empleado se usa siempre el suyo
+         * @param metodoPago Método de pago
+         * @param items Productos y cantidades; los repetidos se unen en una línea
+         * @return Número de la factura creada
+         * @exception ArgumentException Si faltan datos o hay cantidades no válidas
+         * @exception InvalidOperationException Si no hay stock suficiente o el empleado no es vendedor
+         */
         public decimal CrearFactura(decimal cliId, decimal venId, string metodoPago, IEnumerable<FacturaProductoDetalle> items)
         {
-            // Un empleado solo puede registrar ventas a su propio nombre
-            if (Sesion.Activa && !Sesion.EsAdmin)
+            Sesion.ExigirSesion();
+            if (!Sesion.EsAdmin)
                 venId = Sesion.VenId ?? throw new InvalidOperationException(
                     "Tu usuario no está asociado a un vendedor. Pide al administrador que lo configure.");
 
@@ -65,7 +117,6 @@ namespace FarmaciaApp.Core.Services
             if (string.IsNullOrWhiteSpace(metodoPago))
                 throw new ArgumentException("Selecciona el método de pago.");
 
-            // Un mismo producto agregado dos veces se une en una sola linea
             var lineas = (items ?? Enumerable.Empty<FacturaProductoDetalle>())
                 .GroupBy(i => i.ProId)
                 .Select(g => new FacturaProductoDetalle { ProId = g.Key, Cantidad = g.Sum(i => i.Cantidad) })
@@ -79,7 +130,7 @@ namespace FarmaciaApp.Core.Services
             decimal numero = _repo.Insert(cliId, venId, metodoPago, lineas);
             var factura = _repo.GetById(numero);
             Auditoria.Registrar("Venta registrada",
-                $"Factura N° {numero} · {factura?.ClienteNombre} · {factura?.FacTotal:C0} · {metodoPago} · vendedor {factura?.VendedorNombre}");
+                $"Factura N° {numero} · {factura?.ClienteNombre} · {Formato.Moneda(factura?.FacTotal ?? 0)} · {metodoPago} · vendedor {factura?.VendedorNombre}");
             return numero;
         }
     }

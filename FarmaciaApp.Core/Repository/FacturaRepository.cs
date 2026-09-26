@@ -1,3 +1,8 @@
+/**
+ * @file FacturaRepository.cs
+ * @brief Acceso a datos de facturas y ventas.
+ * @author Santiago Caicedo
+ */
 using Dapper;
 using FarmaciaApp.Core.Database;
 using FarmaciaApp.Core.Models;
@@ -8,8 +13,12 @@ using System.Linq;
 
 namespace FarmaciaApp.Core.Repositories
 {
+    /**
+     * @brief Consultas de facturas y registro de ventas.
+     */
     public class FacturaRepository
     {
+        /** Consulta base de facturas con cliente, vendedor y método de pago. */
         private const string FacturaSelectSql = @"
             SELECT 
                 F.FAC_NUM_FACTURA AS FacNumFactura,
@@ -32,7 +41,7 @@ namespace FarmaciaApp.Core.Repositories
             LEFT JOIN TBL_PAGO PG ON F.PAG_ID = PG.PAG_ID
             ";
 
-        // Mayor descuento de las promociones vigentes del producto (0 si no tiene)
+        /** Mayor descuento de las promociones vigentes de un producto (0 si no tiene). */
         private const string DescuentoActivoSql = @"
             NVL((SELECT MAX(PR.PRM_DESCUENTO)
                  FROM PROMO_PRODU PP
@@ -40,6 +49,10 @@ namespace FarmaciaApp.Core.Repositories
                  WHERE PP.PRO_ID = P.PRO_ID
                    AND SYSDATE BETWEEN PR.PRM_FECHA_INI AND PR.PRM_FECHA_FIN), 0)";
 
+        /**
+         * @brief Obtiene todas las facturas, de la más reciente a la más antigua.
+         * @return Facturas
+         */
         public IEnumerable<Factura> GetAll()
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -49,6 +62,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Busca una factura.
+         * @param numero Número de factura
+         * @return Factura, o null si no existe
+         */
         public Factura GetById(decimal numero)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -58,6 +76,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Obtiene las líneas de una factura.
+         * @param numero Número de factura
+         * @return Lineas con el nombre de cada producto
+         */
         public List<FacturaProductoDetalle> GetItems(decimal numero)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -76,6 +99,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Busca facturas por cliente, vendedor o número.
+         * @param term Texto a buscar
+         * @return Facturas que coinciden
+         */
         public IEnumerable<Factura> Search(string term)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -96,6 +124,10 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Clientes para la lista de una venta.
+         * @return CLI_ID y nombre de cada cliente
+         */
         public IEnumerable<Seleccion> GetClientes()
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -107,6 +139,10 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Vendedores para la lista de una venta.
+         * @return VEN_ID y nombre de cada vendedor
+         */
         public IEnumerable<Seleccion> GetVendedores()
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -118,6 +154,10 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Productos con el precio del día y su stock.
+         * @return Productos con el descuento de la promoción vigente
+         */
         public IEnumerable<ProductoVenta> GetProductosParaVenta()
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -134,8 +174,19 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
-        // Registra la venta completa en una transaccion: pago, factura, lineas y descuento de stock.
-        // Los precios se toman de la base de datos (con la promocion vigente), no de la pantalla.
+        /**
+         * @brief Registra una venta completa en una transacción.
+         * @param cliId CLI_ID del cliente
+         * @param venId VEN_ID del vendedor
+         * @param metodoPago Método de pago
+         * @param items Productos y cantidades (sin repetidos)
+         * @return Número de la factura creada
+         * @exception InvalidOperationException Si un producto no existe o no tiene stock suficiente; en ese caso no se guarda nada
+         *
+         * Guarda el pago, la factura y sus líneas y descuenta el stock. Los precios se toman de la base de datos
+         * con la promoción vigente, y cada producto se bloquea con FOR UPDATE hasta el commit para que dos ventas
+         * simultáneas no gasten el mismo stock.
+         */
         public decimal Insert(decimal cliId, decimal venId, string metodoPago, IEnumerable<FacturaProductoDetalle> items)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -148,7 +199,6 @@ namespace FarmaciaApp.Core.Repositories
                         var lineas = new List<FacturaProductoDetalle>();
                         foreach (var item in items)
                         {
-                            // FOR UPDATE bloquea el producto hasta el commit, para que dos ventas no gasten el mismo stock
                             var producto = db.QueryFirstOrDefault<ProductoVenta>(@"
                                 SELECT PRO_ID AS ProId, PRO_NOMBRE AS ProNombre, PRO_PRECIO AS PrecioBase, PRO_STOCK AS Stock
                                 FROM TBL_PRODUCTO WHERE PRO_ID = :Id FOR UPDATE", new { Id = item.ProId }, tran);

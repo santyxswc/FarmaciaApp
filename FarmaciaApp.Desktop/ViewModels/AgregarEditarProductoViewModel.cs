@@ -1,3 +1,8 @@
+/**
+ * @file AgregarEditarProductoViewModel.cs
+ * @brief Lógica del formulario de producto.
+ * @author Santiago Caicedo
+ */
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -7,12 +12,20 @@ using System.ComponentModel;
 
 namespace FarmaciaApp.Desktop.ViewModels
 {
+    /**
+     * @brief Crea o edita un producto y válida el formulario mientras se escribe.
+     */
     public partial class AgregarEditarProductoViewModel : ObservableObject
     {
         private readonly ProductoService _service;
         private readonly Window _ownerWindow;
         private Producto _form;
 
+        /**
+         * @brief Producto que se edita en el formulario.
+         *
+         * Al cambiar se vuelve a evaluar si se puede guardar.
+         */
         public Producto Form
         {
             get => _form;
@@ -28,16 +41,25 @@ namespace FarmaciaApp.Desktop.ViewModels
             }
         }
 
+        /** Título de la ventana según si se crea o se edita. */
         public string Titulo => Form?.ProId > 0 ? "Editar producto" : "Nuevo producto";
 
+        /** Error de validación o de guardado. */
         [ObservableProperty]
         private string errorMessage;
 
+        /** Comando Guardar; se habilita cuando el formulario es válido. */
         public RelayCommand SaveCommand { get; }
+        /** Comando Cancelar. */
         public IRelayCommand CancelCommand { get; }
 
+        /** Indica si se está editando un producto existente. */
         public bool IsEditMode => Form?.ProId > 0;
 
+        /**
+         * @brief Crea el formulario vacío.
+         * @param owner Ventana del formulario
+         */
         public AgregarEditarProductoViewModel(Window owner)
         {
             _service = new ProductoService();
@@ -47,9 +69,18 @@ namespace FarmaciaApp.Desktop.ViewModels
             Form = new Producto();
         }
 
+        /**
+         * @brief Reevalúa el botón Guardar cuando cambia un campo.
+         * @param sender Modelo
+         * @param e Campo que cambio
+         */
         private void Form_PropertyChanged(object sender, PropertyChangedEventArgs e) =>
             SaveCommand.NotifyCanExecuteChanged();
 
+        /**
+         * @brief Carga un producto existente para editarlo.
+         * @param p Producto a editar
+         */
         public void LoadFromModel(Producto p)
         {
             if (p == null) return;
@@ -63,6 +94,10 @@ namespace FarmaciaApp.Desktop.ViewModels
             };
         }
 
+        /**
+         * @brief Indica si los campos obligatorios son válidos.
+         * @return true si se puede guardar
+         */
         private bool CanExecuteSave()
         {
             if (Form == null) return false;
@@ -72,6 +107,9 @@ namespace FarmaciaApp.Desktop.ViewModels
                    Form.ProStock >= 0;
         }
 
+        /**
+         * @brief Guarda y cierra el formulario; si falla, muestra el error.
+         */
         private void Save()
         {
             if (!CanExecuteSave())

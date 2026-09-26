@@ -1,4 +1,9 @@
-﻿using System;
+﻿/**
+ * @file PersonaServices.cs
+ * @brief Reglas de negocio de las personas.
+ * @author Santiago Caicedo
+ */
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,22 +12,43 @@ using FarmaciaApp.Core.Repositories;
 
 namespace FarmaciaApp.Core.Services
 {
+    /**
+     * @brief Validaciones, permisos y registro de movimientos de las personas.
+     */
     public class PersonaService
     {
         private readonly PersonaRepository _repo;
 
+        /**
+         * @brief Crea el servicio con su repositorio.
+         */
         public PersonaService()
         {
             _repo = new PersonaRepository();
         }
 
+        /**
+         * @brief Obtiene todas las personas.
+         * @return Personas con sus roles
+         */
         public IEnumerable<Persona> ObtenerPersonas() => _repo.GetAll();
 
+        /**
+         * @brief Busca una persona.
+         * @param id PER_ID
+         * @return Persona, o null
+         */
         public Persona ObtenerPorId(int id) => _repo.GetById(id);
 
+        /**
+         * @brief Valida y registra una persona.
+         * @param p Datos de la persona (nombre y apellido obligatorios)
+         * @return PER_ID asignado
+         * @exception ArgumentException Si faltan datos o el email no es válido
+         */
         public int CrearPersona(Persona p)
         {
-                        if (string.IsNullOrWhiteSpace(p.PerNombre))
+            if (string.IsNullOrWhiteSpace(p.PerNombre))
                 throw new ArgumentException("El nombre es obligatorio.");
             if (string.IsNullOrWhiteSpace(p.PerApellido))
                 throw new ArgumentException("El apellido es obligatorio.");
@@ -34,6 +60,12 @@ namespace FarmaciaApp.Core.Services
             return id;
         }
 
+        /**
+         * @brief Valida y actualiza los datos personales. No cambia los roles.
+         * @param p Persona con los datos nuevos
+         * @return true si se actualizo
+         * @exception ArgumentException Si faltan datos o el email no es válido
+         */
         public bool ActualizarPersona(Persona p)
         {
             if (p.PerId <= 0)
@@ -51,7 +83,12 @@ namespace FarmaciaApp.Core.Services
             return ok;
         }
 
-        // Marca o desmarca a la persona como vendedor (quien puede registrar ventas)
+        /**
+         * @brief Marca o desmarca a una persona como vendedor. Solo administrador.
+         * @param id PER_ID
+         * @param esVendedor true para marcarla como vendedor
+         * @exception InvalidOperationException Si se quita el rol a alguien con facturas o con cuenta de empleado activa
+         */
         public void AsignarVendedor(int id, bool esVendedor)
         {
             Sesion.ExigirAdmin("cambiar el rol de vendedor");
@@ -72,6 +109,12 @@ namespace FarmaciaApp.Core.Services
             Auditoria.Registrar(esVendedor ? "Vendedor asignado" : "Vendedor retirado", _repo.GetById(id)?.NombreCompleto);
         }
 
+        /**
+         * @brief Elimina una persona. Solo administrador.
+         * @param id PER_ID
+         * @return true si se elimino
+         * @exception InvalidOperationException Si aparece en facturas o tiene una cuenta de usuario
+         */
         public bool EliminarPersona(int id)
         {
             Sesion.ExigirAdmin("eliminar personas");
@@ -92,6 +135,11 @@ namespace FarmaciaApp.Core.Services
             return ok;
         }
 
+        /**
+         * @brief Busca personas por nombre, apellido o email.
+         * @param termino Texto a buscar
+         * @return Personas que coinciden
+         */
         public IEnumerable<Persona> Buscar(string termino)
         {
             return _repo.SearchByName(termino);

@@ -18,14 +18,12 @@
     </Window.Styles>
 
     <Grid ColumnDefinitions="230,*">
-        <!-- ================= Menu lateral ================= -->
         <DockPanel Background="#2d3436">
             <StackPanel DockPanel.Dock="Top" Margin="26,22,20,4">
                 <TextBlock Text="Farmacia" Foreground="White" FontSize="26" FontWeight="Bold"/>
                 <TextBlock Text="Sistema de gestión" Foreground="#95a5a6" FontSize="12"/>
             </StackPanel>
 
-            <!-- Usuario del turno -->
             <Border DockPanel.Dock="Bottom" Background="#262c2e" Padding="20,14">
                 <StackPanel Spacing="2">
                     <TextBlock Text="{Binding NombreUsuario}" Foreground="White" FontWeight="SemiBold"
@@ -58,7 +56,6 @@
                     <Button Classes="sidebar" Content="Reclamos" Command="{Binding GoReclamosCommand}"
                             Classes.activo="{Binding SeccionActual, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Reclamos}"/>
 
-                    <!-- Solo para el administrador -->
                     <StackPanel IsVisible="{Binding EsAdmin}">
                         <TextBlock Classes="seccion-menu" Text="ADMINISTRACIÓN"/>
                         <Button Classes="sidebar" Content="Reportes de ventas" Command="{Binding GoReportesCommand}"
@@ -72,7 +69,6 @@
             </ScrollViewer>
         </DockPanel>
 
-        <!-- ================= Contenido ================= -->
         <ContentControl Grid.Column="1" Content="{Binding CurrentView}"/>
     </Grid>
 </Window>

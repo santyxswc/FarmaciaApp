@@ -1,3 +1,8 @@
+/**
+ * @file ProductoRepository.cs
+ * @brief Acceso a datos de productos.
+ * @author Santiago Caicedo
+ */
 using Dapper;
 using FarmaciaApp.Core.Database;
 using FarmaciaApp.Core.Models;
@@ -7,8 +12,15 @@ using System.Data;
 
 namespace FarmaciaApp.Core.Repositories
 {
+    /**
+     * @brief Consultas y cambios de TBL_PRODUCTO.
+     */
     public class ProductoRepository
     {
+        /**
+         * @brief Obtiene todos los productos ordenados por nombre.
+         * @return Productos
+         */
         public IEnumerable<Producto> GetAll()
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -25,6 +37,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Busca un producto.
+         * @param id PRO_ID
+         * @return Producto, o null si no existe
+         */
         public Producto GetById(int id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -37,6 +54,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Registra un producto.
+         * @param p Datos del producto
+         * @return PRO_ID asignado por SEQ_PRODUCTO
+         */
         public int Insert(Producto p)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -59,6 +81,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Actualiza un producto.
+         * @param p Producto con los datos nuevos
+         * @return true si se actualizo
+         */
         public bool Update(Producto p)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -84,7 +111,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
-        // Lineas de factura en las que aparece el producto
+        /**
+         * @brief Cuenta las líneas de factura en las que aparece el producto.
+         * @param id PRO_ID
+         * @return Número de líneas
+         */
         public int CountVentas(int id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -93,6 +124,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Elimina el producto y sus relaciones con promociones y proveedores.
+         * @param id PRO_ID
+         * @return true si se elimino
+         */
         public bool DeleteCascade(int id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -102,10 +138,10 @@ namespace FarmaciaApp.Core.Repositories
                 {
                     try
                     {
-                                                db.Execute("DELETE FROM PROMO_PRODU WHERE PRO_ID = :Id", new { Id = id }, tran);
+                        db.Execute("DELETE FROM PROMO_PRODU WHERE PRO_ID = :Id", new { Id = id }, tran);
                         db.Execute("DELETE FROM PROVEE_PRODUC WHERE PRO_ID = :Id", new { Id = id }, tran);
 
-                                                int rows = db.Execute("DELETE FROM TBL_PRODUCTO WHERE PRO_ID = :Id", new { Id = id }, tran);
+                        int rows = db.Execute("DELETE FROM TBL_PRODUCTO WHERE PRO_ID = :Id", new { Id = id }, tran);
 
                         tran.Commit();
                         return rows > 0;
@@ -119,6 +155,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Busca productos por nombre.
+         * @param term Texto a buscar
+         * @return Productos que coinciden
+         */
         public IEnumerable<Producto> SearchByName(string term)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())

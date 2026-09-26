@@ -1,4 +1,9 @@
-﻿using System;
+﻿/**
+ * @file ProveedorRepository.cs
+ * @brief Acceso a datos de proveedores.
+ * @author Santiago Caicedo
+ */
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,8 +14,15 @@ using System.Data;
 
 namespace FarmaciaApp.Core.Repositories
 {
+    /**
+     * @brief Consultas y cambios de TBL_PROVEEDOR.
+     */
     public class ProveedorRepository
     {
+        /**
+         * @brief Obtiene todos los proveedores ordenados por nombre.
+         * @return Proveedores
+         */
         public IEnumerable<Proveedor> GetAll()
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -26,6 +38,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Busca un proveedor.
+         * @param id Identificador
+         * @return Proveedor, o null si no existe
+         */
         public Proveedor GetById(int id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -38,6 +55,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Registra un proveedor.
+         * @param p Datos del proveedor
+         * @return Identificador asignado
+         */
         public int Insert(Proveedor p)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -62,6 +84,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Actualiza un proveedor.
+         * @param p Proveedor con los datos nuevos
+         * @return true si se actualizo
+         */
         public bool Update(Proveedor p)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -85,6 +112,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Elimina el proveedor y su relación con productos.
+         * @param id Identificador
+         * @return true si se elimino
+         */
         public bool DeleteCascade(int id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -94,10 +126,8 @@ namespace FarmaciaApp.Core.Repositories
                 {
                     try
                     {
-                        // Eliminar relaciones proveedor-producto
                         db.Execute("DELETE FROM PROVEE_PRODUC WHERE PROV_ID = :Id", new { Id = id }, tran);
 
-                        // Eliminar proveedor
                         int rows = db.Execute("DELETE FROM TBL_PROVEEDOR WHERE PRO_ID = :Id", new { Id = id }, tran);
 
                         tran.Commit();
@@ -112,6 +142,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Busca proveedores por nombre o contacto.
+         * @param term Texto a buscar
+         * @return Proveedores que coinciden
+         */
         public IEnumerable<Proveedor> SearchByName(string term)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())

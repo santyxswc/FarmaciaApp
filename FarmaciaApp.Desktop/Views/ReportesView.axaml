@@ -29,7 +29,6 @@
                 <TextBlock Classes="subtitulo-pagina" Text="Lo que se vendió en el periodo y lo que vendió cada empleado"/>
             </StackPanel>
 
-            <!-- Periodo -->
             <Border Classes="panel" Padding="12,8">
                 <WrapPanel>
                     <WrapPanel.Styles>
@@ -55,7 +54,6 @@
 
             <TextBlock Text="{Binding Periodo}" Foreground="#636e72" FontWeight="SemiBold" Margin="2,4,0,0"/>
 
-            <!-- Indicadores -->
             <UniformGrid Columns="4">
                 <UniformGrid.Styles>
                     <Style Selector="UniformGrid > Border">
@@ -88,7 +86,6 @@
                 </Border>
             </UniformGrid>
 
-            <!-- Detalle -->
             <Grid ColumnDefinitions="*,12,*">
                 <Border Classes="panel" ClipToBounds="True">
                     <DockPanel>

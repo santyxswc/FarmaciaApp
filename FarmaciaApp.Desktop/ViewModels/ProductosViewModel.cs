@@ -1,3 +1,8 @@
+/**
+ * @file ProductosViewModel.cs
+ * @brief Lógica del listado de productos.
+ * @author Santiago Caicedo
+ */
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FarmaciaApp.Core.Models;
@@ -8,25 +13,39 @@ using System.Collections.ObjectModel;
 
 namespace FarmaciaApp.Desktop.ViewModels
 {
+    /**
+     * @brief Lista, busca y abre los formularios de productos.
+     */
     public partial class ProductosViewModel : ObservableObject
     {
         private readonly ProductoService _service;
 
+        /** Productos que se muestran. */
         [ObservableProperty]
         private ObservableCollection<Producto> productos;
 
+        /** Registro seleccionado en la tabla. */
         [ObservableProperty]
         private Producto seleccionado;
 
+        /** Texto de búsqueda. */
         [ObservableProperty]
         private string searchTerm;
 
+        /** Abre el formulario para crear. */
         public IAsyncRelayCommand AgregarCommand { get; }
+        /** Abre el formulario para editar el seleccionado. */
         public IAsyncRelayCommand EditarCommand { get; }
+        /** Elimina el seleccionado después de confirmar. */
         public IAsyncRelayCommand EliminarCommand { get; }
+        /** Vuelve a cargar la lista. */
         public IRelayCommand RefreshCommand { get; }
+        /** Busca con el texto escrito. */
         public IRelayCommand BuscarCommand { get; }
 
+        /**
+         * @brief Crea los comandos y carga la lista.
+         */
         public ProductosViewModel()
         {
             _service = new ProductoService();
@@ -40,14 +59,25 @@ namespace FarmaciaApp.Desktop.ViewModels
             Cargar();
         }
 
+        /**
+         * @brief Habilita Editar y Eliminar según la selección.
+         * @param value Registro seleccionado
+         */
         partial void OnSeleccionadoChanged(Producto value)
         {
             EditarCommand.NotifyCanExecuteChanged();
             EliminarCommand.NotifyCanExecuteChanged();
         }
 
+        /**
+         * @brief Carga todos los registros.
+         */
         private void Cargar() => Ejecutar(() => Productos = new ObservableCollection<Producto>(_service.ObtenerProductos()));
 
+        /**
+         * @brief Ejecuta una consulta y muestra el error si falla.
+         * @param accion Consulta a ejecutar
+         */
         private void Ejecutar(Action accion)
         {
             try
@@ -60,6 +90,9 @@ namespace FarmaciaApp.Desktop.ViewModels
             }
         }
 
+        /**
+         * @brief Abre el formulario para crear y recarga la lista al guardar.
+         */
         private async Task AbrirAgregar()
         {
             var window = new AgregarEditarProductoView();
@@ -67,6 +100,9 @@ namespace FarmaciaApp.Desktop.ViewModels
             if (await Dialogs.ShowForm(window)) Cargar();
         }
 
+        /**
+         * @brief Abre el formulario con el registro seleccionado y recarga la lista al guardar.
+         */
         private async Task AbrirEditar()
         {
             if (Seleccionado == null) return;
@@ -78,6 +114,9 @@ namespace FarmaciaApp.Desktop.ViewModels
             if (await Dialogs.ShowForm(window)) Cargar();
         }
 
+        /**
+         * @brief Pide confirmación y elimina el registro seleccionado.
+         */
         private async Task Eliminar()
         {
             if (Seleccionado == null) return;
@@ -97,6 +136,9 @@ namespace FarmaciaApp.Desktop.ViewModels
             }
         }
 
+        /**
+         * @brief Busca con el texto escrito; si está vacío, muestra todos.
+         */
         private void Buscar()
         {
             if (string.IsNullOrWhiteSpace(SearchTerm))

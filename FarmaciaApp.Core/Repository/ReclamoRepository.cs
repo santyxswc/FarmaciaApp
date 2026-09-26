@@ -1,3 +1,8 @@
+/**
+ * @file ReclamoRepository.cs
+ * @brief Acceso a datos de reclamos.
+ * @author Santiago Caicedo
+ */
 using Dapper;
 using FarmaciaApp.Core.Database;
 using FarmaciaApp.Core.Models;
@@ -6,8 +11,12 @@ using System.Data;
 
 namespace FarmaciaApp.Core.Repositories
 {
+    /**
+     * @brief Consultas y cambios de TBL_RECLAMO.
+     */
     public class ReclamoRepository
     {
+        /** Consulta base de reclamos con el nombre del cliente de la factura. */
         private const string ReclamoSelectSql = @"
             SELECT 
                 R.REC_ID_RECLAMO AS RecId, 
@@ -23,9 +32,10 @@ namespace FarmaciaApp.Core.Repositories
             INNER JOIN TBL_PERSONA P ON C.PER_ID = P.PER_ID
             ";
 
-        /// <summary>
-        /// Obtiene todos los reclamos ordenados por fecha descendente
-        /// </summary>
+        /**
+         * @brief Obtiene todos los reclamos, del más reciente al más antiguo.
+         * @return Reclamos
+         */
         public IEnumerable<Reclamo> GetAll()
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -35,9 +45,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
-        /// <summary>
-        /// Obtiene un reclamo específico por su ID
-        /// </summary>
+        /**
+         * @brief Busca un reclamo.
+         * @param id Número del reclamo
+         * @return Reclamo, o null si no existe
+         */
         public Reclamo GetById(decimal id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -47,9 +59,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
-        /// <summary>
-        /// Inserta un nuevo reclamo y retorna el ID generado
-        /// </summary>
+        /**
+         * @brief Registra un reclamo con la fecha actual.
+         * @param r Datos del reclamo (sin estado queda Pendiente)
+         * @return Número asignado por SEQ_RECLAMO
+         */
         public decimal Insert(Reclamo r)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -73,9 +87,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
-        /// <summary>
-        /// Actualiza un reclamo existente (descripción y estado)
-        /// </summary>
+        /**
+         * @brief Actualiza la descripción y el estado de un reclamo.
+         * @param r Reclamo con los datos nuevos
+         * @return true si se actualizo
+         */
         public bool Update(Reclamo r)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -97,9 +113,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
-        /// <summary>
-        /// Elimina un reclamo y sus reintegros asociados en cascada
-        /// </summary>
+        /**
+         * @brief Elimina un reclamo y sus reintegros en una transacción.
+         * @param id Número del reclamo
+         * @return true si se elimino
+         */
         public bool Delete(decimal id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -109,17 +127,17 @@ namespace FarmaciaApp.Core.Repositories
                 {
                     try
                     {
-                                                db.Execute(
-                            "DELETE FROM TBL_REINTEGRO WHERE REC_ID_RECLAMO = :Id",
-                            new { Id = id },
-                            tran
-                        );
+                        db.Execute(
+    "DELETE FROM TBL_REINTEGRO WHERE REC_ID_RECLAMO = :Id",
+    new { Id = id },
+    tran
+);
 
-                                                int rows = db.Execute(
-                            "DELETE FROM TBL_RECLAMO WHERE REC_ID_RECLAMO = :Id",
-                            new { Id = id },
-                            tran
-                        );
+                        int rows = db.Execute(
+    "DELETE FROM TBL_RECLAMO WHERE REC_ID_RECLAMO = :Id",
+    new { Id = id },
+    tran
+);
 
                         tran.Commit();
                         return rows > 0;
@@ -133,9 +151,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
-        /// <summary>
-        /// Busca reclamos por descripción, estado, nombre del cliente o número de factura
-        /// </summary>
+        /**
+         * @brief Busca reclamos por descripción, estado, cliente o número de factura.
+         * @param term Texto a buscar
+         * @return Reclamos que coinciden
+         */
         public IEnumerable<Reclamo> Search(string term)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -156,9 +176,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
-        /// <summary>
-        /// Obtiene reclamos filtrados por estado específico
-        /// </summary>
+        /**
+         * @brief Obtiene los reclamos con un estado.
+         * @param estado Estado buscado
+         * @return Reclamos en ese estado
+         */
         public IEnumerable<Reclamo> GetByEstado(string estado)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -171,9 +193,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
-        /// <summary>
-        /// Obtiene reclamos asociados a una factura específica
-        /// </summary>
+        /**
+         * @brief Obtiene los reclamos de una factura.
+         * @param facNumFactura Número de factura
+         * @return Reclamos de la factura
+         */
         public IEnumerable<Reclamo> GetByFactura(decimal facNumFactura)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())

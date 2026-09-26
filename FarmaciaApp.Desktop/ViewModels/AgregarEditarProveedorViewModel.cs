@@ -1,3 +1,8 @@
+/**
+ * @file AgregarEditarProveedorViewModel.cs
+ * @brief Lógica del formulario de proveedor.
+ * @author Santiago Caicedo
+ */
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -7,27 +12,40 @@ using FarmaciaApp.Desktop.Services;
 
 namespace FarmaciaApp.Desktop.ViewModels
 {
+    /**
+     * @brief Crea o edita un proveedor.
+     */
     public partial class AgregarEditarProveedorViewModel : ObservableObject
     {
         private readonly ProveedorService _service;
         private readonly Window _window;
         private int _proveedorId;
 
+        /** Título de la ventana. */
         [ObservableProperty]
         private string titulo = "Nuevo proveedor";
 
+        /** Nombre de la empresa. */
         [ObservableProperty]
         private string nombre;
 
+        /** Persona de contacto. */
         [ObservableProperty]
         private string contacto;
 
+        /** Teléfono. */
         [ObservableProperty]
         private string telefono;
 
+        /** Comando Guardar. */
         public IAsyncRelayCommand GuardarCommand { get; }
+        /** Comando Cancelar. */
         public IRelayCommand CancelarCommand { get; }
 
+        /**
+         * @brief Crea el formulario vacío.
+         * @param window Ventana del formulario
+         */
         public AgregarEditarProveedorViewModel(Window window)
         {
             _window = window;
@@ -37,6 +55,10 @@ namespace FarmaciaApp.Desktop.ViewModels
             CancelarCommand = new RelayCommand(() => _window.Close(false));
         }
 
+        /**
+         * @brief Carga un proveedor existente para editarlo.
+         * @param p Proveedor a editar
+         */
         public void LoadFromModel(Proveedor p)
         {
             _proveedorId = p.ProId;
@@ -46,6 +68,9 @@ namespace FarmaciaApp.Desktop.ViewModels
             Telefono = p.ProTelefono;
         }
 
+        /**
+         * @brief Guarda el proveedor y cierra el formulario.
+         */
         private async Task Guardar()
         {
             try

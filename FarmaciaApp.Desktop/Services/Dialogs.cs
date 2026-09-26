@@ -1,3 +1,8 @@
+/**
+ * @file Dialogs.cs
+ * @brief Ventanas de mensaje y de confirmación.
+ * @author Santiago Caicedo
+ */
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -6,9 +11,12 @@ using Avalonia.Media;
 
 namespace FarmaciaApp.Desktop.Services
 {
-    // Reemplazo multiplataforma de MessageBox y ShowDialog de WPF.
+    /**
+     * @brief Mensajes, confirmaciónes y formularios modales.
+     */
     public static class Dialogs
     {
+        /** Ventana activa, que queda como dueña de los diálogos. */
         private static Window Owner
         {
             get
@@ -18,16 +26,38 @@ namespace FarmaciaApp.Desktop.Services
             }
         }
 
+        /**
+         * @brief Muestra un mensaje informativo.
+         * @param message Mensaje
+         * @param title Título
+         * @return Tarea que termina al cerrar el mensaje
+         */
         public static Task Info(string message, string title = "Información") =>
             Show(message, title, "#0984e3", false);
 
+        /**
+         * @brief Muestra un mensaje de error.
+         * @param message Mensaje
+         * @param title Título
+         * @return Tarea que termina al cerrar el mensaje
+         */
         public static Task Error(string message, string title = "Error") =>
             Show(message, title, "#d63031", false);
 
+        /**
+         * @brief Pide confirmación con los botones Sí y No.
+         * @param message Pregunta
+         * @param title Título
+         * @return true si el usuario eligió Sí
+         */
         public static Task<bool> Confirm(string message, string title = "Confirmar") =>
             Show(message, title, "#e17055", true);
 
-        // Abre una ventana de formulario como modal; devuelve true si el formulario se cerro con Close(true).
+        /**
+         * @brief Abre un formulario como ventana modal.
+         * @param form Ventana del formulario
+         * @return true si el formulario se cerró con Close(true), es decir, si se guardó
+         */
         public static async Task<bool> ShowForm(Window form)
         {
             var owner = Owner;
@@ -39,6 +69,14 @@ namespace FarmaciaApp.Desktop.Services
             return await form.ShowDialog<bool>(owner);
         }
 
+        /**
+         * @brief Construye y muestra la ventana de mensaje.
+         * @param message Mensaje
+         * @param title Título
+         * @param color Color del título
+         * @param yesNo true para botones Sí/No, false para Aceptar
+         * @return Boton elegido
+         */
         private static async Task<bool> Show(string message, string title, string color, bool yesNo)
         {
             var window = new Window

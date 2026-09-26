@@ -421,4 +421,10 @@ FodyWeavers.xsd
 appsettings.json
 FarmaciaApp.UI/appsettings.json
 **/appsettings.json
-!appsettings.example.json
+**/appsettings.*.json
+!**/appsettings.example.json
+
+# Documentacion generada por Doxygen
+docs/html/
+docs/latex/
+docs/doxygen-advertencias.log

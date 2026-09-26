@@ -1,3 +1,8 @@
+/**
+ * @file ReclamosViewModel.cs
+ * @brief Lógica del listado de reclamos.
+ * @author Santiago Caicedo
+ */
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FarmaciaApp.Core.Models;
@@ -8,25 +13,39 @@ using System.Collections.ObjectModel;
 
 namespace FarmaciaApp.Desktop.ViewModels
 {
+    /**
+     * @brief Lista, busca y abre los formularios de reclamos.
+     */
     public partial class ReclamosViewModel : ObservableObject
     {
         private readonly ReclamoService _service;
 
+        /** Reclamos que se muestran. */
         [ObservableProperty]
         private ObservableCollection<Reclamo> reclamos;
 
+        /** Registro seleccionado en la tabla. */
         [ObservableProperty]
         private Reclamo seleccionado;
 
+        /** Texto de búsqueda. */
         [ObservableProperty]
         private string searchTerm;
 
+        /** Abre el formulario para crear. */
         public IAsyncRelayCommand AgregarCommand { get; }
+        /** Abre el formulario para editar el seleccionado. */
         public IAsyncRelayCommand EditarCommand { get; }
+        /** Elimina el seleccionado después de confirmar. */
         public IAsyncRelayCommand EliminarCommand { get; }
+        /** Vuelve a cargar la lista. */
         public IRelayCommand RefreshCommand { get; }
+        /** Busca con el texto escrito. */
         public IRelayCommand BuscarCommand { get; }
 
+        /**
+         * @brief Crea los comandos y carga la lista.
+         */
         public ReclamosViewModel()
         {
             _service = new ReclamoService();
@@ -40,12 +59,19 @@ namespace FarmaciaApp.Desktop.ViewModels
             CargarReclamos();
         }
 
+        /**
+         * @brief Habilita Editar y Eliminar según la selección.
+         * @param value Reclamo seleccionado
+         */
         partial void OnSeleccionadoChanged(Reclamo value)
         {
             EditarCommand.NotifyCanExecuteChanged();
             EliminarCommand.NotifyCanExecuteChanged();
         }
 
+        /**
+         * @brief Carga todos los reclamos.
+         */
         private void CargarReclamos()
         {
             try
@@ -58,6 +84,9 @@ namespace FarmaciaApp.Desktop.ViewModels
             }
         }
 
+        /**
+         * @brief Busca reclamos; si el texto esta vacío, muestra todos.
+         */
         private void Buscar()
         {
             if (string.IsNullOrWhiteSpace(SearchTerm))
@@ -76,6 +105,9 @@ namespace FarmaciaApp.Desktop.ViewModels
             }
         }
 
+        /**
+         * @brief Abre el formulario para crear un reclamo.
+         */
         private async Task AbrirAgregar()
         {
             var window = new AgregarEditarReclamoView();
@@ -83,6 +115,9 @@ namespace FarmaciaApp.Desktop.ViewModels
             if (await Dialogs.ShowForm(window)) CargarReclamos();
         }
 
+        /**
+         * @brief Abre el formulario con el reclamo seleccionado.
+         */
         private async Task AbrirEditar()
         {
             if (Seleccionado == null) return;
@@ -94,6 +129,9 @@ namespace FarmaciaApp.Desktop.ViewModels
             if (await Dialogs.ShowForm(window)) CargarReclamos();
         }
 
+        /**
+         * @brief Pide confirmación y elimina el reclamo seleccionado.
+         */
         private async Task Eliminar()
         {
             if (Seleccionado == null) return;

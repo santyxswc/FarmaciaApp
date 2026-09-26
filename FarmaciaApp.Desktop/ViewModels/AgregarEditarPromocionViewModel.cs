@@ -1,3 +1,8 @@
+/**
+ * @file AgregarEditarPromocionViewModel.cs
+ * @brief Lógica del formulario de promoción.
+ * @author Santiago Caicedo
+ */
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -7,31 +12,44 @@ using FarmaciaApp.Desktop.Services;
 
 namespace FarmaciaApp.Desktop.ViewModels
 {
+    /**
+     * @brief Crea o edita una promoción.
+     */
     public partial class AgregarEditarPromocionViewModel : ObservableObject
     {
         private readonly PromocionService _service;
         private readonly Window _window;
         private int _promocionId;
 
+        /** Título de la ventana. */
         [ObservableProperty]
         private string titulo = "Nueva promoción";
 
+        /** Descripción. */
         [ObservableProperty]
         private string descripcion;
 
+        /** Porcentaje de descuento. */
         [ObservableProperty]
         private decimal descuento;
 
-        // DatePicker de Avalonia trabaja con DateTimeOffset?
+        /** Fecha de inicio (el DatePicker usa DateTimeOffset). */
         [ObservableProperty]
         private DateTimeOffset? fechaInicio = DateTimeOffset.Now;
 
+        /** Fecha de fin. */
         [ObservableProperty]
         private DateTimeOffset? fechaFin = DateTimeOffset.Now.AddDays(30);
 
+        /** Comando Guardar. */
         public IAsyncRelayCommand GuardarCommand { get; }
+        /** Comando Cancelar. */
         public IRelayCommand CancelarCommand { get; }
 
+        /**
+         * @brief Crea el formulario con una vigencia de 30 días.
+         * @param window Ventana del formulario
+         */
         public AgregarEditarPromocionViewModel(Window window)
         {
             _window = window;
@@ -41,6 +59,10 @@ namespace FarmaciaApp.Desktop.ViewModels
             CancelarCommand = new RelayCommand(() => _window.Close(false));
         }
 
+        /**
+         * @brief Carga una promoción existente para editarla.
+         * @param p Promoción a editar
+         */
         public void LoadFromModel(Promocion p)
         {
             _promocionId = p.PrmId;
@@ -51,6 +73,9 @@ namespace FarmaciaApp.Desktop.ViewModels
             FechaFin = p.PrmFechaFin;
         }
 
+        /**
+         * @brief Guarda la promoción y cierra el formulario.
+         */
         private async Task Guardar()
         {
             try

@@ -1,4 +1,9 @@
-﻿using System;
+﻿/**
+ * @file PromocionRepository.cs
+ * @brief Acceso a datos de promociones.
+ * @author Santiago Caicedo
+ */
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,8 +14,15 @@ using System.Data;
 
 namespace FarmaciaApp.Core.Repositories
 {
+    /**
+     * @brief Consultas y cambios de TBL_PROMOCION.
+     */
     public class PromocionRepository
     {
+        /**
+         * @brief Obtiene todas las promociones, de la más reciente a la más antigua.
+         * @return Promociones
+         */
         public IEnumerable<Promocion> GetAll()
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -27,6 +39,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Busca una promoción.
+         * @param id PRM_ID
+         * @return Promoción, o null si no existe
+         */
         public Promocion GetById(int id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -40,6 +57,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Registra una promoción.
+         * @param p Datos de la promoción
+         * @return PRM_ID asignado
+         */
         public int Insert(Promocion p)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -65,6 +87,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Actualiza una promoción.
+         * @param p Promoción con los datos nuevos
+         * @return true si se actualizo
+         */
         public bool Update(Promocion p)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -90,6 +117,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Elimina la promoción y su relación con productos.
+         * @param id PRM_ID
+         * @return true si se elimino
+         */
         public bool DeleteCascade(int id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -99,10 +131,8 @@ namespace FarmaciaApp.Core.Repositories
                 {
                     try
                     {
-                        // Eliminar relaciones producto-promoción
                         db.Execute("DELETE FROM PROMO_PRODU WHERE PRM_ID = :Id", new { Id = id }, tran);
 
-                        // Eliminar promoción
                         int rows = db.Execute("DELETE FROM TBL_PROMOCION WHERE PRM_ID = :Id", new { Id = id }, tran);
 
                         tran.Commit();
@@ -117,6 +147,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Busca promociones por descripción.
+         * @param term Texto a buscar
+         * @return Promociones que coinciden
+         */
         public IEnumerable<Promocion> SearchByDescription(string term)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -130,6 +165,10 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Obtiene las promociones vigentes hoy.
+         * @return Promociones activas
+         */
         public IEnumerable<Promocion> GetActivas()
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())

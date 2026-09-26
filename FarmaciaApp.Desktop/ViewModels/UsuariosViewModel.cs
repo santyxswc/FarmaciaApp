@@ -1,3 +1,8 @@
+/**
+ * @file UsuariosViewModel.cs
+ * @brief Lógica de la administración de usuarios.
+ * @author Santiago Caicedo
+ */
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FarmaciaApp.Core.Models;
@@ -8,24 +13,37 @@ using System.Collections.ObjectModel;
 
 namespace FarmaciaApp.Desktop.ViewModels
 {
+    /**
+     * @brief Lista, crea, activa, desactiva y restablece cuentas de usuario.
+     */
     public partial class UsuariosViewModel : ObservableObject
     {
         private readonly UsuarioService _service = new();
 
+        /** Usuarios registrados. */
         [ObservableProperty]
         private ObservableCollection<Usuario> usuarios;
 
+        /** Usuario seleccionado en la tabla. */
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(TextoEstado))]
         private Usuario seleccionado;
 
+        /** Texto del botón de estado: Activar o Desactivar. */
         public string TextoEstado => Seleccionado?.Activo == false ? "Activar" : "Desactivar";
 
+        /** Abre el formulario de nuevo usuario. */
         public IAsyncRelayCommand NuevoCommand { get; }
+        /** Activa o desactiva el usuario seleccionado. */
         public IAsyncRelayCommand CambiarEstadoCommand { get; }
+        /** Restablece la contraseña del usuario seleccionado. */
         public IAsyncRelayCommand RestablecerClaveCommand { get; }
+        /** Vuelve a cargar la lista. */
         public IRelayCommand RefreshCommand { get; }
 
+        /**
+         * @brief Crea los comandos y carga los usuarios.
+         */
         public UsuariosViewModel()
         {
             NuevoCommand = new AsyncRelayCommand(Nuevo);
@@ -35,12 +53,19 @@ namespace FarmaciaApp.Desktop.ViewModels
             Cargar();
         }
 
+        /**
+         * @brief Habilita los botones que requieren un usuario seleccionado.
+         * @param value Usuario seleccionado
+         */
         partial void OnSeleccionadoChanged(Usuario value)
         {
             CambiarEstadoCommand.NotifyCanExecuteChanged();
             RestablecerClaveCommand.NotifyCanExecuteChanged();
         }
 
+        /**
+         * @brief Carga los usuarios.
+         */
         private void Cargar()
         {
             try
@@ -53,6 +78,9 @@ namespace FarmaciaApp.Desktop.ViewModels
             }
         }
 
+        /**
+         * @brief Abre el formulario de nuevo usuario y recarga la lista.
+         */
         private async Task Nuevo()
         {
             var ventana = new NuevoUsuarioView();
@@ -60,6 +88,9 @@ namespace FarmaciaApp.Desktop.ViewModels
             if (await Dialogs.ShowForm(ventana)) Cargar();
         }
 
+        /**
+         * @brief Pide confirmación y activa o desactiva el usuario seleccionado.
+         */
         private async Task CambiarEstado()
         {
             var usuario = Seleccionado;
@@ -80,6 +111,9 @@ namespace FarmaciaApp.Desktop.ViewModels
             }
         }
 
+        /**
+         * @brief Abre el formulario para asignar una contraseña nueva.
+         */
         private async Task RestablecerClave()
         {
             var ventana = new CambiarClaveView();

@@ -7,7 +7,6 @@
         WindowStartupLocation="CenterScreen"
         Background="White">
     <Grid ColumnDefinitions="*,*">
-        <!-- Marca -->
         <Border>
             <Border.Background>
                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
@@ -23,7 +22,6 @@
             </StackPanel>
         </Border>
 
-        <!-- Formulario -->
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="52,0">
             <TextBlock Classes="titulo-pagina" Text="Iniciar sesión"/>
             <TextBlock Classes="subtitulo-pagina" Text="Ingresa con tu usuario para comenzar tu turno" Margin="0,4,0,12"/>

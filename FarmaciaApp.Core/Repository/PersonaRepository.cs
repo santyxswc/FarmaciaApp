@@ -1,3 +1,8 @@
+/**
+ * @file PersonaRepository.cs
+ * @brief Acceso a datos de personas.
+ * @author Santiago Caicedo
+ */
 using Dapper;
 using FarmaciaApp.Core.Database;
 using FarmaciaApp.Core.Models;
@@ -6,8 +11,12 @@ using System.Data;
 
 namespace FarmaciaApp.Core.Repositories
 {
+    /**
+     * @brief Consultas y cambios de TBL_PERSONA y del rol de vendedor.
+     */
     public class PersonaRepository
     {
+        /** Consulta base de personas con sus roles de cliente y vendedor. */
         private const string PersonaSelectSql = @"
             SELECT P.PER_ID AS PerId,
                    P.PER_NOMBRE AS PerNombre,
@@ -19,6 +28,10 @@ namespace FarmaciaApp.Core.Repositories
                    CASE WHEN EXISTS (SELECT 1 FROM TBL_VENDEDOR V WHERE V.PER_ID = P.PER_ID) THEN 1 ELSE 0 END AS EsVendedor
             FROM TBL_PERSONA P";
 
+        /**
+         * @brief Obtiene todas las personas ordenadas por nombre.
+         * @return Personas con sus roles
+         */
         public IEnumerable<Persona> GetAll()
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -28,6 +41,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Busca una persona.
+         * @param id PER_ID
+         * @return Persona, o null si no existe
+         */
         public Persona GetById(int id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -37,11 +55,15 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Registra una persona.
+         * @param p Datos de la persona
+         * @return PER_ID asignado por SEQ_PERSONA (la misma secuencia que usan los clientes)
+         */
         public int Insert(Persona p)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
             {
-                // Misma secuencia que usa ClienteRepository, para que los IDs no choquen
                 int newId = db.ExecuteScalar<int>("SELECT SEQ_PERSONA.NEXTVAL FROM DUAL");
 
                 string sql = @"
@@ -64,6 +86,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Actualiza los datos personales.
+         * @param p Persona con los datos nuevos
+         * @return true si se actualizo
+         */
         public bool Update(Persona p)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -91,7 +118,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
-        // Facturas donde la persona aparece como cliente o como vendedor
+        /**
+         * @brief Cuenta las facturas donde la persona es cliente o vendedor.
+         * @param id PER_ID
+         * @return Número de facturas
+         */
         public int CountFacturas(int id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -103,6 +134,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Cuenta las facturas que la persona registró como vendedor.
+         * @param id PER_ID
+         * @return Número de facturas
+         */
         public int CountFacturasComoVendedor(int id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -114,7 +150,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
-        // Agrega o quita a la persona de TBL_VENDEDOR (VEN_ID lo genera la identidad)
+        /**
+         * @brief Agrega o quita a la persona de TBL_VENDEDOR.
+         * @param id PER_ID
+         * @param esVendedor true para agregarla, false para quitarla
+         */
         public void SetVendedor(int id, bool esVendedor)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -128,6 +168,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Elimina la persona y sus registros de cliente y vendedor en una transacción.
+         * @param id PER_ID
+         * @return true si se elimino
+         */
         public bool DeleteCascade(int id)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
@@ -137,11 +182,9 @@ namespace FarmaciaApp.Core.Repositories
                 {
                     try
                     {
-                        // Eliminar relaciones en cascada
                         db.Execute("DELETE FROM TBL_CLIENTE WHERE PER_ID = :Id", new { Id = id }, tran);
                         db.Execute("DELETE FROM TBL_VENDEDOR WHERE PER_ID = :Id", new { Id = id }, tran);
 
-                        // Eliminar persona
                         int rows = db.Execute("DELETE FROM TBL_PERSONA WHERE PER_ID = :Id", new { Id = id }, tran);
 
                         tran.Commit();
@@ -156,6 +199,11 @@ namespace FarmaciaApp.Core.Repositories
             }
         }
 
+        /**
+         * @brief Busca personas por nombre, apellido o email.
+         * @param term Texto a buscar
+         * @return Personas que coinciden
+         */
         public IEnumerable<Persona> SearchByName(string term)
         {
             using (IDbConnection db = OracleDbConnection.GetConnection())
