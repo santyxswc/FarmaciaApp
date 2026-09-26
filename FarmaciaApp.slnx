@@ -4,5 +4,6 @@
     <File Path="restore-nuget.bat" />
   </Folder>
   <Project Path="FarmaciaApp.Core/FarmaciaApp.Core.csproj" />
+  <Project Path="FarmaciaApp.Desktop/FarmaciaApp.Desktop.csproj" />
   <Project Path="FarmaciaApp.UI/FarmaciaApp.UI.csproj" />
 </Solution>

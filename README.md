@@ -106,6 +106,32 @@ dotnet build
 dotnet run --project FarmaciaApp.UI/FarmaciaApp.UI.csproj
 ```
 
+### 5. Ejecutar en Linux / macOS (Avalonia)
+
+`FarmaciaApp.UI` es WPF y solo corre en Windows. `FarmaciaApp.Desktop` es la misma app portada a
+[Avalonia](https://avaloniaui.net/) (reutiliza `FarmaciaApp.Core`) y corre en Linux, macOS y Windows.
+
+```bash
+# 1. Base de datos Oracle Free en Docker
+docker compose up -d
+docker compose ps        # esperar a que el estado sea "healthy"
+# Sin el plugin compose, el equivalente es:
+#   docker run -d --name farmacia-oracle -p 1521:1521 \
+#     -e ORACLE_PASSWORD=admin123 -e APP_USER=farmacia -e APP_USER_PASSWORD=farmacia123 \
+#     -v "$PWD/database:/database:ro" -v farmacia-oracle-data:/opt/oracle/oradata \
+#     gvenzl/oracle-free:23-slim
+
+# 2. Cargar el esquema y los datos de prueba
+printf '@/database/schema.sql\nEXIT\n' | docker exec -i farmacia-oracle sqlplus -s farmacia/farmacia123@//localhost/FREEPDB1
+
+# 3. Configuración (Oracle Free usa el servicio FREEPDB1)
+cp FarmaciaApp.Desktop/appsettings.example.json FarmaciaApp.Desktop/appsettings.json
+#   -> Password=farmacia123 y SERVICE_NAME=FREEPDB1
+
+# 4. Ejecutar
+dotnet run --project FarmaciaApp.Desktop
+```
+
 **Credenciales por defecto en UI:**
 - Usuario: `admin`
 - Contraseña: `prueba`

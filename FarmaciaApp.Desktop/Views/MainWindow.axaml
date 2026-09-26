@@ -1,0 +1,22 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="FarmaciaApp.Desktop.Views.MainWindow"
+        Title="Farmacia"
+        Width="1100" Height="650"
+        WindowStartupLocation="CenterScreen">
+    <Grid ColumnDefinitions="220,*">
+        <StackPanel Grid.Column="0" Background="#2d3436">
+            <TextBlock Text="Farmacia" Foreground="White" FontSize="26" FontWeight="Bold" Margin="20"/>
+            <Button Classes="sidebar" Content="Inicio" Command="{Binding GoHomeCommand}"/>
+            <Button Classes="sidebar" Content="Productos" Command="{Binding GoProductosCommand}"/>
+            <Button Classes="sidebar" Content="Clientes" Command="{Binding GoClientesCommand}"/>
+            <Button Classes="sidebar" Content="Personas" Command="{Binding GoPersonasCommand}"/>
+            <Button Classes="sidebar" Content="Proveedores" Command="{Binding GoProveedoresCommand}"/>
+            <Button Classes="sidebar" Content="Promociones" Command="{Binding GoPromocionesCommand}"/>
+            <Button Classes="sidebar" Content="Facturas" Command="{Binding GoFacturasCommand}"/>
+            <Button Classes="sidebar" Content="Reclamos" Command="{Binding GoReclamosCommand}"/>
+        </StackPanel>
+
+        <ContentControl Grid.Column="1" Background="White" Content="{Binding CurrentView}"/>
+    </Grid>
+</Window>

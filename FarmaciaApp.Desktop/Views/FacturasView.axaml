@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="FarmaciaApp.Desktop.Views.FacturasView"
+             Background="White">
+    <DockPanel Margin="20">
+        <TextBlock DockPanel.Dock="Top" Classes="header" Text="Registro de Facturas"/>
+
+        <WrapPanel DockPanel.Dock="Top" Margin="0 0 0 10">
+            <WrapPanel.Styles>
+                <Style Selector="WrapPanel > Button">
+                    <Setter Property="Margin" Value="0,0,10,5"/>
+                </Style>
+            </WrapPanel.Styles>
+            <Button Content="Ver Detalle" Width="120" Command="{Binding VerDetalleCommand}"/>
+            <Button Content="Actualizar" Width="100" Command="{Binding RefreshCommand}"/>
+            <TextBox Width="240" Margin="10,0,10,5" VerticalAlignment="Center" Watermark="Buscar..."
+                     Text="{Binding SearchTerm}"/>
+            <Button Content="Buscar" Width="90" Command="{Binding BuscarCommand}"/>
+        </WrapPanel>
+
+        <DataGrid ItemsSource="{Binding Facturas}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1" BorderBrush="#dfe6e9"
+                  SelectedItem="{Binding Seleccionado, Mode=TwoWay}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="N° Factura" Binding="{Binding FacNumFactura}" Width="100"/>
+                <DataGridTextColumn Header="Fecha" Binding="{Binding FacFecha, StringFormat='{}{0:dd/MM/yyyy}'}" Width="120"/>
+                <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNombre}" Width="200"/>
+                <DataGridTextColumn Header="Vendedor" Binding="{Binding VendedorNombre}" Width="200"/>
+                <DataGridTextColumn Header="Total" Binding="{Binding FacTotal, StringFormat='{}{0:C2}'}" Width="110"/>
+                <DataGridTextColumn Header="IVA" Binding="{Binding FacIva, StringFormat='{}{0:C2}'}" Width="100"/>
+                <DataGridTextColumn Header="SubTotal" Binding="{Binding FacSubtotal, StringFormat='{}{0:C2}'}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

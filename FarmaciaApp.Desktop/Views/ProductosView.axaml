@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="FarmaciaApp.Desktop.Views.ProductosView"
+             Background="White">
+    <DockPanel Margin="20">
+        <TextBlock DockPanel.Dock="Top" Classes="header" Text="Gestión de Productos"/>
+
+        <WrapPanel DockPanel.Dock="Top" Margin="0 0 0 10">
+            <WrapPanel.Styles>
+                <Style Selector="WrapPanel > Button">
+                    <Setter Property="Margin" Value="0,0,10,5"/>
+                </Style>
+            </WrapPanel.Styles>
+            <Button Content="Agregar Producto" Width="160" Command="{Binding AgregarCommand}"/>
+            <Button Content="Editar" Width="100" Command="{Binding EditarCommand}"/>
+            <Button Content="Eliminar" Width="100" Command="{Binding EliminarCommand}"/>
+            <Button Content="Actualizar" Width="100" Command="{Binding RefreshCommand}"/>
+            <TextBox Width="240" Margin="10,0,10,5" VerticalAlignment="Center" Watermark="Buscar..."
+                     Text="{Binding SearchTerm}"/>
+            <Button Content="Buscar" Width="90" Command="{Binding BuscarCommand}"/>
+        </WrapPanel>
+
+        <DataGrid ItemsSource="{Binding Productos}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1" BorderBrush="#dfe6e9"
+                  SelectedItem="{Binding Seleccionado, Mode=TwoWay}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding ProId}" Width="80"/>
+                <DataGridTextColumn Header="Nombre" Binding="{Binding ProNombre}" Width="200"/>
+                <DataGridTextColumn Header="Precio" Binding="{Binding ProPrecio}" Width="100"/>
+                <DataGridTextColumn Header="Stock" Binding="{Binding ProStock}" Width="80"/>
+                <DataGridTextColumn Header="Descripción" Binding="{Binding ProDescripcion}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

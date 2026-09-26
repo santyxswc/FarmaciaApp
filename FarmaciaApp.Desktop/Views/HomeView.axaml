@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="FarmaciaApp.Desktop.Views.HomeView"
+             Background="White">
+    <StackPanel Margin="20">
+        <TextBlock Text="Bienvenido a la farmacia" FontSize="28" FontWeight="Bold" Margin="0 0 0 10"/>
+        <TextBlock Text="Seleccione una opción del menú lateral" FontSize="16" Foreground="Gray"/>
+        <Separator Margin="0 20"/>
+        <WrapPanel>
+            <Border Background="#0984e3" CornerRadius="10" Padding="15" Margin="10" Width="200" Height="110">
+                <StackPanel>
+                    <TextBlock Text="Productos" FontSize="22" Foreground="White"/>
+                    <TextBlock Text="Ver existentes" FontSize="14" Foreground="#e0e0e0"/>
+                </StackPanel>
+            </Border>
+            <Border Background="#6c5ce7" CornerRadius="10" Padding="15" Margin="10" Width="200" Height="110">
+                <StackPanel>
+                    <TextBlock Text="Clientes" FontSize="22" Foreground="White"/>
+                    <TextBlock Text="Administrar clientes" FontSize="14" Foreground="#e0e0e0"/>
+                </StackPanel>
+            </Border>
+            <Border Background="#00b894" CornerRadius="10" Padding="15" Margin="10" Width="200" Height="110">
+                <StackPanel>
+                    <TextBlock Text="Facturas" FontSize="22" Foreground="White"/>
+                    <TextBlock Text="Consultar ventas" FontSize="14" Foreground="#e0e0e0"/>
+                </StackPanel>
+            </Border>
+            <Border Background="#d63031" CornerRadius="10" Padding="15" Margin="10" Width="200" Height="110">
+                <StackPanel>
+                    <TextBlock Text="Reclamos" FontSize="22" Foreground="White"/>
+                    <TextBlock Text="Gestión de reclamos" FontSize="14" Foreground="#ffe0e0"/>
+                </StackPanel>
+            </Border>
+        </WrapPanel>
+    </StackPanel>
+</UserControl>

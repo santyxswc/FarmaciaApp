@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="FarmaciaApp.Desktop.Views.ReclamosView"
+             Background="White">
+    <DockPanel Margin="20">
+        <TextBlock DockPanel.Dock="Top" Classes="header" Text="Gestión de Reclamos"/>
+
+        <WrapPanel DockPanel.Dock="Top" Margin="0 0 0 10">
+            <WrapPanel.Styles>
+                <Style Selector="WrapPanel > Button">
+                    <Setter Property="Margin" Value="0,0,10,5"/>
+                </Style>
+            </WrapPanel.Styles>
+            <Button Content="Agregar Reclamo" Width="160" Command="{Binding AgregarCommand}"/>
+            <Button Content="Editar" Width="100" Command="{Binding EditarCommand}"/>
+            <Button Content="Eliminar" Width="100" Command="{Binding EliminarCommand}"/>
+            <Button Content="Actualizar" Width="100" Command="{Binding RefreshCommand}"/>
+            <TextBox Width="240" Margin="10,0,10,5" VerticalAlignment="Center" Watermark="Buscar..."
+                     Text="{Binding SearchTerm}"/>
+            <Button Content="Buscar" Width="90" Command="{Binding BuscarCommand}"/>
+        </WrapPanel>
+
+        <DataGrid ItemsSource="{Binding Reclamos}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1" BorderBrush="#dfe6e9"
+                  SelectedItem="{Binding Seleccionado, Mode=TwoWay}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID Reclamo" Binding="{Binding RecId}" Width="100"/>
+                <DataGridTextColumn Header="Fecha" Binding="{Binding RecFecha, StringFormat='{}{0:dd/MM/yyyy}'}" Width="120"/>
+                <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNombre}" Width="200"/>
+                <DataGridTextColumn Header="Factura N°" Binding="{Binding FacNumFactura}" Width="110"/>
+                <DataGridTextColumn Header="Estado" Binding="{Binding RecEstado}" Width="100"/>
+                <DataGridTextColumn Header="Descripción" Binding="{Binding RecDescripcion}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

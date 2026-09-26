@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="FarmaciaApp.Desktop.Views.PromocionesView"
+             Background="White">
+    <DockPanel Margin="20">
+        <TextBlock DockPanel.Dock="Top" Classes="header" Text="Gestión de Promociones"/>
+
+        <WrapPanel DockPanel.Dock="Top" Margin="0 0 0 10">
+            <WrapPanel.Styles>
+                <Style Selector="WrapPanel > Button">
+                    <Setter Property="Margin" Value="0,0,10,5"/>
+                </Style>
+            </WrapPanel.Styles>
+            <Button Content="Agregar Promoción" Width="160" Command="{Binding AgregarCommand}"/>
+            <Button Content="Editar" Width="100" Command="{Binding EditarCommand}"/>
+            <Button Content="Eliminar" Width="100" Command="{Binding EliminarCommand}"/>
+            <Button Content="Ver Activas" Width="110" Command="{Binding VerActivasCommand}"/>
+            <Button Content="Actualizar" Width="100" Command="{Binding RefreshCommand}"/>
+            <TextBox Width="240" Margin="10,0,10,5" VerticalAlignment="Center" Watermark="Buscar..."
+                     Text="{Binding SearchTerm}"/>
+            <Button Content="Buscar" Width="90" Command="{Binding BuscarCommand}"/>
+        </WrapPanel>
+
+        <DataGrid ItemsSource="{Binding Promociones}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1" BorderBrush="#dfe6e9"
+                  SelectedItem="{Binding Seleccionado, Mode=TwoWay}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding PrmId}" Width="60"/>
+                <DataGridTextColumn Header="Descripción" Binding="{Binding PrmDescripcion}" Width="250"/>
+                <DataGridTextColumn Header="Descuento %" Binding="{Binding PrmDescuento}" Width="110"/>
+                <DataGridTextColumn Header="Fecha Inicio" Binding="{Binding PrmFechaIni, StringFormat='{}{0:dd/MM/yyyy}'}" Width="120"/>
+                <DataGridTextColumn Header="Fecha Fin" Binding="{Binding PrmFechaFin, StringFormat='{}{0:dd/MM/yyyy}'}" Width="120"/>
+                <DataGridCheckBoxColumn Header="Activa" Binding="{Binding EstaActiva, Mode=OneWay}" Width="80" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>
