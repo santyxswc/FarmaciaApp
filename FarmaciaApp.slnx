@@ -1,4 +1,10 @@
 <Solution>
-  <Project Path="FarmaciaApp.Core/FarmaciaApp.Core.csproj" />
-  <Project Path="FarmaciaApp.Desktop/FarmaciaApp.Desktop.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/FarmaciaApp.Core/FarmaciaApp.Core.csproj" />
+    <Project Path="src/FarmaciaApp.Infrastructure/FarmaciaApp.Infrastructure.csproj" />
+    <Project Path="src/FarmaciaApp.Desktop/FarmaciaApp.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FarmaciaApp.Core.Tests/FarmaciaApp.Core.Tests.csproj" />
+  </Folder>
 </Solution>

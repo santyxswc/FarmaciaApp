@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Implementación de los contratos de Core con Oracle (Dapper) y PBKDF2. -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.26.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FarmaciaApp.Core\FarmaciaApp.Core.csproj" />
+  </ItemGroup>
+
+</Project>
