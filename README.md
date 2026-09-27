@@ -1,5 +1,7 @@
 # FarmaciaApp
 
+[![CI](https://github.com/santyxswc/FarmaciaApp/actions/workflows/ci.yml/badge.svg)](https://github.com/santyxswc/FarmaciaApp/actions/workflows/ci.yml)
+
 Sistema de escritorio para la gestión de una farmacia: ventas con facturación, inventario, clientes,
 proveedores, promociones, reclamos y **control de turnos** de los empleados.
 
@@ -20,6 +22,7 @@ Funciona en **Windows y Linux** (y macOS). Está hecho en **.NET 10** con **Aval
 6. Ejecución y publicación
 7. Guía de uso
 8. Solución de problemas
+9. Pruebas
 
 ---
 
@@ -49,38 +52,65 @@ Funciona en **Windows y Linux** (y macOS). Está hecho en **.NET 10** con **Aval
 | [CommunityToolkit.Mvvm](https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/) | Patrón MVVM (propiedades observables y comandos) |
 | [Dapper](https://github.com/DapperLib/Dapper) | Consultas SQL a objetos |
 | [Oracle.ManagedDataAccess.Core](https://www.nuget.org/packages/Oracle.ManagedDataAccess.Core) | Conexión a Oracle |
+| [Microsoft.Extensions.DependencyInjection](https://learn.microsoft.com/dotnet/core/extensions/dependency-injection) | Inyección de dependencias (raíz de composición) |
+| [xUnit v3](https://xunit.net/) | Pruebas unitarias |
 | Oracle Database 18c o superior | Base de datos (en desarrollo: Oracle Free en Docker) |
 
 ---
 
 ## 3. Arquitectura
 
-La solución tiene dos proyectos:
+La solución sigue una arquitectura por capas en la que las dependencias apuntan hacia el núcleo:
+
+```mermaid
+flowchart LR
+  Desktop["FarmaciaApp.Desktop<br/>Avalonia · MVVM · composición"] --> Core
+  Desktop --> Infrastructure
+  Infrastructure["FarmaciaApp.Infrastructure<br/>Oracle · Dapper · PBKDF2"] --> Core
+  Core["FarmaciaApp.Core<br/>modelos · reglas · contratos"]
+  Tests["FarmaciaApp.Core.Tests<br/>xUnit"] --> Core
+```
 
 ```
 FarmaciaApp/
-├── FarmaciaApp.Core/            Lógica de negocio y acceso a datos (sin interfaz gráfica)
-│   ├── Database/                Conexión a Oracle (DbConfig, OracleDbConnection)
-│   ├── Models/                  Entidades: Producto, Factura, Cliente, Usuario, Movimiento...
-│   ├── Repository/              Consultas SQL con Dapper, una clase por tabla principal
-│   ├── Service/                 Reglas de negocio, permisos y registro de movimientos
-│   ├── Seguridad/               Hash de contraseñas (PBKDF2)
-│   ├── Sesion.cs                Usuario del turno actual y validación de permisos
-│   └── Formato.cs               Formato de moneda en pesos colombianos
-├── FarmaciaApp.Desktop/         Aplicación de escritorio (Avalonia)
-│   ├── Views/                   Ventanas y pantallas (.axaml)
-│   ├── ViewModels/              Lógica de cada pantalla (MVVM)
-│   ├── Services/Dialogs.cs      Mensajes y confirmaciones
-│   ├── App.axaml                Estilos globales (colores, botones, tablas)
-│   └── appsettings.example.json Plantilla de la conexión a la base de datos
+├── src/
+│   ├── FarmaciaApp.Core/              Reglas de negocio; no conoce Oracle ni la interfaz
+│   │   ├── Abstractions/              Contratos: un I*Repository por tabla principal,
+│   │   │                              IDbConnectionFactory, IHasherClaves, IAuditoria
+│   │   ├── Models/                    Entidades: Producto, Factura, Cliente, Usuario, Movimiento...
+│   │   ├── Services/                  Validaciones, permisos y auditoría de cada módulo
+│   │   ├── Sesion/                    ISesionUsuario / SesionUsuario: usuario del turno y permisos
+│   │   └── Formato.cs                 Formato de moneda en pesos colombianos
+│   ├── FarmaciaApp.Infrastructure/    Implementaciones de los contratos
+│   │   ├── Database/                  OracleConnectionFactory
+│   │   ├── Repositories/              Consultas SQL con Dapper
+│   │   └── Seguridad/                 HasherPbkdf2 (PBKDF2-SHA256)
+│   └── FarmaciaApp.Desktop/           Aplicación de escritorio (Avalonia)
+│       ├── Views/                     Ventanas y pantallas (.axaml)
+│       ├── ViewModels/                Lógica de cada pantalla (MVVM); reciben sus servicios por constructor
+│       ├── Services/                  FabricaVistas (crea vistas con su ViewModel) y Dialogs
+│       ├── ComposicionServicios.cs    Registro de dependencias (raíz de composición)
+│       ├── App.axaml                  Estilos globales (colores, botones, tablas)
+│       └── appsettings.example.json   Plantilla de la conexión a la base de datos
+├── tests/FarmaciaApp.Core.Tests/      Pruebas de servicios con repositorios simulados
 ├── database/
-│   ├── schema.sql               Crea todas las tablas y los datos de ejemplo
-│   ├── migracion_ids.sql        Actualiza bases creadas con versiones anteriores
-│   └── migracion_usuarios.sql   Agrega usuarios y movimientos a bases anteriores
-├── docs/capturas/               Capturas de pantalla de este documento
-├── docker-compose.yml           Oracle Free para desarrollo
-└── Doxyfile                     Configuración de la documentación
+│   ├── schema.sql                     Crea todas las tablas y los datos de ejemplo
+│   ├── migracion_ids.sql              Actualiza bases creadas con versiones anteriores
+│   └── migracion_usuarios.sql         Agrega usuarios y movimientos a bases anteriores
+├── docs/capturas/                     Capturas de pantalla de este documento
+├── docker-compose.yml                 Oracle Free para desarrollo
+└── Directory.Build.props              Configuración común de los proyectos
 ```
+
+### Principios de diseño
+
+| Principio | Aplicación |
+|---|---|
+| Responsabilidad única | Vistas solo presentan; ViewModels coordinan la pantalla; servicios validan y aplican permisos; repositorios solo ejecutan SQL. Las validaciones comunes a crear y editar están en un único método por entidad. |
+| Abierto/cerrado | Cambiar de motor de base de datos es implementar los `I*Repository` e `IDbConnectionFactory` y registrarlos en `ComposicionServicios`, sin tocar reglas ni pantallas. |
+| Sustitución de Liskov | Las pruebas y la prueba de humo de la interfaz reemplazan los repositorios de Oracle por dobles en memoria sin cambiar el comportamiento de los servicios. |
+| Segregación de interfaces | Un contrato por repositorio; la sesión, la auditoría y el hash de contraseñas tienen cada uno su interfaz. |
+| Inversión de dependencias | Core define las interfaces e Infrastructure las implementa. Nada crea sus dependencias con `new`: el contenedor de .NET las inyecta por constructor y valida el grafo al arrancar (`ValidateOnBuild`). La sesión y la auditoría dejaron de ser clases estáticas globales. |
 
 ### Flujo de una operación
 
@@ -93,25 +123,25 @@ NuevaFacturaView (pantalla)
 NuevaFacturaViewModel         arma las líneas y calcula los totales en pantalla
    │
    ▼
-FacturaService (Core)         valida los datos y los permisos (Sesion); un empleado vende a su nombre
+FacturaService (Core)         valida los datos y los permisos (ISesionUsuario); un empleado vende a su nombre
    │
    ▼
-FacturaRepository (Core)      en UNA transacción: bloquea los productos, verifica el stock,
+FacturaRepository (Infra.)    en UNA transacción: bloquea los productos, verifica el stock,
    │                          toma los precios de la base, guarda pago, factura y líneas,
    │                          descuenta el stock
    ▼
 Oracle                        si algo falla, se deshace todo (rollback)
    │
    ▼
-Auditoria.Registrar           guarda "Venta registrada" en TBL_MOVIMIENTO
+IAuditoria.Registrar          guarda "Venta registrada" en TBL_MOVIMIENTO
 ```
 
 Todas las pantallas siguen el mismo camino: **Vista → ViewModel → Servicio → Repositorio → Oracle**.
 
 - **Las reglas y los permisos están en los servicios de Core**, no en las pantallas. Esconder un botón es solo
   comodidad; aunque alguien llamara al servicio directamente, el servicio verifica el rol.
-- **Sesion** guarda el usuario que inició sesión. Sin sesión no se puede modificar nada.
-- **Auditoria** registra cada operación exitosa con el usuario, la fecha y un detalle legible.
+- **ISesionUsuario** guarda el usuario que inició sesión (una sola instancia inyectada). Sin sesión no se puede modificar nada.
+- **IAuditoria** registra cada operación exitosa con el usuario, la fecha y un detalle legible.
 
 ---
 
@@ -223,7 +253,7 @@ Ambos scripts se pueden ejecutar más de una vez sin dañar nada.
 La aplicación lee la conexión del archivo `appsettings.json` ubicado **junto al programa**. Copia la plantilla:
 
 ```bash
-cp FarmaciaApp.Desktop/appsettings.example.json FarmaciaApp.Desktop/appsettings.json
+cp src/FarmaciaApp.Desktop/appsettings.example.json src/FarmaciaApp.Desktop/appsettings.json
 ```
 
 y ajusta usuario, contraseña, servidor y servicio:
@@ -251,7 +281,7 @@ la contraseña nunca se suba al repositorio.
 ### Ejecutar en desarrollo
 
 ```bash
-dotnet run --project FarmaciaApp.Desktop
+dotnet run --project src/FarmaciaApp.Desktop
 ```
 
 ### Publicar un ejecutable para entregar
@@ -260,10 +290,10 @@ Genera un solo archivo que incluye .NET, así el equipo donde se instale no nece
 
 ```bash
 # Windows (genera FarmaciaApp.exe)
-dotnet publish FarmaciaApp.Desktop -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publicado/windows
+dotnet publish src/FarmaciaApp.Desktop -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publicado/windows
 
 # Linux (genera FarmaciaApp)
-dotnet publish FarmaciaApp.Desktop -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publicado/linux
+dotnet publish src/FarmaciaApp.Desktop -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publicado/linux
 ```
 
 Ambos se pueden generar desde Windows o desde Linux. La carpeta resultante trae el ejecutable y
@@ -357,6 +387,21 @@ productos muestran el valor anterior y el nuevo, por ejemplo `precio $ 14.200 �
 | "ORA-00001" al crear un cliente | La base se creó con una versión anterior del script: ejecuta `migracion_ids.sql`. |
 | "ORA-00942: la tabla o vista no existe" al iniciar sesión | Faltan las tablas de usuarios: ejecuta `migracion_usuarios.sql`. |
 | La hora de las facturas no coincide | El servidor de Oracle está en otra zona horaria. En Docker se fija con `TZ=America/Bogota`. |
+
+
+---
+
+## 9. Pruebas
+
+```bash
+dotnet test
+```
+
+29 pruebas con xUnit cubren las reglas de los servicios sin necesitar Oracle: inicio y cierre de sesión con auditoría,
+permisos de administrador, validación y hash de usuarios nuevos, protección del último administrador activo, validación
+compartida de productos y clientes, facturación (un empleado vende siempre a su nombre, líneas repetidas se unen,
+cantidades enteras positivas, desglose del IVA) y la derivación de contraseñas con PBKDF2. Los repositorios se sustituyen
+por dobles que registran cada llamada. GitHub Actions compila y ejecuta las pruebas en cada push.
 
 ---
 
