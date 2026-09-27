@@ -1,6 +1,6 @@
 /**
  * @file IReporteRepository.cs
- * @brief Contrato de acceso a datos de reporte.
+ * @brief Contrato del repositorio de reportes de ventas.
  * @author Santiago Caicedo
  */
 using FarmaciaApp.Core.Models;
@@ -8,9 +8,7 @@ using FarmaciaApp.Core.Models;
 namespace FarmaciaApp.Core.Abstractions
 {
     /**
-     * @brief Operaciones de persistencia de reporte que usan los servicios.
-     *
-     * La implementación con Oracle y Dapper está en FarmaciaApp.Infrastructure.
+     * @brief Acceso a datos de reportes de ventas.
      */
     public interface IReporteRepository
     {

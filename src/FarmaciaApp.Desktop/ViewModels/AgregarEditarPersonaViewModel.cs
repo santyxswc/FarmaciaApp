@@ -18,13 +18,18 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class AgregarEditarPersonaViewModel : ObservableObject
     {
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
+        /** Reglas de negocio de personas. */
         private readonly PersonaService _service;
+        /** Ventana del formulario. */
         private readonly Window _window;
 
         /** Indica si se muestran las acciones de administrador. */
         public bool EsAdmin => _sesion.EsAdmin;
+        /** Id de la persona que se edita; 0 si es nueva. */
         private int _personaId;
+        /** Indica si la persona ya era vendedora antes de editarla. */
         private bool _eraVendedor;
 
         /** Título de la ventana. */

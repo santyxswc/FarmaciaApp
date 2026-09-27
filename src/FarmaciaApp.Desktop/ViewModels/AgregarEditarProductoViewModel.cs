@@ -17,8 +17,11 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class AgregarEditarProductoViewModel : ObservableObject
     {
+        /** Reglas de negocio de productos. */
         private readonly ProductoService _service;
+        /** Ventana del formulario. */
         private readonly Window _ownerWindow;
+        /** Registro que se edita en el formulario. */
         private Producto _form;
 
         /**

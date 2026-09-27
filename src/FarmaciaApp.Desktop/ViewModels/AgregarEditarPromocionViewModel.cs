@@ -17,8 +17,11 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class AgregarEditarPromocionViewModel : ObservableObject
     {
+        /** Reglas de negocio de promociones. */
         private readonly PromocionService _service;
+        /** Ventana del formulario. */
         private readonly Window _window;
+        /** Id de la promoción que se edita; 0 si es nueva. */
         private int _promocionId;
 
         /** Título de la ventana. */

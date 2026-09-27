@@ -9,11 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 namespace FarmaciaApp.Desktop.Services
 {
     /**
-     * @brief Único punto donde se construyen vistas y ViewModels.
+     * @brief Crea las vistas con su ViewModel.
      *
-     * Los ViewModels declaran en su constructor los servicios que necesitan y el contenedor los
-     * inyecta; los argumentos propios de cada pantalla (la ventana dueña, el registro a editar)
-     * se pasan explícitamente.
+     * Los servicios del ViewModel los inyecta el contenedor; la ventana y el registro a editar
+     * se pasan como argumentos.
      */
     public sealed class FabricaVistas
     {

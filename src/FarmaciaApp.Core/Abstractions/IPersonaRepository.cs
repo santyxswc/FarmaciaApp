@@ -1,6 +1,6 @@
 /**
  * @file IPersonaRepository.cs
- * @brief Contrato de acceso a datos de persona.
+ * @brief Contrato del repositorio de personas.
  * @author Santiago Caicedo
  */
 using FarmaciaApp.Core.Models;
@@ -8,9 +8,7 @@ using FarmaciaApp.Core.Models;
 namespace FarmaciaApp.Core.Abstractions
 {
     /**
-     * @brief Operaciones de persistencia de persona que usan los servicios.
-     *
-     * La implementación con Oracle y Dapper está en FarmaciaApp.Infrastructure.
+     * @brief Acceso a datos de personas.
      */
     public interface IPersonaRepository
     {

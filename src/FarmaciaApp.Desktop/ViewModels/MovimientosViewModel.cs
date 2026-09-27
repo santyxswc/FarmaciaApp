@@ -16,7 +16,9 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class MovimientosViewModel : ObservableObject
     {
+        /** Reglas de negocio de usuarios. */
         private readonly UsuarioService _usuarios;
+        /** Reglas de negocio de movimientos. */
         private readonly MovimientoService _service;
 
         /** Usuarios para el filtro; el Id 0 representa a todos. */

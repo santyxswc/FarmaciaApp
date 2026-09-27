@@ -17,8 +17,11 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class AgregarEditarProveedorViewModel : ObservableObject
     {
+        /** Reglas de negocio de proveedores. */
         private readonly ProveedorService _service;
+        /** Ventana del formulario. */
         private readonly Window _window;
+        /** Id del proveedor que se edita; 0 si es nuevo. */
         private int _proveedorId;
 
         /** Título de la ventana. */

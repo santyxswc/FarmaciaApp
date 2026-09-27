@@ -18,7 +18,9 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class UsuariosViewModel : ObservableObject
     {
+        /** Creación de ventanas y secciones. */
         private readonly FabricaVistas _vistas;
+        /** Reglas de negocio de usuarios. */
         private readonly UsuarioService _service;
 
         /** Usuarios registrados. */

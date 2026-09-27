@@ -19,8 +19,11 @@ namespace FarmaciaApp.Core.Services
         /** Estados posibles de un reclamo. */
         public static readonly string[] Estados = { "Pendiente", "En proceso", "Resuelto", "Rechazado" };
 
+        /** Acceso a datos de reclamos. */
         private readonly IReclamoRepository _repo;
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
+        /** Registro de movimientos. */
         private readonly IAuditoria _auditoria;
 
         /**

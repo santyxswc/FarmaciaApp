@@ -16,6 +16,7 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class ReportesViewModel : ObservableObject
     {
+        /** Reglas de negocio de reportes de ventas. */
         private readonly ReporteService _service;
 
         /** Fecha inicial (por defecto, el primer día del mes). */

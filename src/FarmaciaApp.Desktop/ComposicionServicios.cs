@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace FarmaciaApp.Desktop
 {
     /**
-     * @brief Raíz de composición: une las interfaces de Core con sus implementaciones.
+     * @brief Registro de las dependencias de la aplicación.
      */
     public static class ComposicionServicios
     {
@@ -24,13 +24,9 @@ namespace FarmaciaApp.Desktop
          * @param servicios Colección donde se registran
          * @param cadenaConexion Cadena de conexión de Oracle (puede ser null)
          * @return La misma colección, para encadenar
-         *
-         * Es el único lugar que conoce las implementaciones concretas (Oracle, PBKDF2); el resto de la
-         * aplicación depende de las interfaces de FarmaciaApp.Core.
          */
         public static IServiceCollection AgregarFarmacia(this IServiceCollection servicios, string cadenaConexion)
         {
-            // Infraestructura
             servicios.AddSingleton<IDbConnectionFactory>(new OracleConnectionFactory(cadenaConexion));
             servicios.AddSingleton<IHasherClaves, HasherPbkdf2>();
             servicios.AddSingleton<IClienteRepository, ClienteRepository>();
@@ -44,11 +40,9 @@ namespace FarmaciaApp.Desktop
             servicios.AddSingleton<IReporteRepository, ReporteRepository>();
             servicios.AddSingleton<IUsuarioRepository, UsuarioRepository>();
 
-            // Sesión del turno y auditoría: una instancia para toda la aplicación
             servicios.AddSingleton<ISesionUsuario, SesionUsuario>();
             servicios.AddSingleton<IAuditoria, ServicioAuditoria>();
 
-            // Reglas de negocio
             servicios.AddSingleton<ClienteService>();
             servicios.AddSingleton<FacturaService>();
             servicios.AddSingleton<MovimientoService>();
@@ -60,7 +54,6 @@ namespace FarmaciaApp.Desktop
             servicios.AddSingleton<ReporteService>();
             servicios.AddSingleton<UsuarioService>();
 
-            // Interfaz
             servicios.AddSingleton<FabricaVistas>();
 
             return servicios;

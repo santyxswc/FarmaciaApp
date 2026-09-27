@@ -1,5 +1,5 @@
 /**
- * @file PersonaServices.cs
+ * @file PersonaService.cs
  * @brief Reglas de negocio de las personas.
  * @author Santiago Caicedo
  */
@@ -18,9 +18,13 @@ namespace FarmaciaApp.Core.Services
      */
     public class PersonaService
     {
+        /** Acceso a datos de personas. */
         private readonly IPersonaRepository _repo;
+        /** Acceso a datos de usuarios. */
         private readonly IUsuarioRepository _usuarios;
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
+        /** Registro de movimientos. */
         private readonly IAuditoria _auditoria;
 
         /**

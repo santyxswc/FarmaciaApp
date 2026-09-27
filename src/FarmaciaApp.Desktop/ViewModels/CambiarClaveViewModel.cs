@@ -18,8 +18,11 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class CambiarClaveViewModel : ObservableObject
     {
+        /** Reglas de negocio de usuarios. */
         private readonly UsuarioService _usuarios;
+        /** Ventana del formulario. */
         private readonly Window _window;
+        /** Usuario al que se restablece la contraseña; null para cambiar la propia. */
         private readonly Usuario _usuario;
 
         /** Indica si el usuario cambia su propia contraseña (pide la actual). */

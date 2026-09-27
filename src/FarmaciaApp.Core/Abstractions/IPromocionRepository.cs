@@ -1,6 +1,6 @@
 /**
  * @file IPromocionRepository.cs
- * @brief Contrato de acceso a datos de promocion.
+ * @brief Contrato del repositorio de promociones.
  * @author Santiago Caicedo
  */
 using FarmaciaApp.Core.Models;
@@ -8,9 +8,7 @@ using FarmaciaApp.Core.Models;
 namespace FarmaciaApp.Core.Abstractions
 {
     /**
-     * @brief Operaciones de persistencia de promocion que usan los servicios.
-     *
-     * La implementación con Oracle y Dapper está en FarmaciaApp.Infrastructure.
+     * @brief Acceso a datos de promociones.
      */
     public interface IPromocionRepository
     {

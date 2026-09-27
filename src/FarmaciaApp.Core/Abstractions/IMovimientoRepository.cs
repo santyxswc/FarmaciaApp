@@ -1,6 +1,6 @@
 /**
  * @file IMovimientoRepository.cs
- * @brief Contrato de acceso a datos de movimiento.
+ * @brief Contrato del repositorio de movimientos del registro de auditoría.
  * @author Santiago Caicedo
  */
 using FarmaciaApp.Core.Models;
@@ -8,9 +8,7 @@ using FarmaciaApp.Core.Models;
 namespace FarmaciaApp.Core.Abstractions
 {
     /**
-     * @brief Operaciones de persistencia de movimiento que usan los servicios.
-     *
-     * La implementación con Oracle y Dapper está en FarmaciaApp.Infrastructure.
+     * @brief Acceso a datos de movimientos del registro de auditoría.
      */
     public interface IMovimientoRepository
     {

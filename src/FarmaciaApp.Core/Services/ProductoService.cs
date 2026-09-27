@@ -16,8 +16,11 @@ namespace FarmaciaApp.Core.Services
      */
     public class ProductoService
     {
+        /** Acceso a datos de productos. */
         private readonly IProductoRepository _repo;
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
+        /** Registro de movimientos. */
         private readonly IAuditoria _auditoria;
 
         /**

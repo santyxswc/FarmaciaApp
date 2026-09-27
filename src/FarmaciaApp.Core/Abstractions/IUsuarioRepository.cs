@@ -1,6 +1,6 @@
 /**
  * @file IUsuarioRepository.cs
- * @brief Contrato de acceso a datos de usuario.
+ * @brief Contrato del repositorio de usuarios.
  * @author Santiago Caicedo
  */
 using FarmaciaApp.Core.Models;
@@ -8,9 +8,7 @@ using FarmaciaApp.Core.Models;
 namespace FarmaciaApp.Core.Abstractions
 {
     /**
-     * @brief Operaciones de persistencia de usuario que usan los servicios.
-     *
-     * La implementación con Oracle y Dapper está en FarmaciaApp.Infrastructure.
+     * @brief Acceso a datos de usuarios.
      */
     public interface IUsuarioRepository
     {

@@ -1,5 +1,4 @@
 <Project>
-  <!-- Configuración común a todos los proyectos de la solución. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

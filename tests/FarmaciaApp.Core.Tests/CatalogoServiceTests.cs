@@ -1,19 +1,38 @@
+/**
+ * @file CatalogoServiceTests.cs
+ * @brief Pruebas de los servicios de productos, clientes y facturas.
+ * @author Santiago Caicedo
+ */
 using FarmaciaApp.Core.Abstractions;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Services;
 
 namespace FarmaciaApp.Core.Tests;
 
+/**
+ * @brief Pruebas de ProductoService.
+ */
 public class ProductoServiceTests
 {
+    /** Repositorio de productos simulado. */
     private readonly (IProductoRepository Objeto, Stub<IProductoRepository> Control) repo = Stub<IProductoRepository>.Crear();
+    /** Movimientos registrados. */
     private readonly AuditoriaEnMemoria auditoria = new();
 
+    /**
+     * @brief Un empleado no puede crear productos.
+     */
     [Fact]
     public void Un_empleado_no_puede_crear_productos() =>
         Assert.Throws<UnauthorizedAccessException>(() =>
             new ProductoService(repo.Objeto, Sesiones.Empleado(), auditoria).CrearProducto(new Producto { ProNombre = "X", ProPrecio = 1 }));
 
+    /**
+     * @brief Crear y actualizar rechazan los mismos datos no válidos.
+     * @param nombre Nombre
+     * @param precio Precio
+     * @param stock Stock
+     */
     [Theory]
     [InlineData("", 1000, 5)]
     [InlineData("Ibuprofeno", 0, 5)]
@@ -26,6 +45,9 @@ public class ProductoServiceTests
         Assert.Throws<ArgumentException>(() => servicio.ActualizarProducto(producto));
     }
 
+    /**
+     * @brief No se elimina un producto que aparece en facturas.
+     */
     [Fact]
     public void No_se_elimina_un_producto_que_ya_se_vendio()
     {
@@ -35,6 +57,9 @@ public class ProductoServiceTests
         Assert.Contains("3 factura", error.Message);
     }
 
+    /**
+     * @brief Un producto válido se guarda y se registra el movimiento.
+     */
     [Fact]
     public void Crear_un_producto_valido_lo_guarda_y_lo_audita()
     {
@@ -46,10 +71,20 @@ public class ProductoServiceTests
     }
 }
 
+/**
+ * @brief Pruebas de ClienteService.
+ */
 public class ClienteServiceTests
 {
+    /** Repositorio de clientes simulado. */
     private readonly (IClienteRepository Objeto, Stub<IClienteRepository> Control) repo = Stub<IClienteRepository>.Crear();
 
+    /**
+     * @brief Rechaza clientes sin nombre, sin apellido o con email no válido.
+     * @param nombre Nombre
+     * @param apellido Apellido
+     * @param email Email
+     */
     [Theory]
     [InlineData(null, "Pérez", null)]
     [InlineData("Ana", " ", null)]
@@ -59,6 +94,9 @@ public class ClienteServiceTests
             new ClienteService(repo.Objeto, Sesiones.Empleado(), new AuditoriaEnMemoria())
                 .CrearCliente(new Cliente { PerNombre = nombre, PerApellido = apellido, PerEmail = email }));
 
+    /**
+     * @brief No se elimina un cliente con facturas.
+     */
     [Fact]
     public void No_se_elimina_un_cliente_con_facturas()
     {
@@ -69,13 +107,27 @@ public class ClienteServiceTests
     }
 }
 
+/**
+ * @brief Pruebas de FacturaService.
+ */
 public class FacturaServiceTests
 {
+    /** Repositorio de facturas simulado. */
     private readonly (IFacturaRepository Objeto, Stub<IFacturaRepository> Control) repo = Stub<IFacturaRepository>.Crear();
+    /** Movimientos registrados. */
     private readonly AuditoriaEnMemoria auditoria = new();
 
+    /**
+     * @brief Crea una línea de factura.
+     * @param pro PRO_ID
+     * @param cantidad Cantidad
+     * @return Línea
+     */
     private static FacturaProductoDetalle Linea(decimal pro, decimal cantidad) => new() { ProId = pro, Cantidad = cantidad };
 
+    /**
+     * @brief Un empleado siempre factura a su nombre y las líneas del mismo producto se unen.
+     */
     [Fact]
     public void Un_empleado_siempre_factura_a_su_nombre_y_las_lineas_repetidas_se_unen()
     {
@@ -94,12 +146,19 @@ public class FacturaServiceTests
         Assert.Contains("Venta registrada", auditoria.Acciones);
     }
 
+    /**
+     * @brief Un empleado sin vendedor asociado no puede facturar.
+     */
     [Fact]
     public void Un_empleado_sin_vendedor_asociado_no_puede_facturar() =>
         Assert.Throws<InvalidOperationException>(() =>
             new FacturaService(repo.Objeto, Sesiones.Empleado(venId: null), auditoria)
                 .CrearFactura(3, 0, "Efectivo", new[] { Linea(1, 1) }));
 
+    /**
+     * @brief Las cantidades deben ser enteros positivos.
+     * @param cantidad Cantidad no válida
+     */
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
@@ -109,13 +168,22 @@ public class FacturaServiceTests
             new FacturaService(repo.Objeto, Sesiones.Admin(), auditoria)
                 .CrearFactura(3, 7, "Efectivo", new[] { Linea(1, (decimal)cantidad) }));
 
+    /**
+     * @brief El IVA del 19 % se desglosa del total.
+     */
     [Fact]
     public void El_iva_se_desglosa_del_total() =>
         Assert.Equal((10000m, 1900m), Factura.DesglosarIva(11900m));
 }
 
+/**
+ * @brief Pruebas de las clases de infraestructura que no necesitan Oracle.
+ */
 public class InfraestructuraTests
 {
+    /**
+     * @brief PBKDF2 acepta la contraseña correcta, rechaza otras y usa una sal nueva cada vez.
+     */
     [Fact]
     public void Pbkdf2_verifica_la_clave_correcta_y_usa_sal_nueva_cada_vez()
     {
@@ -127,6 +195,9 @@ public class InfraestructuraTests
         Assert.NotEqual(sal, hasher.Crear("secreta1").Sal);
     }
 
+    /**
+     * @brief Sin cadena de conexión la fábrica informa que no está configurada.
+     */
     [Fact]
     public void Sin_cadena_de_conexion_la_fabrica_informa_que_no_esta_configurada() =>
         Assert.False(new FarmaciaApp.Infrastructure.Database.OracleConnectionFactory(null).Configurada);

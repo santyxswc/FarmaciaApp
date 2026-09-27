@@ -20,8 +20,11 @@ namespace FarmaciaApp.Core.Services
      */
     public class PromocionService
     {
+        /** Acceso a datos de promociones. */
         private readonly IPromocionRepository _repo;
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
+        /** Registro de movimientos. */
         private readonly IAuditoria _auditoria;
 
         /**

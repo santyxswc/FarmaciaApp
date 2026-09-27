@@ -16,9 +16,13 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class AgregarEditarReclamoViewModel : ObservableObject
     {
+        /** Reglas de negocio de facturas. */
         private readonly FacturaService _facturas;
+        /** Reglas de negocio de reclamos. */
         private readonly ReclamoService _service;
+        /** Ventana del formulario. */
         private readonly Window _window;
+        /** Id del reclamo que se edita; 0 si es nuevo. */
         private decimal _reclamoId;
 
         /** Facturas que se pueden reclamar. */

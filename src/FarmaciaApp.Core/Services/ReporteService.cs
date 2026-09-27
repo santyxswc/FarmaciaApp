@@ -16,7 +16,9 @@ namespace FarmaciaApp.Core.Services
      */
     public class ReporteService
     {
+        /** Acceso a datos de reportes de ventas. */
         private readonly IReporteRepository _repo;
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
 
         /**

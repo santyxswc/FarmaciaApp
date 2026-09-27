@@ -23,10 +23,13 @@ namespace FarmaciaApp.Infrastructure.Database
          */
         public OracleConnectionFactory(string cadenaConexion) => _cadena = cadenaConexion;
 
-        /** @copydoc IDbConnectionFactory::Configurada */
+        /** Indica si hay una cadena de conexión configurada. */
         public bool Configurada => !string.IsNullOrWhiteSpace(_cadena);
 
-        /** @copydoc IDbConnectionFactory::Crear */
+        /**
+         * @brief Crea una conexión nueva (cerrada).
+         * @return Conexión lista para usar con Dapper
+         */
         public IDbConnection Crear() => new OracleConnection(_cadena);
     }
 }

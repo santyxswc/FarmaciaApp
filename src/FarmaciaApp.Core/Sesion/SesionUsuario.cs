@@ -12,8 +12,8 @@ namespace FarmaciaApp.Core.Sesion
      * @brief Usuario autenticado en la aplicación y reglas de acceso.
      *
      * La inician y la cierran UsuarioService.IniciarSesion y UsuarioService.CerrarSesion.
-     * Se registra una sola instancia en el contenedor de dependencias y los servicios la
-     * reciben por constructor para validar permisos y registrar movimientos.
+     * Hay una sola instancia en la aplicación; los servicios la usan para validar permisos
+     * y registrar movimientos.
      */
     public sealed class SesionUsuario : ISesionUsuario
     {

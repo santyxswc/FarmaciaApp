@@ -18,7 +18,9 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class FacturasViewModel : ObservableObject
     {
+        /** Creación de ventanas y secciones. */
         private readonly FabricaVistas _vistas;
+        /** Reglas de negocio de facturas. */
         private readonly FacturaService _service;
 
         /** Facturas que se muestran. */

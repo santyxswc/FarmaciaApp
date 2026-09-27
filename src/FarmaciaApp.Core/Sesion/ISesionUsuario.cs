@@ -8,7 +8,7 @@ using FarmaciaApp.Core.Models;
 namespace FarmaciaApp.Core.Sesion
 {
     /**
-     * @brief Usuario autenticado y reglas de acceso; los servicios la reciben por constructor.
+     * @brief Usuario autenticado y reglas de acceso.
      */
     public interface ISesionUsuario
     {

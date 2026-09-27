@@ -1,6 +1,6 @@
 /**
  * @file IProductoRepository.cs
- * @brief Contrato de acceso a datos de producto.
+ * @brief Contrato del repositorio de productos.
  * @author Santiago Caicedo
  */
 using FarmaciaApp.Core.Models;
@@ -8,9 +8,7 @@ using FarmaciaApp.Core.Models;
 namespace FarmaciaApp.Core.Abstractions
 {
     /**
-     * @brief Operaciones de persistencia de producto que usan los servicios.
-     *
-     * La implementación con Oracle y Dapper está en FarmaciaApp.Infrastructure.
+     * @brief Acceso a datos de productos.
      */
     public interface IProductoRepository
     {

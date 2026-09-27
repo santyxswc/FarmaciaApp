@@ -16,7 +16,9 @@ namespace FarmaciaApp.Core.Services
      */
     public class MovimientoService
     {
+        /** Acceso a datos de movimientos. */
         private readonly IMovimientoRepository _repo;
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
 
         /**

@@ -20,8 +20,11 @@ namespace FarmaciaApp.Core.Services
         /** Metodos de pago aceptados. */
         public static readonly string[] MetodosPago = { "Efectivo", "Tarjeta débito", "Tarjeta crédito", "Transferencia" };
 
+        /** Acceso a datos de facturas. */
         private readonly IFacturaRepository _repo;
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
+        /** Registro de movimientos. */
         private readonly IAuditoria _auditoria;
 
         /**

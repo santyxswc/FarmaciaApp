@@ -19,9 +19,13 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class LoginViewModel : ObservableObject
     {
+        /** Reglas de negocio de usuarios. */
         private readonly UsuarioService _usuarios;
+        /** Conexión a la base de datos. */
         private readonly IDbConnectionFactory _conexiones;
+        /** Creación de ventanas y secciones. */
         private readonly FabricaVistas _vistas;
+        /** Ventana del formulario. */
         private readonly Window _window;
 
         /** Usuario escrito. */

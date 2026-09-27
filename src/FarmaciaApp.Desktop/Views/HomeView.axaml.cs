@@ -20,7 +20,6 @@ namespace FarmaciaApp.Desktop.Views
         {
             InitializeComponent();
 
-            // Las tarjetas de administración solo se muestran al administrador del turno.
             DataContextChanged += (_, _) =>
             {
                 if (DataContext is MainWindowViewModel { EsAdmin: false })

@@ -19,8 +19,11 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class ReclamosViewModel : ObservableObject
     {
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
+        /** Creación de ventanas y secciones. */
         private readonly FabricaVistas _vistas;
+        /** Reglas de negocio de reclamos. */
         private readonly ReclamoService _service;
 
         /** Indica si se muestran las acciones de administrador. */

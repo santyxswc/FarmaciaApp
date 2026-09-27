@@ -1,6 +1,6 @@
 /**
  * @file IReclamoRepository.cs
- * @brief Contrato de acceso a datos de reclamo.
+ * @brief Contrato del repositorio de reclamos.
  * @author Santiago Caicedo
  */
 using FarmaciaApp.Core.Models;
@@ -8,9 +8,7 @@ using FarmaciaApp.Core.Models;
 namespace FarmaciaApp.Core.Abstractions
 {
     /**
-     * @brief Operaciones de persistencia de reclamo que usan los servicios.
-     *
-     * La implementación con Oracle y Dapper está en FarmaciaApp.Infrastructure.
+     * @brief Acceso a datos de reclamos.
      */
     public interface IReclamoRepository
     {

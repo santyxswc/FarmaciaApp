@@ -38,8 +38,11 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class NuevaFacturaViewModel : ObservableObject
     {
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
+        /** Reglas de negocio de facturas. */
         private readonly FacturaService _service;
+        /** Ventana del formulario. */
         private readonly Window _window;
 
         /** Clientes que se pueden facturar. */

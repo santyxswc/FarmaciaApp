@@ -16,8 +16,11 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class NuevoUsuarioViewModel : ObservableObject
     {
+        /** Reglas de negocio de personas. */
         private readonly PersonaService _personas;
+        /** Reglas de negocio de usuarios. */
         private readonly UsuarioService _usuarios;
+        /** Ventana del formulario. */
         private readonly Window _window;
 
         /** Roles que se pueden asignar. */

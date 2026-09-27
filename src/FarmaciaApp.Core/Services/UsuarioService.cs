@@ -26,10 +26,15 @@ namespace FarmaciaApp.Core.Services
         /** Formato válido de un login: minúsculas, números, punto, guion y guion bajo. */
         private static readonly Regex LoginValido = new Regex(@"^[a-z0-9._-]{3,30}$");
 
+        /** Acceso a datos de usuarios. */
         private readonly IUsuarioRepository _repo;
+        /** Reglas de negocio de personas. */
         private readonly PersonaService _personas;
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
+        /** Registro de movimientos. */
         private readonly IAuditoria _auditoria;
+        /** Derivación de contraseñas. */
         private readonly IHasherClaves _hasher;
 
         /**

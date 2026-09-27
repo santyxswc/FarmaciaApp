@@ -19,8 +19,11 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class PromocionesViewModel : ObservableObject
     {
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
+        /** Creación de ventanas y secciones. */
         private readonly FabricaVistas _vistas;
+        /** Reglas de negocio de promociones. */
         private readonly PromocionService _service;
 
         /** Indica si se muestran las acciones de administrador. */

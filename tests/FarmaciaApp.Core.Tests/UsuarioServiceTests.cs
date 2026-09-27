@@ -1,3 +1,8 @@
+/**
+ * @file UsuarioServiceTests.cs
+ * @brief Pruebas del servicio de usuarios.
+ * @author Santiago Caicedo
+ */
 using FarmaciaApp.Core.Abstractions;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Services;
@@ -5,20 +10,39 @@ using FarmaciaApp.Core.Sesion;
 
 namespace FarmaciaApp.Core.Tests;
 
+/**
+ * @brief Pruebas de inicio de sesión, turnos y administración de usuarios.
+ */
 public class UsuarioServiceTests
 {
+    /** Repositorio de usuarios simulado. */
     private readonly (IUsuarioRepository Objeto, Stub<IUsuarioRepository> Control) usuarios = Stub<IUsuarioRepository>.Crear();
+    /** Repositorio de personas simulado. */
     private readonly (IPersonaRepository Objeto, Stub<IPersonaRepository> Control) personas = Stub<IPersonaRepository>.Crear();
+    /** Movimientos registrados. */
     private readonly AuditoriaEnMemoria auditoria = new();
 
+    /**
+     * @brief Crea el servicio con los dobles.
+     * @param sesion Sesión del turno
+     * @return Servicio de usuarios
+     */
     private UsuarioService Servicio(ISesionUsuario sesion) =>
         new(usuarios.Objeto,
             new PersonaService(personas.Objeto, usuarios.Objeto, sesion, auditoria),
             sesion, auditoria, new HasherFalso());
 
+    /**
+     * @brief Usuario guardado con la contraseña "secreta1".
+     * @param activo Si el usuario está activo
+     * @return Usuario
+     */
     private static Usuario Registrado(bool activo = true) =>
         new() { UsuId = 10, Login = "ana", Hash = "h:secreta1", Sal = "sal", Rol = Usuario.RolEmpleado, Activo = activo, PerId = 3 };
 
+    /**
+     * @brief Iniciar sesión abre el turno con el vendedor asociado y lo registra.
+     */
     [Fact]
     public void Iniciar_sesion_abre_el_turno_y_lo_audita()
     {
@@ -37,6 +61,9 @@ public class UsuarioServiceTests
         Assert.Equal("ana", usuarios.Control.Llamadas.First(l => l.Metodo == "GetByLogin").Args[0]);
     }
 
+    /**
+     * @brief Una contraseña incorrecta no abre sesión y queda registrada como intento fallido.
+     */
     [Fact]
     public void Una_clave_incorrecta_no_abre_sesion_y_queda_registrada()
     {
@@ -48,6 +75,9 @@ public class UsuarioServiceTests
         Assert.Contains("Inicio de sesión fallido", auditoria.Acciones);
     }
 
+    /**
+     * @brief Un usuario desactivado no puede entrar.
+     */
     [Fact]
     public void Un_usuario_desactivado_no_puede_entrar()
     {
@@ -55,6 +85,9 @@ public class UsuarioServiceTests
         Assert.Throws<InvalidOperationException>(() => Servicio(new SesionUsuario()).IniciarSesion("ana", "secreta1"));
     }
 
+    /**
+     * @brief Solo el administrador crea usuarios.
+     */
     [Fact]
     public void Solo_el_administrador_crea_usuarios()
     {
@@ -64,14 +97,24 @@ public class UsuarioServiceTests
         Assert.Equal(0, usuarios.Control.Veces(nameof(IUsuarioRepository.Insert)));
     }
 
+    /**
+     * @brief Rechaza login corto, contraseña corta, contraseñas distintas y empleado sin persona.
+     * @param login Login
+     * @param clave Contraseña
+     * @param confirmacion Confirmación
+     * @param rol Rol
+     */
     [Theory]
-    [InlineData("ab", "clave123", "clave123", "Administrador")]   // login corto
-    [InlineData("nuevo", "123", "123", "Administrador")]            // clave corta
-    [InlineData("nuevo", "clave123", "otra1234", "Administrador")]  // no coinciden
-    [InlineData("nuevo", "clave123", "clave123", "Empleado")]       // empleado sin persona
+    [InlineData("ab", "clave123", "clave123", "Administrador")]
+    [InlineData("nuevo", "123", "123", "Administrador")]
+    [InlineData("nuevo", "clave123", "otra1234", "Administrador")]
+    [InlineData("nuevo", "clave123", "clave123", "Empleado")]
     public void Crear_usuario_valida_los_datos(string login, string clave, string confirmacion, string rol) =>
         Assert.Throws<ArgumentException>(() => Servicio(Sesiones.Admin()).CrearUsuario(login, clave, confirmacion, rol, null));
 
+    /**
+     * @brief Crear un usuario guarda el login normalizado y el hash, no la contraseña.
+     */
     [Fact]
     public void Crear_usuario_guarda_el_hash_y_no_la_clave()
     {
@@ -88,6 +131,9 @@ public class UsuarioServiceTests
         Assert.Contains("Usuario creado", auditoria.Acciones);
     }
 
+    /**
+     * @brief No se puede desactivar al último administrador activo.
+     */
     [Fact]
     public void No_se_puede_desactivar_al_ultimo_administrador()
     {
@@ -98,6 +144,9 @@ public class UsuarioServiceTests
         Assert.Throws<InvalidOperationException>(() => Servicio(Sesiones.Admin()).CambiarEstado(50, activo: false));
     }
 
+    /**
+     * @brief Cerrar sesión registra el turno y la cierra.
+     */
     [Fact]
     public void Cerrar_sesion_audita_el_turno_y_la_cierra()
     {

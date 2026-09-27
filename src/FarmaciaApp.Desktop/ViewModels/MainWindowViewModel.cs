@@ -21,9 +21,13 @@ namespace FarmaciaApp.Desktop.ViewModels
      */
     public partial class MainWindowViewModel : ObservableObject
     {
+        /** Reglas de negocio de usuarios. */
         private readonly UsuarioService _usuarios;
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
+        /** Creación de ventanas y secciones. */
         private readonly FabricaVistas _vistas;
+        /** Ventana del formulario. */
         private readonly Window _window;
 
         /** Vista que se muestra en el area de contenido. */

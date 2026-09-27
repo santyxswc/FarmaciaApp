@@ -20,8 +20,11 @@ namespace FarmaciaApp.Core.Services
      */
     public class ProveedorService
     {
+        /** Acceso a datos de proveedores. */
         private readonly IProveedorRepository _repo;
+        /** Usuario del turno. */
         private readonly ISesionUsuario _sesion;
+        /** Registro de movimientos. */
         private readonly IAuditoria _auditoria;
 
         /**
