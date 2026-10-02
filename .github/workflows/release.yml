@@ -17,7 +17,7 @@ jobs:
         rid: [win-x64, linux-x64]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
       - name: Ejecutar las pruebas antes de publicar
