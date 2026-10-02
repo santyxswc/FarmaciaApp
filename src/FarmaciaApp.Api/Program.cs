@@ -15,6 +15,7 @@ using FarmaciaApp.Api.Salud;
 using FarmaciaApp.Api.Seguridad;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using Scalar.AspNetCore;
 
@@ -42,12 +43,14 @@ builder.Services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationSc
     });
 builder.Services.AddAuthorization();
 
-builder.Services.AddRateLimiter(opciones =>
+builder.Services.AddRateLimiter(_ => { });
+builder.Services.AddOptions<RateLimiterOptions>().Configure<IConfiguration>((opciones, configuracion) =>
 {
+    int intentos = configuracion.GetValue("RateLimit:LoginPorMinuto", 10);
     opciones.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
     opciones.AddPolicy("login", contexto => RateLimitPartition.GetFixedWindowLimiter(
         contexto.Connection.RemoteIpAddress?.ToString() ?? "desconocida",
-        _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1) }));
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = intentos, Window = TimeSpan.FromMinutes(1) }));
 });
 
 builder.Services.AddProblemDetails();
@@ -74,6 +77,15 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = r => r
 
 app.MapAuth();
 app.MapProductos();
+app.MapClientes();
+app.MapPersonas();
+app.MapProveedores();
+app.MapPromociones();
+app.MapReclamos();
+app.MapFacturas();
+app.MapReportes();
+app.MapMovimientos();
+app.MapUsuarios();
 
 app.Run();
 
