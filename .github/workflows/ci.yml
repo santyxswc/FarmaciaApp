@@ -5,6 +5,13 @@ on:
     branches: [master]
   pull_request:
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   build-test:
     name: Build y tests
@@ -14,6 +21,55 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
+          cache: true
+          cache-dependency-path: "**/*.csproj"
       - run: dotnet restore
-      - run: dotnet build --no-restore -c Release
-      - run: dotnet test --no-build -c Release
+      - run: dotnet build --no-restore -c Release -p:ContinuousIntegrationBuild=true
+      - run: dotnet test --no-build -c Release --report-xunit-trx --results-directory TestResults
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resultados-pruebas
+          path: TestResults/**/*.trx
+          if-no-files-found: ignore
+
+  dependencias:
+    name: Paquetes vulnerables
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Buscar vulnerabilidades en paquetes NuGet
+        run: |
+          dotnet restore
+          dotnet list package --vulnerable --include-transitive 2>&1 | tee vulnerables.txt
+          if grep -q "has the following vulnerable packages" vulnerables.txt; then
+            echo "::error::Hay paquetes NuGet con vulnerabilidades conocidas"
+            exit 1
+          fi
+
+  base-de-datos:
+    name: Esquema Oracle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Levantar Oracle con el mismo docker-compose del desarrollo
+        run: docker compose up -d --wait --wait-timeout 600
+      - name: Cargar schema.sql
+        run: |
+          printf '@/database/schema.sql\nEXIT\n' \
+            | docker exec -i farmacia-oracle sqlplus -s farmacia/farmacia123@//localhost/FREEPDB1 | tee schema.log
+          if grep -E "ORA-[0-9]+|SP2-[0-9]+" schema.log; then
+            echo "::error::schema.sql produjo errores"
+            exit 1
+          fi
+      - name: Verificar los datos de ejemplo
+        run: |
+          printf 'SET HEADING OFF FEEDBACK OFF\nSELECT COUNT(*) FROM TBL_USUARIO;\nEXIT\n' \
+            | docker exec -i farmacia-oracle sqlplus -s farmacia/farmacia123@//localhost/FREEPDB1 | tee usuarios.log
+          grep -qE "^\s*2\s*$" usuarios.log
+      - name: Registros de Oracle si algo falla
+        if: failure()
+        run: docker compose logs oracle | tail -100

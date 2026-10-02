@@ -1,16 +1,18 @@
 # Oracle Database Free para desarrollo local (Linux/Mac/Windows).
-# Uso: docker compose up -d  (la primera vez tarda unos minutos)
+# Uso: docker compose up -d --wait  (la primera vez tarda unos minutos)
+# Los valores se pueden cambiar con un archivo .env (ver .env.example).
 services:
   oracle:
     image: gvenzl/oracle-free:23-slim
     container_name: farmacia-oracle
+    restart: unless-stopped
     ports:
-      - "1521:1521"
+      - "${ORACLE_PORT:-1521}:1521"
     environment:
-      ORACLE_PASSWORD: admin123
-      APP_USER: farmacia
-      APP_USER_PASSWORD: farmacia123
-      TZ: America/Bogota   # SYSDATE (fecha de las facturas) en hora de Colombia
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD:-admin123}
+      APP_USER: ${APP_USER:-farmacia}
+      APP_USER_PASSWORD: ${APP_USER_PASSWORD:-farmacia123}
+      TZ: ${TZ:-America/Bogota}   # SYSDATE (fecha de las facturas) en hora de Colombia
     volumes:
       - ./database:/database:ro
       - oracle-data:/opt/oracle/oradata
@@ -19,6 +21,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 30
+      start_period: 30s
 
 volumes:
   oracle-data:

@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    name: Publicar ${{ matrix.rid }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rid: [win-x64, linux-x64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Ejecutar las pruebas antes de publicar
+        run: dotnet test -c Release
+      - name: Generar el ejecutable
+        run: >
+          dotnet publish src/FarmaciaApp.Desktop -c Release -r ${{ matrix.rid }} --self-contained
+          -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:ContinuousIntegrationBuild=true -o publicado/${{ matrix.rid }}
+      - name: Empaquetar
+        run: |
+          mkdir -p dist
+          cp -r database publicado/${{ matrix.rid }}/database
+          if [ "${{ matrix.rid }}" = "win-x64" ]; then
+            (cd publicado/${{ matrix.rid }} && zip -r ../../dist/FarmaciaApp-${{ github.ref_name }}-${{ matrix.rid }}.zip .)
+          else
+            tar -czf dist/FarmaciaApp-${{ github.ref_name }}-${{ matrix.rid }}.tar.gz -C publicado/${{ matrix.rid }} .
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FarmaciaApp-${{ matrix.rid }}
+          path: dist/*
+
+  release:
+    name: Crear release en GitHub
+    needs: publicar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Publicar
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >
+          gh release create "${{ github.ref_name }}" dist/*
+          --repo "${{ github.repository }}" --title "FarmaciaApp ${{ github.ref_name }}" --generate-notes

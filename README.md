@@ -1,6 +1,8 @@
 # FarmaciaApp
 
 [![CI](https://github.com/santyxswc/FarmaciaApp/actions/workflows/ci.yml/badge.svg)](https://github.com/santyxswc/FarmaciaApp/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/santyxswc/FarmaciaApp/actions/workflows/codeql.yml/badge.svg)](https://github.com/santyxswc/FarmaciaApp/actions/workflows/codeql.yml)
+[![Release](https://img.shields.io/github/v/release/santyxswc/FarmaciaApp)](https://github.com/santyxswc/FarmaciaApp/releases)
 
 Sistema de escritorio para la gestión de una farmacia: ventas con facturación, inventario, clientes,
 proveedores, promociones, reclamos y **control de turnos** de los empleados.
@@ -23,6 +25,7 @@ Funciona en **Windows y Linux** (y macOS). Está hecho en **.NET 10** con **Aval
 7. Guía de uso
 8. Solución de problemas
 9. Pruebas
+10. Integración y entrega continua
 
 ---
 
@@ -98,7 +101,10 @@ FarmaciaApp/
 │   ├── migracion_ids.sql              Actualiza bases creadas con versiones anteriores
 │   └── migracion_usuarios.sql         Agrega usuarios y movimientos a bases anteriores
 ├── docs/capturas/                     Capturas de pantalla de este documento
-├── docker-compose.yml                 Oracle Free para desarrollo
+├── .github/                           Flujos de CI, CodeQL y release, Dependabot y plantillas
+├── docker-compose.yml                 Oracle Free para desarrollo (variables en .env.example)
+├── Makefile                           Comandos habituales: base de datos, pruebas, publicación
+├── CHANGELOG.md                       Historial de versiones
 └── Directory.Build.props              Configuración común de los proyectos
 ```
 
@@ -280,9 +286,20 @@ la contraseña nunca se suba al repositorio.
 
 ### Ejecutar en desarrollo
 
+Primera vez: sigue la sección *5. Instalación* (crear el contenedor, cargar `schema.sql` y copiar
+`appsettings.json`). A partir de ahí, cada vez que quieras abrir la aplicación:
+
 ```bash
-dotnet run --project src/FarmaciaApp.Desktop
+sudo systemctl start docker                   # Linux: encender Docker si no está activo
+docker start farmacia-oracle                  # encender la base de datos (conserva los datos)
+dotnet run --project src/FarmaciaApp.Desktop  # abrir la aplicación
 ```
+
+- En Windows y macOS, en lugar del primer comando basta con abrir Docker Desktop.
+- Oracle tarda unos segundos en aceptar conexiones después de `docker start`; si la aplicación muestra
+  ORA-12541 o ORA-12514 al iniciar sesión, espera un momento y vuelve a intentar.
+- Para que Docker arranque solo al prender el equipo (Linux): `sudo systemctl enable --now docker`.
+- No vuelvas a ejecutar `schema.sql` para arrancar: borra las tablas y los datos.
 
 ### Publicar un ejecutable para entregar
 
@@ -380,6 +397,8 @@ productos muestran el valor anterior y el nuevo, por ejemplo `precio $ 14.200 �
 | Síntoma | Causa y solución |
 |---|---|
 | `dotnet: command not found` | .NET no está en el PATH. Si se instaló en `~/.dotnet`: `export PATH="$HOME/.dotnet:$PATH"`. |
+| `failed to connect to the docker API at unix:///var/run/docker.sock` | El servicio de Docker está apagado. En Linux: `sudo systemctl start docker`; en Windows o macOS, abrir Docker Desktop. |
+| `unknown command: docker compose` | Falta el plugin de Compose. Instálalo (en Arch: `sudo pacman -S docker-compose`) o usa el `docker run` equivalente de *5.2*. |
 | "No se encontró la conexión a la base de datos" | Falta `appsettings.json` junto al programa. Ver *5.5 Conexión de la aplicación*. |
 | "No se pudo conectar... ORA-12541" | Oracle no está encendido. Con Docker: `docker start farmacia-oracle` y esperar unos segundos. |
 | "ORA-01017" | Usuario o contraseña de Oracle incorrectos en `appsettings.json`. |
@@ -402,6 +421,40 @@ permisos de administrador, validación y hash de usuarios nuevos, protección de
 compartida de productos y clientes, facturación (un empleado vende siempre a su nombre, líneas repetidas se unen,
 cantidades enteras positivas, desglose del IVA) y la derivación de contraseñas con PBKDF2. Los repositorios se sustituyen
 por dobles que registran cada llamada. GitHub Actions compila y ejecuta las pruebas en cada push.
+
+---
+
+## 10. Integración y entrega continua
+
+| Flujo | Cuándo corre | Qué hace |
+|---|---|---|
+| [`ci.yml`](.github/workflows/ci.yml) | Cada push a `master` y cada pull request | Compila, ejecuta las pruebas, revisa que ningún paquete NuGet tenga vulnerabilidades conocidas y levanta Oracle con el mismo `docker-compose.yml` del desarrollo para comprobar que `schema.sql` se carga sin errores. |
+| [`codeql.yml`](.github/workflows/codeql.yml) | Push, pull request y cada lunes | Análisis estático de seguridad del código C#. |
+| [`release.yml`](.github/workflows/release.yml) | Al subir una etiqueta `v*` | Ejecuta las pruebas, publica los ejecutables de Windows y Linux (con los scripts de `database/`) y crea el release en GitHub con las notas generadas. |
+| [`dependabot.yml`](.github/dependabot.yml) | Cada semana | Abre pull requests con las actualizaciones de NuGet, GitHub Actions y Docker. |
+
+Para publicar una versión:
+
+```bash
+git tag v2.2.0
+git push origin v2.2.0
+```
+
+### Comandos de desarrollo
+
+El `Makefile` reúne los comandos habituales; `make help` los lista:
+
+| Comando | Qué hace |
+|---|---|
+| `make db-up` | Enciende Oracle y espera a que esté listo |
+| `make db-init` | Carga `schema.sql` (borra las tablas y los datos) |
+| `make run` | Abre la aplicación |
+| `make test` | Ejecuta las pruebas |
+| `make publish-linux` / `make publish-windows` | Genera el ejecutable en `publicado/` |
+| `make db-down` / `make db-reset` | Apaga Oracle / elimina también sus datos |
+
+Los valores de `docker-compose.yml` (contraseñas, puerto, zona horaria) se pueden cambiar copiando
+`.env.example` como `.env`, que está en `.gitignore`.
 
 ---
 
