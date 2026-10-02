@@ -222,4 +222,49 @@ public class ModulosTests : IClassFixture<FabricaApi>
                                      "/api/movimientos", "/api/usuarios" })
             Assert.Contains(ruta, texto);
     }
+
+    /** La raíz sirve la interfaz web con sus cabeceras de seguridad. */
+    [Fact]
+    public async Task La_raiz_sirve_la_interfaz_web()
+    {
+        var respuesta = await fabrica.CreateClient().GetAsync("/");
+
+        Assert.Equal(HttpStatusCode.OK, respuesta.StatusCode);
+        Assert.Equal("text/html", respuesta.Content.Headers.ContentType.MediaType);
+        Assert.Contains("FarmaciaApp", await respuesta.Content.ReadAsStringAsync());
+        Assert.Contains("default-src 'self'", respuesta.Headers.GetValues("Content-Security-Policy").Single());
+        Assert.Equal("nosniff", respuesta.Headers.GetValues("X-Content-Type-Options").Single());
+    }
+
+    /** Los módulos de JavaScript y los estilos se publican. */
+    [Theory]
+    [InlineData("/js/app.js")]
+    [InlineData("/js/vistas/venta.js")]
+    [InlineData("/css/app.css")]
+    public async Task Los_recursos_estaticos_se_publican(string ruta)
+    {
+        var respuesta = await fabrica.CreateClient().GetAsync(ruta);
+
+        Assert.Equal(HttpStatusCode.OK, respuesta.StatusCode);
+    }
+
+    /** La documentación interactiva sigue disponible fuera de la política de contenido. */
+    [Fact]
+    public async Task Scalar_no_lleva_la_politica_de_contenido()
+    {
+        var respuesta = await fabrica.CreateClient().GetAsync("/scalar/v1");
+
+        Assert.False(respuesta.Headers.Contains("Content-Security-Policy"));
+    }
+
+    /** Los métodos de pago se consultan desde la API. */
+    [Fact]
+    public async Task Metodos_de_pago_se_publican()
+    {
+        var cliente = await ClienteDe("andres");
+
+        var metodos = await cliente.GetFromJsonAsync<string[]>("/api/ventas/metodos-pago");
+
+        Assert.Contains("Efectivo", metodos);
+    }
 }

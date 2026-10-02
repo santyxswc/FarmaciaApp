@@ -62,6 +62,9 @@ builder.Services.AddOpenApi(opciones => opciones.AddDocumentTransformer<EsquemaB
 var app = builder.Build();
 
 app.UseExceptionHandler();
+app.UseMiddleware<CabecerasDeSeguridad>();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.UseStatusCodePages();
 app.UseRateLimiter();
 app.UseAuthentication();
@@ -70,7 +73,6 @@ app.UseAuthorization();
 
 app.MapOpenApi();
 app.MapScalarApiReference(opciones => opciones.WithTitle("FarmaciaApp API"));
-app.MapGet("/", () => Results.Redirect("/scalar")).ExcludeFromDescription();
 
 app.MapHealthChecks("/health/live", new HealthCheckOptions { Predicate = _ => false });
 app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = r => r.Tags.Contains("ready") });

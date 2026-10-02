@@ -76,6 +76,10 @@ namespace FarmaciaApp.Api.Endpoints
                 .ProducesProblem(StatusCodes.Status400BadRequest)
                 .ProducesProblem(StatusCodes.Status409Conflict);
 
+            ventas.MapGet("/metodos-pago", () => Results.Ok(FacturaService.MetodosPago))
+                .WithSummary("Métodos de pago aceptados")
+                .Produces<string[]>();
+
             ventas.MapGet("/clientes", (FacturaService servicio) =>
                     Results.Ok(servicio.ObtenerClientes().Select(s => new OpcionDto(s.Id, s.Nombre))))
                 .WithSummary("Clientes que se pueden facturar (CLI_ID)")

@@ -8,7 +8,8 @@ Sistema para la gestión de una farmacia: ventas con facturación, inventario, c
 proveedores, promociones, reclamos y **control de turnos** de los empleados.
 
 Tiene dos clientes sobre las mismas reglas de negocio: una **aplicación de escritorio** para Windows, Linux y
-macOS (**Avalonia**) y una **API REST** con autenticación JWT y documentación OpenAPI (**ASP.NET Core**).
+macOS (**Avalonia**) y una **API REST** con autenticación JWT y documentación OpenAPI (**ASP.NET Core**), que
+además sirve una **interfaz web** para consultar el catálogo, registrar ventas y ver reportes desde el navegador.
 Ambas usan **Dapper** para el acceso a datos y **Oracle** como base de datos, y todo el entorno se levanta
 con un solo `docker compose up`.
 
@@ -101,7 +102,8 @@ FarmaciaApp/
 │   │   └── Seguridad/                 HasherPbkdf2 (PBKDF2-SHA256)
 │   ├── FarmaciaApp.Api/               API REST (ASP.NET Core)
 │   │   ├── Endpoints/                 Un archivo por módulo, con sus rutas y DTO
-│   │   ├── Seguridad/                 Emisor de tokens JWT y sesión por petición
+│   │   ├── Seguridad/                 Emisor de tokens JWT, sesión por petición y cabeceras de seguridad
+│   │   ├── wwwroot/                   Interfaz web: HTML, CSS y JavaScript sin dependencias ni paso de build
 │   │   ├── Errores/                   Excepciones de Core a ProblemDetails
 │   │   ├── Salud/                     Chequeo de salud de Oracle
 │   │   └── Composicion.cs             Registro de dependencias (una sesión por petición)
@@ -437,11 +439,11 @@ productos muestran el valor anterior y el nuevo, por ejemplo `precio $ 14.200 �
 dotnet test
 ```
 
-57 pruebas con xUnit: 29 cubren las reglas de los servicios sin necesitar Oracle: inicio y cierre de sesión con auditoría,
+63 pruebas con xUnit: 29 cubren las reglas de los servicios sin necesitar Oracle: inicio y cierre de sesión con auditoría,
 permisos de administrador, validación y hash de usuarios nuevos, protección del último administrador activo, validación
 compartida de productos y clientes, facturación (un empleado vende siempre a su nombre, líneas repetidas se unen,
 cantidades enteras positivas, desglose del IVA) y la derivación de contraseñas con PBKDF2. Los repositorios se sustituyen
-por dobles que registran cada llamada. Las otras 28 son de integración: arrancan la API completa en memoria
+por dobles que registran cada llamada. Las otras 34 son de integración: arrancan la API completa en memoria
 y comprueban inicio de sesión, tokens, límite de intentos, permisos por rol, validaciones, códigos HTTP y formato de los errores de todos los módulos.
 GitHub Actions compila y ejecuta las pruebas en cada push.
 
@@ -458,10 +460,30 @@ permisos, los servicios de Core siguen siendo quienes los aplican.
 docker compose up -d --build     # Oracle, carga del esquema (solo la primera vez) y API
 ```
 
-La documentación interactiva queda en <http://localhost:8080/scalar> y el documento OpenAPI en
-`/openapi/v1.json`. Para cambiar la clave de los tokens y los puertos, copia `.env.example` como `.env`.
+La interfaz web queda en <http://localhost:8080>, la documentación interactiva en
+<http://localhost:8080/scalar> y el documento OpenAPI en `/openapi/v1.json`. Para cambiar la clave de los tokens y los puertos, copia `.env.example` como `.env`.
 
-### Probarla
+### Interfaz web
+
+Entra a <http://localhost:8080> con `admin` / `prueba` (o `andres` / `andres123`).
+
+| Pantalla | Quién | Qué permite |
+|---|---|---|
+| Productos | Todos; el administrador también edita | Búsqueda, alta, edición y baja con *Stock bajo* |
+| Nueva venta | Todos | Cliente, método de pago y varias líneas; valida stock y muestra subtotal, IVA y total |
+| Facturas | Todos | Listado y detalle de cada factura |
+| Reportes | Administrador | Total, ticket promedio, ventas por empleado y productos más vendidos por periodo |
+| Movimientos | Administrador | Auditoría filtrada por fechas y texto |
+
+![Productos en la web](docs/capturas/web-02-productos.png)
+![Nueva venta en la web](docs/capturas/web-03-venta.png)
+
+No usa frameworks ni paso de compilación: son módulos de JavaScript que consumen la misma API REST. El token
+JWT vive solo en `sessionStorage` y se descarta al cerrar la pestaña. Los textos se insertan como texto, nunca
+como HTML, y la API responde con una política de contenido (`Content-Security-Policy`) que solo permite
+recursos del propio origen. Se adapta a pantallas pequeñas y al modo oscuro del sistema.
+
+### Probarla desde la terminal
 
 ```bash
 TOKEN=$(curl -s -X POST localhost:8080/api/auth/login -H 'Content-Type: application/json' \
@@ -511,6 +533,8 @@ las reglas de Core exigen: *Todos* es cualquier usuario autenticado.
   conflicto de negocio 409 y una base de datos caída 503; los errores inesperados son 500 sin exponer detalles.
 - **Configuración por variables de entorno.** `ConnectionStrings__OracleConnection` y `Jwt__Key`; la API
   no arranca si la clave tiene menos de 32 caracteres.
+- **Interfaz web en el mismo origen.** La API sirve `wwwroot`, así que no hace falta CORS ni un segundo
+  servidor; con Docker, una sola URL entrega la web, la API y la documentación.
 - **Contenedor.** Imagen *multi-stage* que corre sin privilegios, y publicada en GitHub Container Registry
   en cada cambio a `master`.
 
