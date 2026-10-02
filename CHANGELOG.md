@@ -5,10 +5,18 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 ## [Sin publicar]
 
 ### Agregado
+- API REST (`FarmaciaApp.Api`) con autenticación JWT, rutas de autenticación y productos, documentación OpenAPI con Scalar, health checks y límite de intentos de login.
+- Pruebas de integración de la API.
+- `Dockerfile` de la API, carga automática del esquema en Docker Compose y publicación de la imagen en GitHub Container Registry.
+- Licencia MIT.
 - Flujo de release: al subir una etiqueta `v*` se generan los ejecutables de Windows y Linux y se crea el release en GitHub.
-- CI con caché de NuGet, revisión de paquetes vulnerables y validación de `schema.sql` contra Oracle.
+- CI con caché de NuGet, revisión de paquetes vulnerables y prueba del stack completo con Docker Compose.
 - Análisis estático con CodeQL y actualizaciones automáticas con Dependabot.
 - `Makefile` con los comandos habituales y variables de entorno para `docker-compose.yml`.
+
+### Cambiado
+- El registro de repositorios pasó a `FarmaciaApp.Infrastructure` para compartirlo entre el escritorio y la API.
+- Iniciar sesión con una cuenta desactivada lanza `CuentaDesactivadaException` (sigue siendo un `InvalidOperationException`).
 
 ## [2.1.0]
 

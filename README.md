@@ -4,11 +4,13 @@
 [![CodeQL](https://github.com/santyxswc/FarmaciaApp/actions/workflows/codeql.yml/badge.svg)](https://github.com/santyxswc/FarmaciaApp/actions/workflows/codeql.yml)
 [![Release](https://img.shields.io/github/v/release/santyxswc/FarmaciaApp)](https://github.com/santyxswc/FarmaciaApp/releases)
 
-Sistema de escritorio para la gestión de una farmacia: ventas con facturación, inventario, clientes,
+Sistema para la gestión de una farmacia: ventas con facturación, inventario, clientes,
 proveedores, promociones, reclamos y **control de turnos** de los empleados.
 
-Funciona en **Windows y Linux** (y macOS). Está hecho en **.NET 10** con **Avalonia** para la interfaz,
-**Dapper** para el acceso a datos y **Oracle** como base de datos.
+Tiene dos clientes sobre las mismas reglas de negocio: una **aplicación de escritorio** para Windows, Linux y
+macOS (**Avalonia**) y una **API REST** con autenticación JWT y documentación OpenAPI (**ASP.NET Core**).
+Ambas usan **Dapper** para el acceso a datos y **Oracle** como base de datos, y todo el entorno se levanta
+con un solo `docker compose up`.
 
 ![Inicio de la aplicación](docs/capturas/02-inicio-administrador.png)
 
@@ -25,7 +27,9 @@ Funciona en **Windows y Linux** (y macOS). Está hecho en **.NET 10** con **Aval
 7. Guía de uso
 8. Solución de problemas
 9. Pruebas
-10. Integración y entrega continua
+10. API REST
+11. Integración y entrega continua
+12. Licencia
 
 ---
 
@@ -56,7 +60,11 @@ Funciona en **Windows y Linux** (y macOS). Está hecho en **.NET 10** con **Aval
 | [Dapper](https://github.com/DapperLib/Dapper) | Consultas SQL a objetos |
 | [Oracle.ManagedDataAccess.Core](https://www.nuget.org/packages/Oracle.ManagedDataAccess.Core) | Conexión a Oracle |
 | [Microsoft.Extensions.DependencyInjection](https://learn.microsoft.com/dotnet/core/extensions/dependency-injection) | Inyección de dependencias (raíz de composición) |
-| [xUnit v3](https://xunit.net/) | Pruebas unitarias |
+| [ASP.NET Core 10](https://learn.microsoft.com/aspnet/core) | API REST (minimal APIs), JWT, límite de intentos y health checks |
+| [Scalar](https://scalar.com/) y OpenAPI | Documentación interactiva de la API |
+| Docker y Docker Compose | Entorno completo: Oracle, esquema inicial y API |
+| GitHub Actions | CI, CodeQL, imágenes en GHCR y releases |
+| [xUnit v3](https://xunit.net/) | Pruebas unitarias y de integración |
 | Oracle Database 18c o superior | Base de datos (en desarrollo: Oracle Free en Docker) |
 
 ---
@@ -71,7 +79,10 @@ flowchart LR
   Desktop --> Infrastructure
   Infrastructure["FarmaciaApp.Infrastructure<br/>Oracle · Dapper · PBKDF2"] --> Core
   Core["FarmaciaApp.Core<br/>modelos · reglas · contratos"]
-  Tests["FarmaciaApp.Core.Tests<br/>xUnit"] --> Core
+  Api["FarmaciaApp.Api<br/>ASP.NET Core · JWT · OpenAPI"] --> Core
+  Api --> Infrastructure
+  Tests["FarmaciaApp.Core.Tests<br/>FarmaciaApp.Api.Tests<br/>xUnit"] --> Core
+  Tests --> Api
 ```
 
 ```
@@ -88,6 +99,12 @@ FarmaciaApp/
 │   │   ├── Database/                  OracleConnectionFactory
 │   │   ├── Repositories/              Consultas SQL con Dapper
 │   │   └── Seguridad/                 HasherPbkdf2 (PBKDF2-SHA256)
+│   ├── FarmaciaApp.Api/               API REST (ASP.NET Core)
+│   │   ├── Endpoints/                 Rutas /api/auth y /api/productos y sus DTO
+│   │   ├── Seguridad/                 Emisor de tokens JWT y sesión por petición
+│   │   ├── Errores/                   Excepciones de Core a ProblemDetails
+│   │   ├── Salud/                     Chequeo de salud de Oracle
+│   │   └── Composicion.cs             Registro de dependencias (una sesión por petición)
 │   └── FarmaciaApp.Desktop/           Aplicación de escritorio (Avalonia)
 │       ├── Views/                     Ventanas y pantallas (.axaml)
 │       ├── ViewModels/                Lógica de cada pantalla (MVVM); reciben sus servicios por constructor
@@ -96,13 +113,16 @@ FarmaciaApp/
 │       ├── App.axaml                  Estilos globales (colores, botones, tablas)
 │       └── appsettings.example.json   Plantilla de la conexión a la base de datos
 ├── tests/FarmaciaApp.Core.Tests/      Pruebas de servicios con repositorios simulados
+├── tests/FarmaciaApp.Api.Tests/       Pruebas de integración de la API en memoria
+├── Dockerfile                         Imagen de la API (multi-stage, usuario sin privilegios)
+├── scripts/init-db.sh                 Carga schema.sql en el primer arranque de Docker
 ├── database/
 │   ├── schema.sql                     Crea todas las tablas y los datos de ejemplo
 │   ├── migracion_ids.sql              Actualiza bases creadas con versiones anteriores
 │   └── migracion_usuarios.sql         Agrega usuarios y movimientos a bases anteriores
 ├── docs/capturas/                     Capturas de pantalla de este documento
 ├── .github/                           Flujos de CI, CodeQL y release, Dependabot y plantillas
-├── docker-compose.yml                 Oracle Free para desarrollo (variables en .env.example)
+├── docker-compose.yml                 Oracle Free, carga del esquema y API (variables en .env.example)
 ├── Makefile                           Comandos habituales: base de datos, pruebas, publicación
 ├── CHANGELOG.md                       Historial de versiones
 └── Directory.Build.props              Configuración común de los proyectos
@@ -143,6 +163,7 @@ IAuditoria.Registrar          guarda "Venta registrada" en TBL_MOVIMIENTO
 ```
 
 Todas las pantallas siguen el mismo camino: **Vista → ViewModel → Servicio → Repositorio → Oracle**.
+La API recorre el mismo camino con un *endpoint* en lugar de la vista y el ViewModel.
 
 - **Las reglas y los permisos están en los servicios de Core**, no en las pantallas. Esconder un botón es solo
   comodidad; aunque alguien llamara al servicio directamente, el servicio verifica el rol.
@@ -416,19 +437,79 @@ productos muestran el valor anterior y el nuevo, por ejemplo `precio $ 14.200 �
 dotnet test
 ```
 
-29 pruebas con xUnit cubren las reglas de los servicios sin necesitar Oracle: inicio y cierre de sesión con auditoría,
+41 pruebas con xUnit: 29 cubren las reglas de los servicios sin necesitar Oracle: inicio y cierre de sesión con auditoría,
 permisos de administrador, validación y hash de usuarios nuevos, protección del último administrador activo, validación
 compartida de productos y clientes, facturación (un empleado vende siempre a su nombre, líneas repetidas se unen,
 cantidades enteras positivas, desglose del IVA) y la derivación de contraseñas con PBKDF2. Los repositorios se sustituyen
-por dobles que registran cada llamada. GitHub Actions compila y ejecuta las pruebas en cada push.
+por dobles que registran cada llamada. Las otras 12 son de integración: arrancan la API completa en memoria
+y comprueban inicio de sesión, tokens, permisos por rol, validaciones, códigos HTTP y formato de los errores.
+GitHub Actions compila y ejecuta las pruebas en cada push.
 
 ---
 
-## 10. Integración y entrega continua
+## 10. API REST
+
+La API expone las mismas reglas de negocio que la aplicación de escritorio: no duplica validaciones ni
+permisos, los servicios de Core siguen siendo quienes los aplican.
+
+### Levantarla con Docker
+
+```bash
+docker compose up -d --build     # Oracle, carga del esquema (solo la primera vez) y API
+```
+
+La documentación interactiva queda en <http://localhost:8080/scalar> y el documento OpenAPI en
+`/openapi/v1.json`. Para cambiar la clave de los tokens y los puertos, copia `.env.example` como `.env`.
+
+### Probarla
+
+```bash
+TOKEN=$(curl -s -X POST localhost:8080/api/auth/login -H 'Content-Type: application/json' \
+  -d '{"login":"admin","clave":"prueba"}' | jq -r .token)
+
+curl -s localhost:8080/api/productos -H "Authorization: Bearer $TOKEN"
+```
+
+### Rutas
+
+| Método y ruta | Acceso | Qué hace |
+|---|---|---|
+| `POST /api/auth/login` | Público (10 intentos por minuto y por IP) | Devuelve un token JWT |
+| `GET /api/auth/yo` | Autenticado | Datos del usuario del token |
+| `GET /api/productos?buscar=` | Autenticado | Lista o busca productos |
+| `GET /api/productos/{id}` | Autenticado | Un producto |
+| `POST`, `PUT`, `DELETE /api/productos` | Administrador | Crear, modificar y eliminar |
+| `GET /health/live` | Público | La API está viva |
+| `GET /health/ready` | Público | La API puede consultar Oracle |
+
+### Decisiones de diseño
+
+- **Una sesión por petición.** En el escritorio `ISesionUsuario` es una sola instancia; en la API se registra
+  por petición. Un *middleware* la llena con el usuario del token, consultado en la base de datos en cada
+  petición: si se desactiva una cuenta, su token deja de servir de inmediato y un cambio de rol surte efecto
+  sin esperar a que el token venza.
+- **Errores como `ProblemDetails` (RFC 9457).** Una validación de Core es 400, un permiso negado 403, un
+  conflicto de negocio 409 y una base de datos caída 503; los errores inesperados son 500 sin exponer detalles.
+- **Configuración por variables de entorno.** `ConnectionStrings__OracleConnection` y `Jwt__Key`; la API
+  no arranca si la clave tiene menos de 32 caracteres.
+- **Contenedor.** Imagen *multi-stage* que corre sin privilegios, y publicada en GitHub Container Registry
+  en cada cambio a `master`.
+
+### Ejecutarla sin Docker
+
+```bash
+cp src/FarmaciaApp.Api/appsettings.example.json src/FarmaciaApp.Api/appsettings.json   # y ajustar los valores
+make db-up && make api
+```
+
+---
+
+## 11. Integración y entrega continua
 
 | Flujo | Cuándo corre | Qué hace |
 |---|---|---|
-| [`ci.yml`](.github/workflows/ci.yml) | Cada push a `master` y cada pull request | Compila, ejecuta las pruebas, revisa que ningún paquete NuGet tenga vulnerabilidades conocidas y levanta Oracle con el mismo `docker-compose.yml` del desarrollo para comprobar que `schema.sql` se carga sin errores. |
+| [`ci.yml`](.github/workflows/ci.yml) | Cada push a `master` y cada pull request | Compila, ejecuta las pruebas, revisa que ningún paquete NuGet tenga vulnerabilidades conocidas y levanta el `docker-compose.yml` completo (Oracle, esquema y API) para iniciar sesión y consultar productos de verdad. |
+| [`docker.yml`](.github/workflows/docker.yml) | Push a `master`, etiquetas `v*` y cambios en la API | Construye la imagen de la API y, fuera de los pull requests, la publica en GitHub Container Registry. |
 | [`codeql.yml`](.github/workflows/codeql.yml) | Push, pull request y cada lunes | Análisis estático de seguridad del código C#. |
 | [`release.yml`](.github/workflows/release.yml) | Al subir una etiqueta `v*` | Ejecuta las pruebas, publica los ejecutables de Windows y Linux (con los scripts de `database/`) y crea el release en GitHub con las notas generadas. |
 | [`dependabot.yml`](.github/dependabot.yml) | Cada semana | Abre pull requests con las actualizaciones de NuGet, GitHub Actions y Docker. |
@@ -446,7 +527,9 @@ El `Makefile` reúne los comandos habituales; `make help` los lista:
 
 | Comando | Qué hace |
 |---|---|
-| `make db-up` | Enciende Oracle y espera a que esté listo |
+| `make api-up` | Levanta Oracle, el esquema y la API en Docker |
+| `make api` | Abre la API con `dotnet run` |
+| `make db-up` | Enciende solo Oracle y espera a que esté listo |
 | `make db-init` | Carga `schema.sql` (borra las tablas y los datos) |
 | `make run` | Abre la aplicación |
 | `make test` | Ejecuta las pruebas |
@@ -455,6 +538,12 @@ El `Makefile` reúne los comandos habituales; `make help` los lista:
 
 Los valores de `docker-compose.yml` (contraseñas, puerto, zona horaria) se pueden cambiar copiando
 `.env.example` como `.env`, que está en `.gitignore`.
+
+---
+
+## 12. Licencia
+
+[MIT](LICENSE): puedes usar, copiar y modificar el código conservando el aviso de copyright.
 
 ---
 
