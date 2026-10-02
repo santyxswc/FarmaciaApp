@@ -7,9 +7,7 @@ using FarmaciaApp.Core.Abstractions;
 using FarmaciaApp.Core.Services;
 using FarmaciaApp.Core.Sesion;
 using FarmaciaApp.Desktop.Services;
-using FarmaciaApp.Infrastructure.Database;
-using FarmaciaApp.Infrastructure.Repositories;
-using FarmaciaApp.Infrastructure.Seguridad;
+using FarmaciaApp.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FarmaciaApp.Desktop
@@ -20,25 +18,14 @@ namespace FarmaciaApp.Desktop
     public static class ComposicionServicios
     {
         /**
-         * @brief Registra infraestructura, servicios de negocio y utilidades de la interfaz.
+         * @brief Registra la infraestructura compartida, servicios de negocio y utilidades de la interfaz.
          * @param servicios Colección donde se registran
          * @param cadenaConexion Cadena de conexión de Oracle (puede ser null)
          * @return La misma colección, para encadenar
          */
         public static IServiceCollection AgregarFarmacia(this IServiceCollection servicios, string cadenaConexion)
         {
-            servicios.AddSingleton<IDbConnectionFactory>(new OracleConnectionFactory(cadenaConexion));
-            servicios.AddSingleton<IHasherClaves, HasherPbkdf2>();
-            servicios.AddSingleton<IClienteRepository, ClienteRepository>();
-            servicios.AddSingleton<IFacturaRepository, FacturaRepository>();
-            servicios.AddSingleton<IMovimientoRepository, MovimientoRepository>();
-            servicios.AddSingleton<IPersonaRepository, PersonaRepository>();
-            servicios.AddSingleton<IProductoRepository, ProductoRepository>();
-            servicios.AddSingleton<IPromocionRepository, PromocionRepository>();
-            servicios.AddSingleton<IProveedorRepository, ProveedorRepository>();
-            servicios.AddSingleton<IReclamoRepository, ReclamoRepository>();
-            servicios.AddSingleton<IReporteRepository, ReporteRepository>();
-            servicios.AddSingleton<IUsuarioRepository, UsuarioRepository>();
+            servicios.AgregarInfraestructura(cadenaConexion);
 
             servicios.AddSingleton<ISesionUsuario, SesionUsuario>();
             servicios.AddSingleton<IAuditoria, ServicioAuditoria>();
