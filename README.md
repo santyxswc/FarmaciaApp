@@ -100,7 +100,7 @@ FarmaciaApp/
 │   │   ├── Repositories/              Consultas SQL con Dapper
 │   │   └── Seguridad/                 HasherPbkdf2 (PBKDF2-SHA256)
 │   ├── FarmaciaApp.Api/               API REST (ASP.NET Core)
-│   │   ├── Endpoints/                 Rutas /api/auth y /api/productos y sus DTO
+│   │   ├── Endpoints/                 Un archivo por módulo, con sus rutas y DTO
 │   │   ├── Seguridad/                 Emisor de tokens JWT y sesión por petición
 │   │   ├── Errores/                   Excepciones de Core a ProblemDetails
 │   │   ├── Salud/                     Chequeo de salud de Oracle
@@ -437,12 +437,12 @@ productos muestran el valor anterior y el nuevo, por ejemplo `precio $ 14.200 �
 dotnet test
 ```
 
-41 pruebas con xUnit: 29 cubren las reglas de los servicios sin necesitar Oracle: inicio y cierre de sesión con auditoría,
+57 pruebas con xUnit: 29 cubren las reglas de los servicios sin necesitar Oracle: inicio y cierre de sesión con auditoría,
 permisos de administrador, validación y hash de usuarios nuevos, protección del último administrador activo, validación
 compartida de productos y clientes, facturación (un empleado vende siempre a su nombre, líneas repetidas se unen,
 cantidades enteras positivas, desglose del IVA) y la derivación de contraseñas con PBKDF2. Los repositorios se sustituyen
-por dobles que registran cada llamada. Las otras 12 son de integración: arrancan la API completa en memoria
-y comprueban inicio de sesión, tokens, permisos por rol, validaciones, códigos HTTP y formato de los errores.
+por dobles que registran cada llamada. Las otras 28 son de integración: arrancan la API completa en memoria
+y comprueban inicio de sesión, tokens, límite de intentos, permisos por rol, validaciones, códigos HTTP y formato de los errores de todos los módulos.
 GitHub Actions compila y ejecuta las pruebas en cada push.
 
 ---
@@ -472,15 +472,34 @@ curl -s localhost:8080/api/productos -H "Authorization: Bearer $TOKEN"
 
 ### Rutas
 
-| Método y ruta | Acceso | Qué hace |
-|---|---|---|
-| `POST /api/auth/login` | Público (10 intentos por minuto y por IP) | Devuelve un token JWT |
-| `GET /api/auth/yo` | Autenticado | Datos del usuario del token |
-| `GET /api/productos?buscar=` | Autenticado | Lista o busca productos |
-| `GET /api/productos/{id}` | Autenticado | Un producto |
-| `POST`, `PUT`, `DELETE /api/productos` | Administrador | Crear, modificar y eliminar |
-| `GET /health/live` | Público | La API está viva |
-| `GET /health/ready` | Público | La API puede consultar Oracle |
+Todas las rutas, salvo el login y los *health checks*, exigen el token. La columna *Quién* indica el rol que
+las reglas de Core exigen: *Todos* es cualquier usuario autenticado.
+
+| Módulo | Ruta | Quién | Qué hace |
+|---|---|---|---|
+| Autenticación | `POST /api/auth/login` | Público (10 intentos por minuto y por IP) | Devuelve un token JWT |
+| | `GET /api/auth/yo` | Todos | Datos del usuario del token |
+| | `PUT /api/auth/clave` | Todos | Cambia la propia contraseña |
+| Productos | `GET /api/productos?buscar=`, `GET /api/productos/{id}` | Todos | Consultar |
+| | `POST`, `PUT`, `DELETE /api/productos` | Administrador | Crear, modificar y eliminar |
+| Clientes | `GET`, `POST`, `PUT /api/clientes` | Todos | Consultar, crear y modificar |
+| | `DELETE /api/clientes/{id}` | Administrador | Eliminar (si no tiene facturas) |
+| Personas | `GET`, `POST`, `PUT /api/personas` | Todos | Consultar, crear y modificar |
+| | `PUT /api/personas/{id}/vendedor`, `DELETE /api/personas/{id}` | Administrador | Rol de vendedor y eliminar |
+| Proveedores | `GET /api/proveedores` | Todos | Consultar |
+| | `POST`, `PUT`, `DELETE /api/proveedores` | Administrador | Crear, modificar y eliminar |
+| Promociones | `GET /api/promociones`, `GET /api/promociones/activas` | Todos | Consultar y ver las vigentes |
+| | `POST`, `PUT`, `DELETE /api/promociones` | Administrador | Crear, modificar y eliminar |
+| Reclamos | `GET`, `POST`, `PUT /api/reclamos`, `GET /api/reclamos/estados` | Todos | Consultar, crear y modificar |
+| | `DELETE /api/reclamos/{id}` | Administrador | Eliminar |
+| Facturas y ventas | `GET /api/facturas`, `GET /api/facturas/{numero}` | Todos | Listado y detalle con líneas |
+| | `POST /api/ventas` | Todos | Registra una venta en una transacción; un empleado vende siempre a su nombre |
+| | `GET /api/ventas/clientes`, `/vendedores`, `/productos` | Todos | Listas para armar una venta |
+| Reportes | `GET /api/reportes/resumen`, `/vendedores`, `/productos-mas-vendidos` | Administrador | Ventas del periodo (`?desde=&hasta=`) |
+| Movimientos | `GET /api/movimientos` | Administrador | Auditoría filtrada por periodo, usuario y texto |
+| Usuarios | `GET`, `POST /api/usuarios` | Administrador | Listar y crear cuentas |
+| | `PUT /api/usuarios/{id}/estado`, `PUT /api/usuarios/{id}/clave` | Administrador | Activar o desactivar y restablecer contraseña |
+| Salud | `GET /health/live`, `GET /health/ready` | Público | La API está viva / puede consultar Oracle |
 
 ### Decisiones de diseño
 
