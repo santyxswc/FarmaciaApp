@@ -5,6 +5,8 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 ## [Sin publicar]
 
 ### Agregado
+- Interfaz web (HTML, CSS y JavaScript sin dependencias) servida por la API: login, productos, nueva venta, facturas, reportes y movimientos.
+- Cabeceras de seguridad (`Content-Security-Policy`, `X-Content-Type-Options`, `Referrer-Policy`) y `GET /api/ventas/metodos-pago`.
 - Endpoints de la API para clientes, personas, proveedores, promociones, reclamos, facturas y ventas, reportes, movimientos y usuarios.
 - Límite de intentos de login configurable (`RateLimit:LoginPorMinuto`).
 - API REST (`FarmaciaApp.Api`) con autenticación JWT, rutas de autenticación y productos, documentación OpenAPI con Scalar, health checks y límite de intentos de login.
