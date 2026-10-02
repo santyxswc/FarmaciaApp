@@ -82,7 +82,7 @@ public class UsuarioServiceTests
     public void Un_usuario_desactivado_no_puede_entrar()
     {
         usuarios.Control.Cuando(nameof(IUsuarioRepository.GetByLogin), _ => Registrado(activo: false));
-        Assert.Throws<InvalidOperationException>(() => Servicio(new SesionUsuario()).IniciarSesion("ana", "secreta1"));
+        Assert.Throws<CuentaDesactivadaException>(() => Servicio(new SesionUsuario()).IniciarSesion("ana", "secreta1"));
     }
 
     /**

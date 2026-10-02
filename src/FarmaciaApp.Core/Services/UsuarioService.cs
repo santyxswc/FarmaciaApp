@@ -59,7 +59,7 @@ namespace FarmaciaApp.Core.Services
          * @param login Usuario (no distingue mayúsculas ni espacios en los extremos)
          * @param clave Contraseña
          * @return Usuario autenticado, o null si las credenciales no son correctas
-         * @exception InvalidOperationException Si el usuario está desactivado
+         * @exception CuentaDesactivadaException Si el usuario está desactivado
          *
          * Registra el ingreso, o el intento fallido, en los movimientos.
          */
@@ -77,7 +77,7 @@ namespace FarmaciaApp.Core.Services
             if (!usuario.Activo)
             {
                 _auditoria.Registrar("Inicio de sesión rechazado", $"Usuario desactivado: {login}");
-                throw new InvalidOperationException("Este usuario está desactivado. Consulta con el administrador.");
+                throw new CuentaDesactivadaException("Este usuario está desactivado. Consulta con el administrador.");
             }
 
             _repo.RegistrarIngreso(usuario.UsuId);
