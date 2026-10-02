@@ -50,26 +50,28 @@ jobs:
             exit 1
           fi
 
-  base-de-datos:
-    name: Esquema Oracle
+  stack-docker:
+    name: Stack completo (Oracle + API)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Levantar Oracle con el mismo docker-compose del desarrollo
-        run: docker compose up -d --wait --wait-timeout 600
-      - name: Cargar schema.sql
+      - name: Levantar Oracle, cargar el esquema y arrancar la API
+        run: docker compose up -d --build
+      - name: Esperar a que la API esté lista
         run: |
-          printf '@/database/schema.sql\nEXIT\n' \
-            | docker exec -i farmacia-oracle sqlplus -s farmacia/farmacia123@//localhost/FREEPDB1 | tee schema.log
-          if grep -E "ORA-[0-9]+|SP2-[0-9]+" schema.log; then
-            echo "::error::schema.sql produjo errores"
-            exit 1
-          fi
-      - name: Verificar los datos de ejemplo
+          for i in $(seq 1 90); do
+            if curl -fs http://localhost:8080/health/ready > /dev/null; then exit 0; fi
+            sleep 10
+          done
+          echo "::error::La API no quedó lista a tiempo"
+          exit 1
+      - name: Iniciar sesión y consultar productos
         run: |
-          printf 'SET HEADING OFF FEEDBACK OFF\nSELECT COUNT(*) FROM TBL_USUARIO;\nEXIT\n' \
-            | docker exec -i farmacia-oracle sqlplus -s farmacia/farmacia123@//localhost/FREEPDB1 | tee usuarios.log
-          grep -qE "^\s*2\s*$" usuarios.log
-      - name: Registros de Oracle si algo falla
+          token=$(curl -fs -X POST http://localhost:8080/api/auth/login \
+            -H 'Content-Type: application/json' \
+            -d '{"login":"admin","clave":"prueba"}' | jq -r .token)
+          test "$token" != "null" -a -n "$token"
+          curl -fs http://localhost:8080/api/productos -H "Authorization: Bearer $token" | jq 'length'
+      - name: Registros si algo falla
         if: failure()
-        run: docker compose logs oracle | tail -100
+        run: docker compose logs --tail 100
