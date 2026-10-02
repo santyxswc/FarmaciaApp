@@ -65,6 +65,8 @@ jobs:
           done
           echo "::error::La API no quedó lista a tiempo"
           exit 1
+      - name: Comprobar la interfaz web
+        run: curl -fs http://localhost:8080/ | grep -q "<title>FarmaciaApp</title>"
       - name: Iniciar sesión y consultar productos
         run: |
           token=$(curl -fs -X POST http://localhost:8080/api/auth/login \
