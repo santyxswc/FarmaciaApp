@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+**/appsettings.json
+.git/
+.github/
+docs/
+tests/
+TestResults/
+publicado/
+.env

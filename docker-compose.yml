@@ -1,5 +1,6 @@
-# Oracle Database Free para desarrollo local (Linux/Mac/Windows).
-# Uso: docker compose up -d --wait  (la primera vez tarda unos minutos)
+# Oracle Database Free y API REST para desarrollo local (Linux/Mac/Windows).
+#   docker compose up -d --wait oracle   solo la base de datos (la aplicación de escritorio se conecta a ella)
+#   docker compose up -d --build         base de datos, esquema inicial y API en http://localhost:8080
 # Los valores se pueden cambiar con un archivo .env (ver .env.example).
 services:
   oracle:
@@ -22,6 +23,36 @@ services:
       timeout: 5s
       retries: 30
       start_period: 30s
+
+  # Carga schema.sql la primera vez y termina. Si las tablas ya existen, no hace nada.
+  db-init:
+    image: gvenzl/oracle-free:23-slim
+    depends_on:
+      oracle:
+        condition: service_healthy
+    environment:
+      APP_USER: ${APP_USER:-farmacia}
+      APP_USER_PASSWORD: ${APP_USER_PASSWORD:-farmacia123}
+    volumes:
+      - ./database:/database:ro
+      - ./scripts:/scripts:ro
+    entrypoint: ["bash", "/scripts/init-db.sh"]
+    restart: "no"
+
+  api:
+    build: .
+    image: ghcr.io/santyxswc/farmaciaapp-api:latest
+    container_name: farmacia-api
+    restart: unless-stopped
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    ports:
+      - "${API_PORT:-8080}:8080"
+    environment:
+      ConnectionStrings__OracleConnection: "User Id=${APP_USER:-farmacia};Password=${APP_USER_PASSWORD:-farmacia123};Data Source=oracle:1521/FREEPDB1;"
+      Jwt__Key: ${JWT_KEY:-clave-solo-para-desarrollo-cambiala-en-tu-.env}
+      TZ: ${TZ:-America/Bogota}
 
 volumes:
   oracle-data:
