@@ -60,7 +60,7 @@ namespace FarmaciaApp.Api.Endpoints
          * @param buscar Texto del nombre, opcional
          * @return 200 con los productos
          */
-        private static IResult Listar(ProductoService productos, string? buscar)
+        private static IResult Listar(ProductoService productos, string buscar)
         {
             var lista = string.IsNullOrWhiteSpace(buscar) ? productos.ObtenerProductos() : productos.Buscar(buscar);
             return Results.Ok(lista.Select(ProductoDto.De));
@@ -75,8 +75,7 @@ namespace FarmaciaApp.Api.Endpoints
         private static IResult Obtener(int id, ProductoService productos)
         {
             var producto = productos.ObtenerPorId(id);
-            return producto == null ? Results.Problem(statusCode: StatusCodes.Status404NotFound, title: "Producto no encontrado")
-                                    : Results.Ok(ProductoDto.De(producto));
+            return producto == null ? Respuestas.NoEncontrado("Producto") : Results.Ok(ProductoDto.De(producto));
         }
 
         /**
@@ -102,9 +101,8 @@ namespace FarmaciaApp.Api.Endpoints
         private static IResult Actualizar(int id, ProductoRequest peticion, ProductoService productos)
         {
             if (productos.ObtenerPorId(id) == null)
-                return Results.Problem(statusCode: StatusCodes.Status404NotFound, title: "Producto no encontrado");
-            return productos.ActualizarProducto(peticion.ALaEntidad(id)) ? Results.NoContent()
-                : Results.Problem(statusCode: StatusCodes.Status404NotFound, title: "Producto no encontrado");
+                return Respuestas.NoEncontrado("Producto");
+            return Respuestas.SinContenidoOSiNoExiste(productos.ActualizarProducto(peticion.ALaEntidad(id)), "Producto");
         }
 
         /**
@@ -116,9 +114,8 @@ namespace FarmaciaApp.Api.Endpoints
         private static IResult Eliminar(int id, ProductoService productos)
         {
             if (productos.ObtenerPorId(id) == null)
-                return Results.Problem(statusCode: StatusCodes.Status404NotFound, title: "Producto no encontrado");
-            return productos.EliminarProducto(id) ? Results.NoContent()
-                : Results.Problem(statusCode: StatusCodes.Status404NotFound, title: "Producto no encontrado");
+                return Respuestas.NoEncontrado("Producto");
+            return Respuestas.SinContenidoOSiNoExiste(productos.EliminarProducto(id), "Producto");
         }
     }
 }

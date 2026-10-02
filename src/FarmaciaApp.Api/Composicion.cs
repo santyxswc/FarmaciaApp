@@ -24,9 +24,9 @@ namespace FarmaciaApp.Api
          * La sesión, la auditoría y los servicios viven una petición: así cada petición
          * tiene su propio usuario, a diferencia de la aplicación de escritorio, donde es uno solo.
          */
-        public static IServiceCollection AgregarFarmacia(this IServiceCollection servicios, string? cadenaConexion)
+        public static IServiceCollection AgregarFarmacia(this IServiceCollection servicios, string cadenaConexion)
         {
-            servicios.AgregarInfraestructura(cadenaConexion!);
+            servicios.AgregarInfraestructura(cadenaConexion);
 
             servicios.AddScoped<ISesionUsuario, SesionUsuario>();
             servicios.AddScoped<IAuditoria, ServicioAuditoria>();

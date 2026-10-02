@@ -8,7 +8,7 @@ using FarmaciaApp.Core.Models;
 namespace FarmaciaApp.Api.Endpoints
 {
     /** Credenciales para iniciar sesión. */
-    public sealed record LoginRequest(string? Login, string? Clave);
+    public sealed record LoginRequest(string Login, string Clave);
 
     /** Usuario autenticado, sin hash ni sal. */
     public sealed record UsuarioDto(decimal Id, string Login, string Nombre, string Rol)
@@ -25,7 +25,7 @@ namespace FarmaciaApp.Api.Endpoints
     public sealed record LoginResponse(string Token, DateTime Expira, UsuarioDto Usuario);
 
     /** Producto del catálogo. */
-    public sealed record ProductoDto(int Id, string Nombre, decimal Precio, int Stock, string? Descripcion, bool StockBajo)
+    public sealed record ProductoDto(int Id, string Nombre, decimal Precio, int Stock, string Descripcion, bool StockBajo)
     {
         /**
          * @brief Convierte el modelo de Core.
@@ -36,7 +36,7 @@ namespace FarmaciaApp.Api.Endpoints
     }
 
     /** Datos para crear o modificar un producto. */
-    public sealed record ProductoRequest(string? Nombre, decimal Precio, int Stock, string? Descripcion)
+    public sealed record ProductoRequest(string Nombre, decimal Precio, int Stock, string Descripcion)
     {
         /**
          * @brief Convierte la petición al modelo de Core.
