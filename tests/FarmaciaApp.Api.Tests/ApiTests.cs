@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using FarmaciaApp.Api.Endpoints;
+using Microsoft.Extensions.Configuration;
 
 namespace FarmaciaApp.Api.Tests;
 
@@ -176,5 +177,20 @@ public class ApiTests : IClassFixture<FabricaApi>
         var respuesta = await fabrica.CreateClient().GetAsync("/health/live");
 
         Assert.Equal(HttpStatusCode.OK, respuesta.StatusCode);
+    }
+
+    /** Superado el límite de intentos, el login responde 429. */
+    [Fact]
+    public async Task Login_supera_el_limite_de_intentos_y_es_429()
+    {
+        using var limitada = fabrica.WithWebHostBuilder(b => b.ConfigureAppConfiguration((_, config) =>
+            config.AddInMemoryCollection(new Dictionary<string, string> { ["RateLimit:LoginPorMinuto"] = "2" })));
+        var cliente = limitada.CreateClient();
+
+        var estados = new List<HttpStatusCode>();
+        for (int i = 0; i < 3; i++)
+            estados.Add((await cliente.PostAsJsonAsync("/api/auth/login", new LoginRequest("admin", "otra"))).StatusCode);
+
+        Assert.Equal(new[] { HttpStatusCode.Unauthorized, HttpStatusCode.Unauthorized, HttpStatusCode.TooManyRequests }, estados);
     }
 }

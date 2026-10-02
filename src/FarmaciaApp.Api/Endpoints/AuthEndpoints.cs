@@ -53,7 +53,7 @@ namespace FarmaciaApp.Api.Endpoints
                 return Results.Problem(statusCode: StatusCodes.Status400BadRequest, title: "Datos inválidos",
                     detail: "El usuario y la contraseña son obligatorios.");
 
-            Core.Models.Usuario? usuario;
+            Core.Models.Usuario usuario;
             try
             {
                 usuario = usuarios.IniciarSesion(peticion.Login, peticion.Clave);

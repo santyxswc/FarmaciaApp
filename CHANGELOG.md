@@ -5,6 +5,8 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 ## [Sin publicar]
 
 ### Agregado
+- Endpoints de la API para clientes, personas, proveedores, promociones, reclamos, facturas y ventas, reportes, movimientos y usuarios.
+- Límite de intentos de login configurable (`RateLimit:LoginPorMinuto`).
 - API REST (`FarmaciaApp.Api`) con autenticación JWT, rutas de autenticación y productos, documentación OpenAPI con Scalar, health checks y límite de intentos de login.
 - Pruebas de integración de la API.
 - `Dockerfile` de la API, carga automática del esquema en Docker Compose y publicación de la imagen en GitHub Container Registry.
