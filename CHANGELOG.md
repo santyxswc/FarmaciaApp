@@ -4,6 +4,9 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Sin publicar]
 
+### Cambiado
+- `Nullable` desactivado también en `FarmaciaApp.Core` y `FarmaciaApp.Infrastructure`, como en el resto de la solución: desaparecen los 62 avisos de nulabilidad del compilador.
+
 ## [2.2.0] - 2026-10-02
 
 ### Agregado
