@@ -32,7 +32,7 @@ jobs:
       - name: Resumir la cobertura de líneas
         if: always()
         run: python3 scripts/resumen-cobertura.py TestResults >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: resultados-pruebas
