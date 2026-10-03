@@ -3,12 +3,12 @@
  * @brief Reglas de negocio de las ventas y facturas.
  * @author Santiago Caicedo
  */
-using FarmaciaApp.Core.Abstractions;
-using FarmaciaApp.Core.Models;
-using FarmaciaApp.Core.Sesion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FarmaciaApp.Core.Abstractions;
+using FarmaciaApp.Core.Models;
+using FarmaciaApp.Core.Sesion;
 
 namespace FarmaciaApp.Core.Services
 {

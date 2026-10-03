@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file Proveedor.cs
  * @brief Modelo de proveedor.
  * @author Santiago Caicedo

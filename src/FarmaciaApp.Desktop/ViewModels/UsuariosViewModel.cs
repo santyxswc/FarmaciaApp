@@ -3,13 +3,13 @@
  * @brief Lógica de la administración de usuarios.
  * @author Santiago Caicedo
  */
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Services;
 using FarmaciaApp.Desktop.Services;
 using FarmaciaApp.Desktop.Views;
-using System.Collections.ObjectModel;
 
 namespace FarmaciaApp.Desktop.ViewModels
 {

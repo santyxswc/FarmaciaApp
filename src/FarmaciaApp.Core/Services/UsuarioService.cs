@@ -3,13 +3,13 @@
  * @brief Inicio de sesión y administración de usuarios.
  * @author Santiago Caicedo
  */
-using FarmaciaApp.Core.Abstractions;
-using FarmaciaApp.Core.Models;
-using FarmaciaApp.Core.Sesion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using FarmaciaApp.Core.Abstractions;
+using FarmaciaApp.Core.Models;
+using FarmaciaApp.Core.Sesion;
 
 namespace FarmaciaApp.Core.Services
 {

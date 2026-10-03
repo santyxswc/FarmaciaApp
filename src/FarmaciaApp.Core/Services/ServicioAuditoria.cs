@@ -3,10 +3,10 @@
  * @brief Registro de movimientos de los usuarios.
  * @author Santiago Caicedo
  */
-using FarmaciaApp.Core.Abstractions;
-using FarmaciaApp.Core.Sesion;
 using System;
 using System.Diagnostics;
+using FarmaciaApp.Core.Abstractions;
+using FarmaciaApp.Core.Sesion;
 
 namespace FarmaciaApp.Core.Services
 {

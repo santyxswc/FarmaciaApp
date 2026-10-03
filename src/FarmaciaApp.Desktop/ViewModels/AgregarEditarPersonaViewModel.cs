@@ -8,9 +8,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Services;
-using FarmaciaApp.Desktop.Services;
-
 using FarmaciaApp.Core.Sesion;
+using FarmaciaApp.Desktop.Services;
 namespace FarmaciaApp.Desktop.ViewModels
 {
     /**

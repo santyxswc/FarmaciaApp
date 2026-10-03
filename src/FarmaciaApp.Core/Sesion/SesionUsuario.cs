@@ -3,8 +3,8 @@
  * @brief Sesión del usuario que tiene abierto el turno.
  * @author Santiago Caicedo
  */
-using FarmaciaApp.Core.Models;
 using System;
+using FarmaciaApp.Core.Models;
 
 namespace FarmaciaApp.Core.Sesion
 {

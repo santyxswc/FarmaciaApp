@@ -3,12 +3,12 @@
  * @brief Lógica del formulario de producto.
  * @author Santiago Caicedo
  */
+using System.ComponentModel;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Services;
-using System.ComponentModel;
 
 namespace FarmaciaApp.Desktop.ViewModels
 {

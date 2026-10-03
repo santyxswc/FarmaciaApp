@@ -5,12 +5,11 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
-
 using Dapper;
 using FarmaciaApp.Core.Abstractions;
 using FarmaciaApp.Core.Models;
-using System.Data;
 
 namespace FarmaciaApp.Infrastructure.Repositories
 {

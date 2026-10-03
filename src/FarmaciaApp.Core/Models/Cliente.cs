@@ -3,10 +3,10 @@
  * @brief Modelo de cliente.
  * @author Santiago Caicedo
  */
-using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace FarmaciaApp.Core.Models
 {

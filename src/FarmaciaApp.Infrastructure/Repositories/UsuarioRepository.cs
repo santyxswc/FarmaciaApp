@@ -3,11 +3,11 @@
  * @brief Acceso a datos de usuarios.
  * @author Santiago Caicedo
  */
+using System.Collections.Generic;
+using System.Data;
 using Dapper;
 using FarmaciaApp.Core.Abstractions;
 using FarmaciaApp.Core.Models;
-using System.Collections.Generic;
-using System.Data;
 
 namespace FarmaciaApp.Infrastructure.Repositories
 {

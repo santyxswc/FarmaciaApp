@@ -7,11 +7,10 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FarmaciaApp.Core.Services;
-using FarmaciaApp.Desktop.Views;
-
 using FarmaciaApp.Core.Abstractions;
+using FarmaciaApp.Core.Services;
 using FarmaciaApp.Desktop.Services;
+using FarmaciaApp.Desktop.Views;
 namespace FarmaciaApp.Desktop.ViewModels
 {
     /**

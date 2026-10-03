@@ -3,15 +3,14 @@
  * @brief Lógica del listado de productos.
  * @author Santiago Caicedo
  */
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Services;
+using FarmaciaApp.Core.Sesion;
 using FarmaciaApp.Desktop.Services;
 using FarmaciaApp.Desktop.Views;
-using System.Collections.ObjectModel;
-
-using FarmaciaApp.Core.Sesion;
 namespace FarmaciaApp.Desktop.ViewModels
 {
     /**
