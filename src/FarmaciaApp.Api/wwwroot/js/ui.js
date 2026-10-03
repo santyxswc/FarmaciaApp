@@ -91,7 +91,7 @@ export function confirmar(titulo, mensaje, textoBoton = 'Confirmar') {
 
 /**
  * Formulario en un diálogo.
- * @param {object} opciones titulo, campos [{nombre, etiqueta, tipo, requerido, min, step, filas}], valores, guardar(datos)
+ * @param {object} opciones titulo, campos [{nombre, etiqueta, tipo, requerido, min, max, step, filas, opciones [{valor, texto}], autocompletar}], valores, guardar(datos)
  * @returns {Promise<boolean>} true si se guardó
  */
 export function formulario({ titulo, campos, valores = {}, textoGuardar = 'Guardar', guardar }) {
@@ -100,10 +100,12 @@ export function formulario({ titulo, campos, valores = {}, textoGuardar = 'Guard
     const boton = h('button', { class: 'principal', type: 'submit' }, textoGuardar);
 
     const entradas = campos.map((campo) => {
-      const comun = { name: campo.nombre, required: campo.requerido, min: campo.min, step: campo.step };
-      const entrada = campo.tipo === 'textarea'
-        ? h('textarea', { ...comun, rows: campo.filas ?? 3 })
-        : h('input', { ...comun, type: campo.tipo ?? 'text' });
+      const comun = { name: campo.nombre, required: campo.requerido, min: campo.min, max: campo.max, step: campo.step, autocomplete: campo.autocompletar };
+      let entrada;
+      if (campo.tipo === 'textarea') entrada = h('textarea', { ...comun, rows: campo.filas ?? 3 });
+      else if (campo.tipo === 'select') {
+        entrada = h('select', comun, campo.opciones.map((o) => h('option', { value: o.valor }, o.texto)));
+      } else entrada = h('input', { ...comun, type: campo.tipo ?? 'text' });
       entrada.value = valores[campo.nombre] ?? '';
       return h('label', null, campo.etiqueta, entrada);
     });
