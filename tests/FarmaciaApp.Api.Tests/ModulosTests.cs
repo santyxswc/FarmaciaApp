@@ -240,6 +240,11 @@ public class ModulosTests : IClassFixture<FabricaApi>
     [Theory]
     [InlineData("/js/app.js")]
     [InlineData("/js/vistas/venta.js")]
+    [InlineData("/js/vistas/clientes.js")]
+    [InlineData("/js/vistas/reclamos.js")]
+    [InlineData("/js/vistas/promociones.js")]
+    [InlineData("/js/vistas/personas.js")]
+    [InlineData("/js/vistas/usuarios.js")]
     [InlineData("/css/app.css")]
     public async Task Los_recursos_estaticos_se_publican(string ruta)
     {
