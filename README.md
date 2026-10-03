@@ -9,7 +9,7 @@ proveedores, promociones, reclamos y **control de turnos** de los empleados.
 
 Tiene dos clientes sobre las mismas reglas de negocio: una **aplicación de escritorio** para Windows, Linux y
 macOS (**Avalonia**) y una **API REST** con autenticación JWT y documentación OpenAPI (**ASP.NET Core**), que
-además sirve una **interfaz web** para consultar el catálogo, registrar ventas y ver reportes desde el navegador.
+además sirve una **interfaz web** para gestionar el catálogo, ventas, clientes, reclamos, promociones, personas y usuarios desde el navegador.
 Ambas usan **Dapper** para el acceso a datos y **Oracle** como base de datos, y todo el entorno se levanta
 con un solo `docker compose up`.
 
@@ -472,8 +472,15 @@ Entra a <http://localhost:8080> con `admin` / `prueba` (o `andres` / `andres123`
 | Productos | Todos; el administrador también edita | Búsqueda, alta, edición y baja con *Stock bajo* |
 | Nueva venta | Todos | Cliente, método de pago y varias líneas; valida stock y muestra subtotal, IVA y total |
 | Facturas | Todos | Listado y detalle de cada factura |
+| Clientes | Todos; el administrador también elimina | Búsqueda, alta y edición; no deja eliminar a quien tiene facturas |
+| Reclamos | Todos; el administrador también elimina | Reclamos sobre una factura con su estado y descripción |
+| Promociones | Todos; el administrador edita | Descuento y vigencia, con la marca de activa o inactiva |
+| Personas | Todos; el administrador también elimina y asigna vendedores | Datos personales y roles de cliente y vendedor |
 | Reportes | Administrador | Total, ticket promedio, ventas por empleado y productos más vendidos por periodo |
 | Movimientos | Administrador | Auditoría filtrada por fechas y texto |
+| Usuarios | Administrador | Crear cuentas, activarlas o desactivarlas y restablecer contraseñas |
+
+Cualquier usuario puede cambiar su propia contraseña con el botón del encabezado.
 
 ![Productos en la web](docs/capturas/web-02-productos.png)
 ![Nueva venta en la web](docs/capturas/web-03-venta.png)
