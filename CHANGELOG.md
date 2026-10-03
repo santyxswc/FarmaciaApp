@@ -4,6 +4,8 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Sin publicar]
 
+## [2.2.0] - 2026-10-02
+
 ### Agregado
 - Cobertura de pruebas (`make cobertura`) y su resumen en cada ejecución de la CI.
 - Verificación de formato con `dotnet format` en la CI (`make formato` para aplicarlo).
