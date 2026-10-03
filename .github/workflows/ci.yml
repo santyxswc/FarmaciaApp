@@ -24,13 +24,21 @@ jobs:
           cache: true
           cache-dependency-path: "**/*.csproj"
       - run: dotnet restore
+      - name: Comprobar el formato del código
+        run: dotnet format FarmaciaApp.slnx --verify-no-changes --no-restore
       - run: dotnet build --no-restore -c Release -p:ContinuousIntegrationBuild=true
-      - run: dotnet test --no-build -c Release --report-xunit-trx --results-directory TestResults
+      - name: Ejecutar las pruebas con cobertura
+        run: dotnet test --no-build -c Release --report-xunit-trx --coverage --coverage-output-format cobertura --results-directory TestResults
+      - name: Resumir la cobertura de líneas
+        if: always()
+        run: python3 scripts/resumen-cobertura.py TestResults >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: resultados-pruebas
-          path: TestResults/**/*.trx
+          path: |
+            TestResults/**/*.trx
+            TestResults/**/*.cobertura.xml
           if-no-files-found: ignore
 
   dependencias:
