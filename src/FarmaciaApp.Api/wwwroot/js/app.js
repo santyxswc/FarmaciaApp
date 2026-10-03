@@ -5,19 +5,29 @@
  */
 import { sesion } from './api.js';
 import { aviso, h, pintar } from './ui.js';
+import { vistaClientes } from './vistas/clientes.js';
 import { vistaFacturas } from './vistas/facturas.js';
 import { vistaLogin } from './vistas/login.js';
 import { vistaMovimientos } from './vistas/movimientos.js';
+import { vistaPersonas } from './vistas/personas.js';
 import { vistaProductos } from './vistas/productos.js';
+import { vistaPromociones } from './vistas/promociones.js';
+import { vistaReclamos } from './vistas/reclamos.js';
 import { vistaReportes } from './vistas/reportes.js';
+import { cambiarMiClave, vistaUsuarios } from './vistas/usuarios.js';
 import { vistaVenta } from './vistas/venta.js';
 
 const RUTAS = [
   { ruta: 'productos', titulo: 'Productos', vista: vistaProductos },
   { ruta: 'venta', titulo: 'Nueva venta', vista: vistaVenta },
   { ruta: 'facturas', titulo: 'Facturas', vista: vistaFacturas },
+  { ruta: 'clientes', titulo: 'Clientes', vista: vistaClientes },
+  { ruta: 'reclamos', titulo: 'Reclamos', vista: vistaReclamos },
+  { ruta: 'promociones', titulo: 'Promociones', vista: vistaPromociones },
+  { ruta: 'personas', titulo: 'Personas', vista: vistaPersonas },
   { ruta: 'reportes', titulo: 'Reportes', vista: vistaReportes, admin: true },
   { ruta: 'movimientos', titulo: 'Movimientos', vista: vistaMovimientos, admin: true },
+  { ruta: 'usuarios', titulo: 'Usuarios', vista: vistaUsuarios, admin: true },
 ];
 
 const raiz = document.getElementById('app');
@@ -58,6 +68,7 @@ function mostrarAplicacion(datos) {
       h('div', { class: 'sesion' },
         h('span', null, `${usuario.nombre} · ${usuario.rol}`),
         h('a', { href: '/scalar' }, 'API'),
+        h('button', { onclick: cambiarMiClave }, 'Cambiar contraseña'),
         h('button', { onclick: cerrarSesion }, 'Cerrar sesión'))),
     h('main'));
   if (!location.hash) location.hash = '#/productos';
