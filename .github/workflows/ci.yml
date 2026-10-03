@@ -17,7 +17,7 @@ jobs:
     name: Build y tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
@@ -45,7 +45,7 @@ jobs:
     name: Paquetes vulnerables
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
@@ -62,7 +62,7 @@ jobs:
     name: Stack completo (Oracle + API)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Levantar Oracle, cargar el esquema y arrancar la API
         run: docker compose up -d --build
       - name: Esperar a que la API esté lista
