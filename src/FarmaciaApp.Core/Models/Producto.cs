@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file Producto.cs
  * @brief Modelo de producto.
  * @author Santiago Caicedo

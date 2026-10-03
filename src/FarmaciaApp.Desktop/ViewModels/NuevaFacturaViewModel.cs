@@ -3,15 +3,14 @@
  * @brief Lógica del registro de una venta.
  * @author Santiago Caicedo
  */
+using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Services;
-using FarmaciaApp.Desktop.Services;
-using System.Collections.ObjectModel;
-
 using FarmaciaApp.Core.Sesion;
+using FarmaciaApp.Desktop.Services;
 namespace FarmaciaApp.Desktop.ViewModels
 {
     /**

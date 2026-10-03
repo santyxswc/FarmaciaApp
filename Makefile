@@ -6,7 +6,7 @@ APP_USER_PASSWORD ?= farmacia123
 SQLPLUS = docker exec -i farmacia-oracle sqlplus -s $(APP_USER)/$(APP_USER_PASSWORD)@//localhost/FREEPDB1
 PUBLISH = dotnet publish src/FarmaciaApp.Desktop -c Release --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 
-.PHONY: help build test run api api-up api-down db-up db-init db-down db-reset publish-linux publish-windows clean
+.PHONY: help build test cobertura formato run api api-up api-down db-up db-init db-down db-reset publish-linux publish-windows clean
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-17s %s\n", $$1, $$2}'
@@ -16,6 +16,13 @@ build: ## Compila la solución
 
 test: ## Ejecuta las pruebas unitarias
 	dotnet test
+
+cobertura: ## Ejecuta las pruebas y resume la cobertura de líneas
+	dotnet test -c Release --coverage --coverage-output-format cobertura --results-directory TestResults
+	python3 scripts/resumen-cobertura.py TestResults
+
+formato: ## Aplica el formato de .editorconfig a todo el código
+	dotnet format FarmaciaApp.slnx
 
 run: ## Abre la aplicación (requiere la base de datos encendida)
 	dotnet run --project src/FarmaciaApp.Desktop

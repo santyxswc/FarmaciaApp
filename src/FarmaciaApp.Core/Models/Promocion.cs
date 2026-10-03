@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file Promocion.cs
  * @brief Modelo de promoción.
  * @author Santiago Caicedo

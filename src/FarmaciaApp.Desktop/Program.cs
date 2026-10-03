@@ -5,8 +5,8 @@
  *
  * Aplicación de escritorio multiplataforma (Windows, Linux y macOS) hecha con Avalonia.
  */
-using Avalonia;
 using System.Globalization;
+using Avalonia;
 
 namespace FarmaciaApp.Desktop
 {

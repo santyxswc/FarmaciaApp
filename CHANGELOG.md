@@ -4,7 +4,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 ## [Sin publicar]
 
+## [2.2.0] - 2026-10-02
+
 ### Agregado
+- Cobertura de pruebas (`make cobertura`) y su resumen en cada ejecución de la CI.
+- Verificación de formato con `dotnet format` en la CI (`make formato` para aplicarlo).
 - Interfaz web (HTML, CSS y JavaScript sin dependencias) servida por la API: login, productos, nueva venta, facturas, clientes, reclamos, promociones, personas, reportes, movimientos y usuarios, con cambio de la propia contraseña.
 - Cabeceras de seguridad (`Content-Security-Policy`, `X-Content-Type-Options`, `Referrer-Policy`) y `GET /api/ventas/metodos-pago`.
 - Endpoints de la API para clientes, personas, proveedores, promociones, reclamos, facturas y ventas, reportes, movimientos y usuarios.

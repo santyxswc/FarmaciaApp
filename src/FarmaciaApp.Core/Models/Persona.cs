@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file Persona.cs
  * @brief Modelo de persona.
  * @author Santiago Caicedo

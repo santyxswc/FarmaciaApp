@@ -4,8 +4,8 @@
  * @author Santiago Caicedo
  */
 using System;
-using FarmaciaApp.Core.Abstractions;
 using System.Security.Cryptography;
+using FarmaciaApp.Core.Abstractions;
 
 namespace FarmaciaApp.Infrastructure.Seguridad
 {

@@ -439,13 +439,22 @@ productos muestran el valor anterior y el nuevo, por ejemplo `precio $ 14.200 �
 dotnet test
 ```
 
-63 pruebas con xUnit: 29 cubren las reglas de los servicios sin necesitar Oracle: inicio y cierre de sesión con auditoría,
+68 pruebas con xUnit: 29 cubren las reglas de los servicios sin necesitar Oracle: inicio y cierre de sesión con auditoría,
 permisos de administrador, validación y hash de usuarios nuevos, protección del último administrador activo, validación
 compartida de productos y clientes, facturación (un empleado vende siempre a su nombre, líneas repetidas se unen,
 cantidades enteras positivas, desglose del IVA) y la derivación de contraseñas con PBKDF2. Los repositorios se sustituyen
-por dobles que registran cada llamada. Las otras 34 son de integración: arrancan la API completa en memoria
+por dobles que registran cada llamada. Las otras 39 son de integración: arrancan la API completa en memoria
 y comprueban inicio de sesión, tokens, límite de intentos, permisos por rol, validaciones, códigos HTTP y formato de los errores de todos los módulos.
 GitHub Actions compila y ejecuta las pruebas en cada push.
+
+Para ver la cobertura de líneas por proyecto:
+
+```bash
+make cobertura
+```
+
+Hoy cubre cerca del 72 % de la API y el 46 % de Core. Infrastructure queda casi en 0 % porque sus repositorios
+solo se pueden probar contra Oracle real. La CI publica la misma tabla en el resumen de cada ejecución y adjunta los informes Cobertura.
 
 ---
 
@@ -558,7 +567,7 @@ make db-up && make api
 
 | Flujo | Cuándo corre | Qué hace |
 |---|---|---|
-| [`ci.yml`](.github/workflows/ci.yml) | Cada push a `master` y cada pull request | Compila, ejecuta las pruebas, revisa que ningún paquete NuGet tenga vulnerabilidades conocidas y levanta el `docker-compose.yml` completo (Oracle, esquema y API) para iniciar sesión y consultar productos de verdad. |
+| [`ci.yml`](.github/workflows/ci.yml) | Cada push a `master` y cada pull request | Comprueba el formato (`dotnet format`), compila, ejecuta las pruebas con cobertura, revisa que ningún paquete NuGet tenga vulnerabilidades conocidas y levanta el `docker-compose.yml` completo (Oracle, esquema y API) para iniciar sesión y consultar productos de verdad. |
 | [`docker.yml`](.github/workflows/docker.yml) | Push a `master`, etiquetas `v*` y cambios en la API | Construye la imagen de la API y, fuera de los pull requests, la publica en GitHub Container Registry. |
 | [`codeql.yml`](.github/workflows/codeql.yml) | Push, pull request y cada lunes | Análisis estático de seguridad del código C#. |
 | [`release.yml`](.github/workflows/release.yml) | Al subir una etiqueta `v*` | Ejecuta las pruebas, publica los ejecutables de Windows y Linux (con los scripts de `database/`) y crea el release en GitHub con las notas generadas. |
@@ -583,6 +592,8 @@ El `Makefile` reúne los comandos habituales; `make help` los lista:
 | `make db-init` | Carga `schema.sql` (borra las tablas y los datos) |
 | `make run` | Abre la aplicación |
 | `make test` | Ejecuta las pruebas |
+| `make cobertura` | Ejecuta las pruebas y resume la cobertura de líneas |
+| `make formato` | Aplica el formato de `.editorconfig`; la CI falla si hay diferencias |
 | `make publish-linux` / `make publish-windows` | Genera el ejecutable en `publicado/` |
 | `make db-down` / `make db-reset` | Apaga Oracle / elimina también sus datos |
 

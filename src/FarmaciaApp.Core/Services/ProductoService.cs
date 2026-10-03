@@ -3,11 +3,11 @@
  * @brief Reglas de negocio de los productos.
  * @author Santiago Caicedo
  */
+using System;
+using System.Collections.Generic;
 using FarmaciaApp.Core.Abstractions;
 using FarmaciaApp.Core.Models;
 using FarmaciaApp.Core.Sesion;
-using System;
-using System.Collections.Generic;
 
 namespace FarmaciaApp.Core.Services
 {

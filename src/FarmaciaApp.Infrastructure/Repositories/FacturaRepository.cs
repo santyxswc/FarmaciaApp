@@ -3,13 +3,13 @@
  * @brief Acceso a datos de facturas y ventas.
  * @author Santiago Caicedo
  */
-using Dapper;
-using FarmaciaApp.Core.Abstractions;
-using FarmaciaApp.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Dapper;
+using FarmaciaApp.Core.Abstractions;
+using FarmaciaApp.Core.Models;
 
 namespace FarmaciaApp.Infrastructure.Repositories
 {

@@ -5,13 +5,13 @@
  */
 using FarmaciaApp.Core.Abstractions;
 using FarmaciaApp.Core.Models;
+using FarmaciaApp.Core.Tests;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using FarmaciaApp.Core.Tests;
 
 namespace FarmaciaApp.Api.Tests;
 
@@ -133,8 +133,15 @@ public sealed class FabricaApi : WebApplicationFactory<Program>
             ControlFacturas = controlFacturas;
             var factura = new Factura
             {
-                FacNumFactura = 1001, FacTotal = 11900, FacSubtotal = 10000, FacIva = 1900, CliId = 10, VenId = 7,
-                ClienteNombre = "Laura Gómez", VendedorNombre = "Andrés Pérez", MetodoPago = "Efectivo"
+                FacNumFactura = 1001,
+                FacTotal = 11900,
+                FacSubtotal = 10000,
+                FacIva = 1900,
+                CliId = 10,
+                VenId = 7,
+                ClienteNombre = "Laura Gómez",
+                VendedorNombre = "Andrés Pérez",
+                MetodoPago = "Efectivo"
             };
             controlFacturas
                 .Cuando(nameof(IFacturaRepository.GetAll), _ => new List<Factura> { factura })
