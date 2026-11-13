@@ -14,7 +14,7 @@ COPY src/FarmaciaApp.Infrastructure src/FarmaciaApp.Infrastructure
 COPY src/FarmaciaApp.Api src/FarmaciaApp.Api
 RUN dotnet publish src/FarmaciaApp.Api -c Release --no-restore -p:ContinuousIntegrationBuild=true -o /app
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:11.0 AS runtime
 WORKDIR /app
 COPY --from=build /app .
 
